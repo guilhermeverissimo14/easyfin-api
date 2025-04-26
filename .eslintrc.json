@@ -1,0 +1,14 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "extends": [
+      "standard-with-typescript",
+      "plugin:prettier/recommended",
+      "prettier/@typescript-eslint"
+    ],
+    "parserOptions": {
+      "project": "./tsconfig.json",
+      "sourceType": "module"
+    },
+    "plugins": ["@typescript-eslint/eslint-plugin", "prettier"],
+    "root": true
+}

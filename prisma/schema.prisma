@@ -1,0 +1,39 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  LOCAL_MANAGER
+  PILOT
+}
+
+model User {
+  id               String    @id @default(uuid()) @map("id")
+  name             String
+  email            String    @unique
+  password         String
+  role             UserRole
+  birthdate        DateTime? @map("birthdate")
+  phone            String?
+  cpfCnpj          String?   @map("cpf_cnpj")
+  avatar           String?
+  token            String?
+  recoveryCode     String?   @map("recovery_code")
+  firstAccess      Boolean   @default(true) @map("first_access")
+  profileCompleted Boolean   @default(false) @map("profile_completed")
+  failedAttempts   Int       @default(0) @map("failed_attempts")
+  lastLogin        DateTime? @map("last_login")
+  passwordResetAt  DateTime? @map("password_reset_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+
+  @@map("users")
+}
