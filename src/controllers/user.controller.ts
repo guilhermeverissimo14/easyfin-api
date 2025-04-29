@@ -173,7 +173,10 @@ class UserController {
       const userId = request.user?.id
       const userRole = request.user?.role
       const { id } = request.params
-      const { name, email, phone, cpfCnpj, birthdate, role, avatar } = request.body
+
+      const body = { ...request.body };
+
+      const { name, email, phone, cpfCnpj, birthdate, role, avatar } = body;
 
       if (!userId || !userRole) {
          return reply.status(401).send({ message: 'Usuário não autenticado' })
@@ -213,7 +216,7 @@ class UserController {
       }
    }
 
-   
+
 }
 
 export default new UserController()

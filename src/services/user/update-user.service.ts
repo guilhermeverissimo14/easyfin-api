@@ -12,21 +12,34 @@ export const updateUserService = async (id: string, userData: any, userRole: str
       throw new AppError('Usuário não encontrado', 404)
    }
 
-   if (userData.cpfCnpj) {
-      userData.cpfCnpj = formatCpfCnpj(userData.cpfCnpj)
+   const processedData = { ...userData }
+
+   if (processedData.cpfCnpj) {
+      processedData.cpfCnpj = formatCpfCnpj(processedData.cpfCnpj)
    }
 
-   if (userData.phone) {
-      userData.phone = formatPhone(userData.phone)
+   if (processedData.phone) {
+      processedData.phone = formatPhone(processedData.phone)
+   }
+
+   if (processedData.role) {
+      const upperCaseRole = processedData.role.toUpperCase()
+      
+      // Verificar se é um valor válido
+      if (Object.values(UserRole).includes(upperCaseRole)) {
+         processedData.role = upperCaseRole
+      } else {
+         console.log(`Role inválida: ${processedData.role}, removendo do objeto`)
+         delete processedData.role
+      }
    }
 
    if (userRole === UserRole.ADMIN) {
       return await prisma.user.update({
          where: { id },
-         data: userData,
+         data: processedData,
       })
    }
-
 
    throw new AppError('Acesso negado', 403)
 }
