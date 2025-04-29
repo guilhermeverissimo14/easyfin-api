@@ -1,12 +1,11 @@
-# Minas Drones Backend
+# Easyfin Backend
 
-Bem-vindo ao backend do Sistema de Gestão Minas Drones! Este projeto é uma API RESTful construída com Fastify, TypeScript e Prisma, projetada para gerenciar operações de drones de pulverização e outros serviços.
+Bem-vindo ao backend do Sistema de Gestão Easyfin! Este projeto é uma API RESTful construída com Fastify, TypeScript e Prisma, projetada para gerenciar dados de uma empresa.
 
 ## 🚀 Características
 
 * Autenticação e autorização de usuários
-* Gerenciamento de usuários (administradores, gerentes, gerentes locais e pilotos)
-* Gestão Financeira com despesas e receitas
+* Gerenciamento de usuários (administradores, usuários)
 * Relatórios, Gráficos e Painel Administrativo por usuário
 * Documentação da API com Swagger
 * Banco de dados PostgreSQL com Prisma ORM
@@ -23,8 +22,8 @@ Bem-vindo ao backend do Sistema de Gestão Minas Drones! Este projeto é uma API
 1. Clone o repositório:
 
    ```
-   git clone https://github.com/edutrindade/minas-drones-backend.git
-   cd minas-drones-backend
+   git clone https://github.com/guilhermeverissimo14/easyfin-api.git
+   cd easyfin-api
    ```
 2. Instale as dependências:
 
