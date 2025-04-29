@@ -22,7 +22,7 @@ export const createUserService = async (userData: {
       throw new AppError('Acesso negado. Somente Administradores podem criar Administradores', 403)
    }
 
-   if (userRole === UserRole.LOCAL_MANAGER && role !== UserRole.PILOT) {
+   if (userRole === UserRole.USER) {
       throw new AppError('Acesso negado. Gerentes Locais só podem cadastrar Pilotos', 403)
    }
 

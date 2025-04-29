@@ -18,7 +18,6 @@ export const getUserByIdService = async (id: string, userRole: string, userId: s
         
       }
 
-      console.log(result)
       return formatUserResponse(result)
    }
 

@@ -9,9 +9,7 @@ generator client {
 
 enum UserRole {
   ADMIN
-  MANAGER
-  LOCAL_MANAGER
-  PILOT
+  USER
 }
 
 model User {

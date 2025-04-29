@@ -18,16 +18,5 @@ export const toggleUserStatusService = async (id: string, userRole: string, user
       return updatedUser
    }
 
-   if (userRole === UserRole.MANAGER) {
-      if (user.role === UserRole.LOCAL_MANAGER || user.role === UserRole.PILOT) {
-         const updatedUser = await prisma.user.update({
-            where: { id },
-         })
-         return updatedUser
-      } else {
-         throw new AppError('Acesso negado', 403)
-      }
-   }
-
    throw new AppError('Acesso negado', 403)
 }
