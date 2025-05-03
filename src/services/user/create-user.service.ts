@@ -1,9 +1,8 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, UserRole  } from '@prisma/client'
 import { AppError } from '@/helpers/app-error'
 import { formatCpfCnpj, formatPhone } from '@/utils/format'
 import { hash } from '@/gateways/criptography/bcrypt'
 import { sendWelcomeEmail } from '@/gateways/email/nodemailer.service'
-import { UserRole } from '@/models/user.model'
 
 const prisma = new PrismaClient()
 
@@ -23,7 +22,7 @@ export const createUserService = async (userData: {
    }
 
    if (userRole === UserRole.USER) {
-      throw new AppError('Acesso negado. Gerentes Locais só podem cadastrar Pilotos', 403)
+      throw new AppError('Acesso negado.', 403)
    }
 
    const existingUser = await prisma.user.findUnique({ where: { email } })
