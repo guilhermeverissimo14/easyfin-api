@@ -12,26 +12,149 @@ enum UserRole {
   USER
 }
 
-model User {
-  id               String    @id @default(uuid()) @map("id")
-  name             String
-  email            String    @unique
-  password         String
-  role             UserRole
-  birthdate        DateTime? @map("birthdate")
-  phone            String?
-  cpfCnpj          String?   @map("cpf_cnpj")
-  avatar           String?
-  token            String?
-  recoveryCode     String?   @map("recovery_code")
-  firstAccess      Boolean   @default(true) @map("first_access")
-  profileCompleted Boolean   @default(false) @map("profile_completed")
-  failedAttempts   Int       @default(0) @map("failed_attempts")
-  lastLogin        DateTime? @map("last_login")
-  passwordResetAt  DateTime? @map("password_reset_at")
-  createdAt        DateTime  @default(now()) @map("created_at")
-  updatedAt        DateTime  @updatedAt @map("updated_at")
+enum TransactionType {
+  DEBIT
+  CREDIT
+}
 
+model User {
+  id              String    @id @default(uuid()) @map("id")
+  name            String
+  email           String    @unique
+  password        String
+  role            UserRole
+  birthdate       DateTime? @map("birthdate")
+  phone           String?
+  cpfCnpj         String?   @map("cpf_cnpj")
+  avatar          String?
+  token           String?
+  recoveryCode    String?   @map("recovery_code")
+  firstAccess     Boolean   @default(true) @map("first_access")
+  failedAttempts  Int       @default(0) @map("failed_attempts")
+  lastLogin       DateTime? @map("last_login")
+  passwordResetAt DateTime? @map("password_reset_at")
+  active          Boolean   @default(true)
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
 
   @@map("users")
+}
+
+model Customer {
+  id        String   @id @default(uuid()) @map("id")
+  cnpj      String   @unique
+  name      String
+  email     String?  @unique
+  phone     String?
+  address   String?
+  zipCode   String?  @map("zip_code")
+  city      String?
+  state     String?
+  country   String?
+  contact   String?
+  retIss    Boolean  @default(false) @map("ret_iss")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("customers")
+}
+
+model Supplier {
+  id        String   @id @default(uuid()) @map("id")
+  cnpj      String   @unique
+  name      String
+  email     String?  @unique
+  phone     String?
+  address   String?
+  zipCode   String?  @map("zip_code")
+  city      String?
+  state     String?
+  country   String?
+  contact   String?
+  retIss    Boolean  @default(false) @map("ret_iss")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("suppliers")
+}
+
+model CostCenter {
+  id        String   @id @default(uuid()) @map("id")
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("cost_centers")
+}
+
+model TaxRates {
+  id               String   @id @default(uuid()) @map("id")
+  year             Int
+  month            Int
+  issqnTaxRate     Float    @map("issqn_tax_rate")
+  effectiveTaxRate Float    @map("effective_tax_rate")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@map("tax_rates")
+}
+
+model PaymentTerms {
+  id          String   @id @default(uuid()) @map("id")
+  description String
+  tax         Float?
+  term        Int // Prazo de pagamento em dias
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("payment_terms")
+}
+
+model BankAccounts {
+  id        String   @id @default(uuid()) @map("id")
+  bank      String
+  agency    String
+  account   String
+  type      String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  balances         BankBalance[]
+  BankTransactions BankTransactions[]
+
+  @@map("bank_accounts")
+}
+
+model BankBalance {
+  id            String   @id @default(uuid()) @map("id")
+  balance       Float
+  bankAccountId String   @map("bank_account_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  BankAccounts   BankAccounts? @relation(fields: [bankAccountsId], references: [id])
+  bankAccountsId String?
+
+  @@map("bank_balance")
+}
+
+model BankTransactions {
+  id                    String          @id @default(uuid()) @map("id")
+  description           String
+  amount                Float
+  detailing             String?
+  type                  TransactionType
+  transactionAt         DateTime        @map("transaction_at")
+  bankAccountId         String          @map("bank_account_id")
+  reasonForCancellation String?         @map("reason_for_cancellation")
+  createdAt             DateTime        @default(now()) @map("created_at")
+  updatedAt             DateTime        @updatedAt @map("updated_at")
+  cancelledAt           DateTime?       @map("cancelled_at")
+
+  BankAccounts   BankAccounts? @relation(fields: [bankAccountsId], references: [id])
+  bankAccountsId String?
+
+  @@map("bank_transactions")
 }
