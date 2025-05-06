@@ -1,4 +1,4 @@
-import { PrismaClient} from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 import { AppError } from '@/helpers/app-error'
 import { formatCpfCnpj, formatPhone } from '@/utils/format'
 import { UserRole } from '@/models/user.model'
@@ -24,7 +24,7 @@ export const updateUserService = async (id: string, userData: any, userRole: str
 
    if (processedData.role) {
       const upperCaseRole = processedData.role.toUpperCase()
-      
+
       // Verificar se é um valor válido
       if (Object.values(UserRole).includes(upperCaseRole)) {
          processedData.role = upperCaseRole

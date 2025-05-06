@@ -5,15 +5,12 @@ import { createUserSchema } from '@/schemas/user'
 import { updateUserSchema } from '@/schemas/user'
 import { validateSchema } from '@/helpers/validate-schema'
 import { UserRole } from '@/models/user.model'
-import { PrismaClient } from '@prisma/client'
 import { listUsersService } from '@/services/user/list-users.service'
 import { getUserByIdService } from '@/services/user/get-user-by-id.service'
 import { updateUserService } from '@/services/user/update-user.service'
 import { toggleUserStatusService } from '@/services/user/toggle-user-status.service'
 
-const prisma = new PrismaClient()
-
-interface UsersPilot {
+export interface Users {
    id: string
    name: string
    email: string
@@ -22,22 +19,7 @@ interface UsersPilot {
    cpfCnpj: string | null
    birthdate: Date | null
    avatar: string | null
-   profileCompleted: boolean
-   lastLogin: Date | null
-   createdAt?: Date
-   updatedAt?: Date
-}
-
-export interface UsersManager {
-   id: string
-   name: string
-   email: string
-   role: UserRole
-   phone: string | null
-   cpfCnpj: string | null
-   birthdate: Date | null
-   avatar: string | null
-   profileCompleted: boolean
+   active: boolean
    lastLogin: Date | null
    createdAt?: Date
    updatedAt?: Date
@@ -96,7 +78,7 @@ class UserController {
       }
    }
 
-   public async list(request: FastifyRequest, reply: FastifyReply): Promise<UsersManager[]> {
+   public async list(request: FastifyRequest, reply: FastifyReply): Promise<Users[]> {
       const userId = request.user?.id
       const userRole = request.user?.role
 
@@ -120,7 +102,7 @@ class UserController {
             cpfCnpj: user.cpfCnpj,
             birthdate: user.birthdate,
             avatar: user.avatar,
-            profileCompleted: user.profileCompleted,
+            active: user.active,
             lastLogin: user.lastLogin,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
@@ -174,9 +156,9 @@ class UserController {
       const userRole = request.user?.role
       const { id } = request.params
 
-      const body = { ...request.body };
+      const body = { ...request.body }
 
-      const { name, email, phone, cpfCnpj, birthdate, role, avatar } = body;
+      const { name, email, phone, cpfCnpj, birthdate, role, avatar } = body
 
       if (!userId || !userRole) {
          return reply.status(401).send({ message: 'Usuário não autenticado' })
@@ -215,8 +197,6 @@ class UserController {
          return reply.status(500).send({ message: 'Erro ao atualizar o usuário' })
       }
    }
-
-
 }
 
 export default new UserController()

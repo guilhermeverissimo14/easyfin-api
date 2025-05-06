@@ -1,4 +1,4 @@
-import { PrismaClient} from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 import { AppError } from '@/helpers/app-error'
 import { UserRole } from '@/models/user.model'
 
@@ -14,6 +14,9 @@ export const toggleUserStatusService = async (id: string, userRole: string, user
    if (userRole === UserRole.ADMIN) {
       const updatedUser = await prisma.user.update({
          where: { id },
+         data: {
+            active: !user.active,
+         },
       })
       return updatedUser
    }
