@@ -1,0 +1,591 @@
+type: collection.insomnia.rest/5.0
+name: Easyfin (pessoal)
+meta:
+  id: wrk_8d69db8920ed4afe9dbc3cd41986ce1f
+  created: 1746536736139
+  modified: 1746536736139
+collection:
+  - name: 01. Auth
+    meta:
+      id: fld_25dbff7dea09452a9b3aecd2fa8214bb
+      created: 1746536736147
+      modified: 1746536736147
+      sortKey: -1735229588718
+    children:
+      - url: "{{ _.baseURL }}auth/login"
+        name: login
+        meta:
+          id: req_b34cf8e0320e4e519884106add4800ab
+          created: 1746536736149
+          modified: 1746536978178
+          isPrivate: false
+          sortKey: -1732182113718
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"email": "admineasyfin@gmail.com",
+            	"password": "admin123"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}auth/forgot-password"
+        name: forgot-password
+        meta:
+          id: req_e05826ab6c17469eb9e64b21f80d543f
+          created: 1746536736150
+          modified: 1746536736150
+          isPrivate: false
+          sortKey: -1732086878480.9062
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"email": "eduardoepalmeiras@gmail.com"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}auth/reset-password"
+        name: reset-password
+        meta:
+          id: req_ec2040edef6148e9a37ac4d4184b9170
+          created: 1746536736151
+          modified: 1746536736151
+          isPrivate: false
+          sortKey: -1732039260862.3594
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"email": "eduardoepalmeiras@gmail.com",
+            	"code": "754816",
+            	"newPassword": "Eduardo@2025"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}auth/refresh-token"
+        name: refresh-token
+        meta:
+          id: req_9c17db5406ef4299b4197c2a9fda2b85
+          created: 1746536736153
+          modified: 1746536736153
+          isPrivate: false
+          sortKey: -1732039260762.3594
+        method: POST
+        body:
+          mimeType: application/json
+          text: >+
+            {
+            	"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiNjhlY2IwMS1mZTAzLTQ4YWUtOTViZS0wY2Q1NDU2NjU5YmQiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3Mzg5NzQ4MjIsImV4cCI6MTczOTA2MTIyMn0.P3r5bdm-eLhNyhEOSBroh14h9MiAJWHMpkwzV_2PwPg"
+            }
+
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}auth/verify-code"
+        name: verify-code
+        meta:
+          id: req_002e6e6200cd4e9fa37ec479348df42d
+          created: 1746536736154
+          modified: 1746536736154
+          isPrivate: false
+          sortKey: -1732063069671.6328
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"email": "eduardoepalmeiras@gmail.com",
+            	"code": "265862"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 02. Users
+    meta:
+      id: fld_7f5af7800bf34c0380a1deab4d04f39b
+      created: 1746536736157
+      modified: 1746536736157
+      sortKey: -1732181394868
+    children:
+      - url: "{{ _.baseURL }}users"
+        name: list
+        meta:
+          id: req_374588e775fc47a08d5d501b12c03c33
+          created: 1746536736158
+          modified: 1746536736158
+          isPrivate: false
+          sortKey: -1732182113718
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}users"
+        name: create
+        meta:
+          id: req_5f5b41bba10f446694c5723f8c573670
+          created: 1746536736160
+          modified: 1746536736160
+          isPrivate: false
+          sortKey: -1731324996584.1562
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+                "name": "Eduardo Trindade",
+                "email": "eduardoepalmeiras@gmail.com",
+                "role": "manager",
+                "commission": 23,
+                "birthdate": "1989-02-15",
+                "phone": "38999705297",
+                "cpfCnpj": "09760477645"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}users/b9a3b70e-cad7-418a-9a6e-c16aa7b290e5"
+        name: getById
+        meta:
+          id: req_8bb0e7e2573140d890feb3c4367518c2
+          created: 1746536736161
+          modified: 1746536736161
+          isPrivate: false
+          sortKey: -1732134496099.4531
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}users/b9a3b70e-cad7-418a-9a6e-c16aa7b290e5"
+        name: update
+        meta:
+          id: req_4c4a4de98c0844bb9e43c89d113f4d47
+          created: 1746536736162
+          modified: 1746536736162
+          isPrivate: false
+          sortKey: -1731277378965.6094
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+                "name": "Vinicius Cordeiro",
+                "email": "mauro.marques02@gmail.com",
+                "commission": 7,
+                "localManagerId": "388e8c13-2e43-4d6b-9308-29644218eb60"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}users/e7df5962-28d5-49b4-9963-a77d670c9857/toggle-status"
+        name: toggleStatus
+        meta:
+          id: req_aafa69e8565d43ca84cd9e045f4da5f8
+          created: 1746536736163
+          modified: 1746536736163
+          isPrivate: false
+          sortKey: -1731253570156.336
+        method: PATCH
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}users/send-welcome-email"
+        name: sendWelcomeEmail
+        meta:
+          id: req_cc99643ace304267bc1f5f5060d50422
+          created: 1746536736164
+          modified: 1746536736164
+          isPrivate: false
+          sortKey: -1731310086726.0781
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            		"userId": "7d18ba8e-b531-4990-a872-0a68bb45a12e",
+                "name": "Eduardo Trindade",
+                "email": "eduardoepalmeiras@gmail.com"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}users/468e3bce-1fa9-4407-88ea-4a8ee76aaf45/update-password"
+        name: updatePassword
+        meta:
+          id: req_c065e9fb2a874b40af29c8b91043e976
+          created: 1746536736165
+          modified: 1746536736165
+          isPrivate: false
+          sortKey: -1731247617954.0176
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"password": "xtk58xpt",
+            	"newPassword": "Eduardo#30"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 03. Customers
+    meta:
+      id: fld_97ea292565f0424896e7540719337106
+      created: 1746536879512
+      modified: 1746536890510
+      sortKey: -1731800370636.75
+    children:
+      - url: "{{ _.baseURL }}customers"
+        name: list
+        meta:
+          id: req_7922ec21828345e29a19e11d261d7829
+          created: 1746536879514
+          modified: 1746536895398
+          isPrivate: false
+          sortKey: -1732182113718
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}customers"
+        name: create
+        meta:
+          id: req_8c03f503dd1c451cad1c5413bff0b6a1
+          created: 1746536879515
+          modified: 1746537031511
+          isPrivate: false
+          sortKey: -1731324996584.1562
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "cnpj": "12.345.678/0001-90",
+              "name": "Empresa Exemplo Ltda",
+              "email": "contato@empresaexemplo.com.br",
+              "phone": "(11) 1234-5678",
+              "address": "Rua Exemplo, 123",
+              "zipCode": "01234-567",
+              "city": "São Paulo",
+              "state": "SP",
+              "country": "Brasil",
+              "contact": "João da Silva",
+              "retIss": false
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}customers/fafa3822-b53b-4b6a-9806-561c07816375"
+        name: getById
+        meta:
+          id: req_9ddd03cdedc346909cfef5bf36a01d75
+          created: 1746536879517
+          modified: 1746537556725
+          isPrivate: false
+          sortKey: -1732134496099.4531
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}customers/fafa3822-b53b-4b6a-9806-561c07816375"
+        name: update
+        meta:
+          id: req_978765c76f1c403a936c14fa50ce22fd
+          created: 1746536879518
+          modified: 1746537553158
+          isPrivate: false
+          sortKey: -1731277378965.6094
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+                "address": "Rua Exemplo, nº 123"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL
+          }}customers/fafa3822-b53b-4b6a-9806-561c07816375/toggle-status"
+        name: toggleStatus
+        meta:
+          id: req_9ca45b2f85794d6a82f2d03a12651376
+          created: 1746536879520
+          modified: 1746537548806
+          isPrivate: false
+          sortKey: -1731253570156.336
+        method: PATCH
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}customers/af5544ee-0156-475b-8cf6-68ffaa019abd"
+        name: delete
+        meta:
+          id: req_c122c9e47ca9478e9490fddc53544000
+          created: 1746536879522
+          modified: 1746537534049
+          isPrivate: false
+          sortKey: -1731247617954.0176
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_f028bc2e7ae744cba5e874ccdd8b5afe
+    created: 1746536736145
+    modified: 1746536736145
+environments:
+  name: Ambientes de Desenvolvimento
+  meta:
+    id: env_cb16cbe240214ff8b1b4da5383ece293
+    created: 1746536736141
+    modified: 1746536736141
+    isPrivate: false
+  subEnvironments:
+    - name: Ambiente Local
+      meta:
+        id: env_339e55f028994e779813ac8cb6de44e9
+        created: 1746536736141
+        modified: 1746536992720
+        isPrivate: false
+        sortKey: 1735229491596
+      data:
+        baseURL: http://localhost:3333/api/
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJkMzE5N2RjMC04NzcyLTQ2MDItODUwYi1iZmRjYWExNDA1ZjgiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NDY1MzY5ODIsImV4cCI6MTc0NjYyMzM4Mn0.v7Yq-kq4e0oUprjvN7jIcMGcdm4Bfs51tqOMvRSBxsE
+      color: "#6de9ca"
+    - name: Ambiente Dev
+      meta:
+        id: env_1c0c26c31ee5417c9e754c2c48ed60b4
+        created: 1746536736143
+        modified: 1746536736143
+        isPrivate: false
+        sortKey: 1735229491646
+      data:
+        baseURL: https://minas-drones-api.onrender.com/api/
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3YzgxYmQxZS1lNzRiLTRkNTQtOTgyZC0zMzZjZjNjNWU1MjMiLCJyb2xlIjoiTUFOQUdFUiIsImlhdCI6MTc0NTUxMzUxMSwiZXhwIjoxNzQ1NTk5OTExfQ.IDJSPbb4ULCG9tufol2koPeMk2xuiy2I9cTD13Et66U
+      color: "#d4e96d"
