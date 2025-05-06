@@ -134,8 +134,7 @@ model BankBalance {
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 
-  BankAccounts   BankAccounts? @relation(fields: [bankAccountsId], references: [id])
-  bankAccountsId String?
+  bankAccount BankAccounts @relation(fields: [bankAccountId], references: [id])
 
   @@map("bank_balance")
 }
@@ -153,8 +152,7 @@ model BankTransactions {
   updatedAt             DateTime        @updatedAt @map("updated_at")
   cancelledAt           DateTime?       @map("cancelled_at")
 
-  BankAccounts   BankAccounts? @relation(fields: [bankAccountsId], references: [id])
-  bankAccountsId String?
+  bankAccount BankAccounts @relation(fields: [bankAccountId], references: [id])
 
   @@map("bank_transactions")
 }

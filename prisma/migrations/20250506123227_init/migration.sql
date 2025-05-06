@@ -125,7 +125,6 @@ CREATE TABLE "bank_balance" (
     "bank_account_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
-    "bankAccountsId" TEXT,
 
     CONSTRAINT "bank_balance_pkey" PRIMARY KEY ("id")
 );
@@ -143,7 +142,6 @@ CREATE TABLE "bank_transactions" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "cancelled_at" TIMESTAMP(3),
-    "bankAccountsId" TEXT,
 
     CONSTRAINT "bank_transactions_pkey" PRIMARY KEY ("id")
 );
@@ -164,7 +162,7 @@ CREATE UNIQUE INDEX "suppliers_cnpj_key" ON "suppliers"("cnpj");
 CREATE UNIQUE INDEX "suppliers_email_key" ON "suppliers"("email");
 
 -- AddForeignKey
-ALTER TABLE "bank_balance" ADD CONSTRAINT "bank_balance_bankAccountsId_fkey" FOREIGN KEY ("bankAccountsId") REFERENCES "bank_accounts"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "bank_balance" ADD CONSTRAINT "bank_balance_bank_account_id_fkey" FOREIGN KEY ("bank_account_id") REFERENCES "bank_accounts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "bank_transactions" ADD CONSTRAINT "bank_transactions_bankAccountsId_fkey" FOREIGN KEY ("bankAccountsId") REFERENCES "bank_accounts"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "bank_transactions" ADD CONSTRAINT "bank_transactions_bank_account_id_fkey" FOREIGN KEY ("bank_account_id") REFERENCES "bank_accounts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
