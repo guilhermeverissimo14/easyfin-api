@@ -34,6 +34,7 @@ const formatUserResponse = (user: any) => ({
    cpfCnpj: user.cpfCnpj,
    birthdate: user.birthdate,
    avatar: user.avatar,
+   active: user.active,
    profileCompleted: user.profileCompleted,
    lastLogin: user.lastLogin,
    createdAt: user.createdAt,
