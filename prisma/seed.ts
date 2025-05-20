@@ -58,6 +58,52 @@ async function main() {
          console.log(`Centro de custo já existe: ${costCenter.name}`)
       }
    }
+
+   const suppliers = [
+      {
+         cnpj: '12345678000195',
+         name: 'Fornecedor 1',
+         email: 'fornecedor1@email.com',
+         phone: '11999999999',
+         address: 'Rua A, 123',
+         zipCode: '12345678',
+         city: 'São Paulo',
+         state: 'SP',
+         country: 'Brasil',
+         contact: 'Contato 1',
+         retIss: false,
+      },
+      {
+         cnpj: '98765432000196',
+         name: 'Fornecedor 2',
+         email: 'fornecedor2@email.com',
+         phone: '11988888888',
+         address: 'Rua B, 456',
+         zipCode: '87654321',
+         city: 'Rio de Janeiro',
+         state: 'RJ',
+         country: 'Brasil',
+         contact: 'Contato 2',
+         retIss: true,
+      },
+   ]
+
+   for (const supplier of suppliers) {
+      const existingSupplier = await prisma.supplier.findUnique({
+         where: {
+            cnpj: supplier.cnpj,
+         },
+      })
+
+      if (!existingSupplier) {
+         await prisma.supplier.create({
+            data: supplier,
+         })
+         console.log(`Fornecedor criado: ${supplier.name}`)
+      } else {
+         console.log(`Fornecedor já existe: ${supplier.name}`)
+      }
+   }
 }
 
 main()
