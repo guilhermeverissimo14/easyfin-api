@@ -10,6 +10,7 @@ import { supplierRoutes } from './routes/supplier.routes'
 import { taxRatesRoutes } from './routes/tax-rates.routes'
 import { paymentTermsRoutes } from './routes/payment-term.routes'
 import { costCenterRoutes } from './routes/cost-center.routes'
+import { bankAccountRoutes } from './routes/bank-account.routes'
 
 const server = Fastify()
 
@@ -39,6 +40,7 @@ server.register(fastifySwagger, {
          { name: 'Tax Rate', description: 'Alíquotas' },
          { name: 'Payment Term', description: 'Condições de pagamento' },
          { name: 'Cost Center', description: 'Centros de custo' },
+         { name: 'Bank Account', description: 'Contas bancárias' },
       ],
       securityDefinitions: {
          BearerAuth: {
@@ -90,6 +92,7 @@ server.register(supplierRoutes, { prefix: '/api/suppliers' })
 server.register(taxRatesRoutes, { prefix: '/api/tax-rates' })
 server.register(paymentTermsRoutes, { prefix: '/api/payment-terms' })
 server.register(costCenterRoutes, { prefix: '/api/cost-centers' })
+server.register(bankAccountRoutes, { prefix: '/api/bank-accounts' })
 
 export const startServer = async () => {
    try {

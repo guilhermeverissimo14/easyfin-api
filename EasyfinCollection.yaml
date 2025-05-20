@@ -5,11 +5,11 @@ meta:
   created: 1746536736139
   modified: 1746536736139
 collection:
-  - name: 01. Auth
+  - name: 01. Auth (Autenticação)
     meta:
       id: fld_25dbff7dea09452a9b3aecd2fa8214bb
       created: 1746536736147
-      modified: 1746536736147
+      modified: 1747780995554
       sortKey: -1735229588718
     children:
       - url: "{{ _.baseURL }}auth/login"
@@ -160,11 +160,11 @@ collection:
             send: true
             store: true
           rebuildPath: true
-  - name: 02. Users
+  - name: 02. Users (Usuários)
     meta:
       id: fld_7f5af7800bf34c0380a1deab4d04f39b
       created: 1746536736157
-      modified: 1746536736157
+      modified: 1747780990070
       sortKey: -1732181394868
     children:
       - url: "{{ _.baseURL }}users"
@@ -228,12 +228,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.baseURL }}users/b9a3b70e-cad7-418a-9a6e-c16aa7b290e5"
+      - url: "{{ _.baseURL }}users/d3197dc0-8772-4602-850b-bfdcaa1405f8"
         name: getById
         meta:
           id: req_8bb0e7e2573140d890feb3c4367518c2
           created: 1746536736161
-          modified: 1746536736161
+          modified: 1747760388280
           isPrivate: false
           sortKey: -1732134496099.4531
         method: GET
@@ -377,11 +377,11 @@ collection:
             send: true
             store: true
           rebuildPath: true
-  - name: 03. Customers
+  - name: 03. Customers (Clientes)
     meta:
       id: fld_97ea292565f0424896e7540719337106
       created: 1746536879512
-      modified: 1746536890510
+      modified: 1747780983425
       sortKey: -1731800370636.75
     children:
       - url: "{{ _.baseURL }}customers"
@@ -454,7 +454,7 @@ collection:
         meta:
           id: req_9ddd03cdedc346909cfef5bf36a01d75
           created: 1746536879517
-          modified: 1746537556725
+          modified: 1747760404676
           isPrivate: false
           sortKey: -1732134496099.4531
         method: GET
@@ -553,6 +553,760 @@ collection:
             send: true
             store: true
           rebuildPath: true
+  - name: 04. Suppliers (Fornecedores)
+    meta:
+      id: fld_aeb1bfc4ab31468c953c7eea41461937
+      created: 1747760471369
+      modified: 1747780976394
+      sortKey: -1731609858521.125
+    children:
+      - url: "{{ _.baseURL }}suppliers"
+        name: list
+        meta:
+          id: req_7c6d959af3234c0b85832f0be428dc59
+          created: 1747760471372
+          modified: 1747760475978
+          isPrivate: false
+          sortKey: -1732182113718
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}suppliers"
+        name: create
+        meta:
+          id: req_57ff68b519b546e1b3c75ad7c1db804e
+          created: 1747760471374
+          modified: 1747760826105
+          isPrivate: false
+          sortKey: -1731324996584.1562
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+             "cnpj": "12345678000195",
+             "name": "Fornecedor 1",
+             "email": "fornecedor1@email.com",
+             "phone": "11999999999",
+             "address": "Rua A, 123",
+             "zipCode": "12345678",
+             "city": "São Paulo",
+             "state": "SP",
+             "country": "Brasil",
+             "contact": "Contato 1",
+             "retIss": false
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}suppliers/2bdb0903-c028-45f6-990a-210c2f860fec"
+        name: getById
+        meta:
+          id: req_5350d33a71c84321ab3ec40e80fa2969
+          created: 1747760471375
+          modified: 1747760861983
+          isPrivate: false
+          sortKey: -1732134496099.4531
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}suppliers/fafa3822-b53b-4b6a-9806-561c07816375"
+        name: update
+        meta:
+          id: req_1bdf6c64c9f54a4fbd1e11c229fa3324
+          created: 1747760471377
+          modified: 1747760829854
+          isPrivate: false
+          sortKey: -1731277378965.6094
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+                "address": "Rua Exemplo, nº 123"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL
+          }}suppliers/2bdb0903-c028-45f6-990a-210c2f860fec/toggle-status"
+        name: toggleStatus
+        meta:
+          id: req_79169cf4147f4819ad668c1eab019b67
+          created: 1747760471379
+          modified: 1747760871821
+          isPrivate: false
+          sortKey: -1731253570156.336
+        method: PATCH
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}suppliers/bcf504f2-e3dd-4ff3-961a-a520e372f68c"
+        name: delete
+        meta:
+          id: req_12b9f063ae614d298859fb2b9c0923cf
+          created: 1747760471380
+          modified: 1747760849487
+          isPrivate: false
+          sortKey: -1731247617954.0176
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 05. Tax Rates (Alíquotas)
+    meta:
+      id: fld_27afcc8ff6164df580b82edb92c7668d
+      created: 1747764098259
+      modified: 1747780969627
+      sortKey: -1731514602463.3125
+    children:
+      - url: "{{ _.baseURL }}tax-rates"
+        name: list
+        meta:
+          id: req_b54b96205e0f4254b715e43d185381c2
+          created: 1747764098261
+          modified: 1747764102713
+          isPrivate: false
+          sortKey: -1732182113718
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}tax-rates"
+        name: create
+        meta:
+          id: req_428dc5193c9741a5958982efc68e276a
+          created: 1747764098263
+          modified: 1747764479460
+          isPrivate: false
+          sortKey: -1731324996584.1562
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+             "year": 2025,
+             "month": 1,
+             "issqnTaxRate": 4.61,
+             "effectiveTaxRate": 15
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}tax-rates/6e6a1e0f-2e3a-4145-b666-d0b59b5cf59b"
+        name: getById
+        meta:
+          id: req_b35e5d2ca8204a5bb71ca7f5ca649955
+          created: 1747764098264
+          modified: 1747764202474
+          isPrivate: false
+          sortKey: -1732134496099.4531
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}tax-rates/bbd55803-aa0b-45a0-b168-67755ee1f0c0"
+        name: update
+        meta:
+          id: req_8571fe0482214470af5e3d8e84cb9421
+          created: 1747764098265
+          modified: 1747764440527
+          isPrivate: false
+          sortKey: -1731277378965.6094
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |
+            {
+             "year": 2024,
+             "month": 9,
+             "issqnTaxRate": 5,
+             "effectiveTaxRate": 15.19
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}tax-rates/bcf504f2-e3dd-4ff3-961a-a520e372f68c"
+        name: delete
+        meta:
+          id: req_693e31cb3efb4de094c4f814e67b8d6a
+          created: 1747764098267
+          modified: 1747764122486
+          isPrivate: false
+          sortKey: -1731247617954.0176
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 06. Payment Terms (Condições de Pagamento)
+    meta:
+      id: fld_dd06583013d34e7c9df6bc2de691544b
+      created: 1747780959516
+      modified: 1747780959516
+      sortKey: -1731466974434.4062
+    children:
+      - url: "{{ _.baseURL }}payment-terms"
+        name: list
+        meta:
+          id: req_6dab46b9dd794fd69e9bae4102ef7b35
+          created: 1747780959518
+          modified: 1747781003427
+          isPrivate: false
+          sortKey: -1732182113718
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}payment-terms"
+        name: create
+        meta:
+          id: req_0df2bdacdf5044faa26089baf9477405
+          created: 1747780959520
+          modified: 1747781607807
+          isPrivate: false
+          sortKey: -1731324996584.1562
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+             "description": "Crédito Conta 30 dias",
+             "term": 30
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}payment-terms/9eb109c5-de68-477f-988b-2728689283af"
+        name: getById
+        meta:
+          id: req_a29d4a6105a947739940bea6536bbdb6
+          created: 1747780959521
+          modified: 1747781233389
+          isPrivate: false
+          sortKey: -1732134496099.4531
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}payment-terms/9eb109c5-de68-477f-988b-2728689283af"
+        name: update
+        meta:
+          id: req_0eafbc998df94be6855ccd51c36acb71
+          created: 1747780959523
+          modified: 1747781257485
+          isPrivate: false
+          sortKey: -1731277378965.6094
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |
+            {
+             "description": "Boleto 07 dias",
+             "term": 7
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}payment-terms/9eb109c5-de68-477f-988b-2728689283af"
+        name: delete
+        meta:
+          id: req_71bf1e184a1b45398370b1909e245bd8
+          created: 1747780959524
+          modified: 1747781264894
+          isPrivate: false
+          sortKey: -1731247617954.0176
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 07. Cost Center (Centro de Custo)
+    meta:
+      id: fld_29c8e923325949ef9086c899feb1e7d4
+      created: 1747782974932
+      modified: 1747782974932
+      sortKey: -1731443160419.9531
+    children:
+      - url: "{{ _.baseURL }}cost-centers"
+        name: list
+        meta:
+          id: req_07acba070c234cf3a56dd771b553f659
+          created: 1747782974934
+          modified: 1747783002019
+          isPrivate: false
+          sortKey: -1732182113718
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}cost-centers"
+        name: create
+        meta:
+          id: req_cdc8cc3df27b4403890cbc6c0bad0995
+          created: 1747782974935
+          modified: 1747783054919
+          isPrivate: false
+          sortKey: -1731324996584.1562
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+             "name": "Outro(s)"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}cost-centers/ec5cdfe5-859e-4bf8-a0be-c548eb6969d6"
+        name: getById
+        meta:
+          id: req_fc7e1196311a4c769fb3bad120a767c7
+          created: 1747782974938
+          modified: 1747783032860
+          isPrivate: false
+          sortKey: -1732134496099.4531
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}cost-centers/9eb109c5-de68-477f-988b-2728689283af"
+        name: update
+        meta:
+          id: req_9b07ab6337534550939cc4f3ebbc5c4e
+          created: 1747782974943
+          modified: 1747783069338
+          isPrivate: false
+          sortKey: -1731277378965.6094
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |
+            {
+             "name": "Outro(s)"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}cost-centers/9eb109c5-de68-477f-988b-2728689283af"
+        name: delete
+        meta:
+          id: req_4873c8084ec743278c98c4d0094f8757
+          created: 1747782974944
+          modified: 1747783075245
+          isPrivate: false
+          sortKey: -1731247617954.0176
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 08. Bank Accounts (Contas Bancárias)
+    meta:
+      id: fld_da6a9c9e05cc48e6897d3383a0db784b
+      created: 1747784420560
+      modified: 1747784420560
+      sortKey: -1731431253412.7266
+    children:
+      - url: "{{ _.baseURL }}bank-accounts"
+        name: list
+        meta:
+          id: req_6b36a70a2ecf490f8175bc9a60c9701d
+          created: 1747784420562
+          modified: 1747784429446
+          isPrivate: false
+          sortKey: -1732182113718
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}bank-accounts"
+        name: create
+        meta:
+          id: req_aa073f90c2854246a3cf29a7f58d885d
+          created: 1747784420563
+          modified: 1747784611703
+          isPrivate: false
+          sortKey: -1731324996584.1562
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "bank": "Banco do Brasil",
+            	"agency": "0344-1",
+            	"account": "43765-4",
+            	"type": "C"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}bank-accounts/a61d7696-2803-49f0-a212-000c0e649302"
+        name: getById
+        meta:
+          id: req_b08c009edc83407283167d583709cf8e
+          created: 1747784420565
+          modified: 1747784632150
+          isPrivate: false
+          sortKey: -1732134496099.4531
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}bank-accounts/a61d7696-2803-49f0-a212-000c0e649302"
+        name: update
+        meta:
+          id: req_e93fb465d5f644a2af88f86aa54e674e
+          created: 1747784420566
+          modified: 1747784642148
+          isPrivate: false
+          sortKey: -1731277378965.6094
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "bank": "Banco do Brasil",
+            	"agency": "0344-1",
+            	"account": "43765-4",
+            	"type": "C"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}bank-accounts/9eb109c5-de68-477f-988b-2728689283af"
+        name: delete
+        meta:
+          id: req_2ef879fd2fbc451283985ff14afea1b3
+          created: 1747784420567
+          modified: 1747784446733
+          isPrivate: false
+          sortKey: -1731247617954.0176
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
 cookieJar:
   name: Default Jar
   meta:
@@ -571,12 +1325,12 @@ environments:
       meta:
         id: env_339e55f028994e779813ac8cb6de44e9
         created: 1746536736141
-        modified: 1746536992720
+        modified: 1747760368831
         isPrivate: false
         sortKey: 1735229491596
       data:
         baseURL: http://localhost:3333/api/
-        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJkMzE5N2RjMC04NzcyLTQ2MDItODUwYi1iZmRjYWExNDA1ZjgiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NDY1MzY5ODIsImV4cCI6MTc0NjYyMzM4Mn0.v7Yq-kq4e0oUprjvN7jIcMGcdm4Bfs51tqOMvRSBxsE
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJkMzE5N2RjMC04NzcyLTQ2MDItODUwYi1iZmRjYWExNDA1ZjgiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NDc3NjAzNTgsImV4cCI6MTc0Nzg0Njc1OH0.wqLkC8sy4RnS3HoffzjpWHTYWtaFx4M9HuKg_B_RuPI
       color: "#6de9ca"
     - name: Ambiente Dev
       meta:
