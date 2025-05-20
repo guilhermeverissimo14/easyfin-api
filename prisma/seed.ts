@@ -104,6 +104,69 @@ async function main() {
          console.log(`Fornecedor já existe: ${supplier.name}`)
       }
    }
+
+   const taxRates = [
+      {
+         year: 2024,
+         month: 7,
+         issqnTaxRate: 4.89,
+         effectiveTaxRate: 14.6,
+      },
+      {
+         year: 2024,
+         month: 8,
+         issqnTaxRate: 5,
+         effectiveTaxRate: 14.93,
+      },
+      {
+         year: 2024,
+         month: 9,
+         issqnTaxRate: 5,
+         effectiveTaxRate: 15.19,
+      },
+      {
+         year: 2024,
+         month: 10,
+         issqnTaxRate: 5,
+         effectiveTaxRate: 15,
+      },
+      {
+         year: 2024,
+         month: 11,
+         issqnTaxRate: 4.77,
+         effectiveTaxRate: 15,
+      },
+      {
+         year: 2024,
+         month: 12,
+         issqnTaxRate: 4.87,
+         effectiveTaxRate: 15,
+      },
+      {
+         year: 2025,
+         month: 1,
+         issqnTaxRate: 4.61,
+         effectiveTaxRate: 15,
+      },
+   ]
+
+   for (const taxRate of taxRates) {
+      const existingTaxRate = await prisma.taxRates.findFirst({
+         where: {
+            year: taxRate.year,
+            month: taxRate.month,
+         },
+      })
+
+      if (!existingTaxRate) {
+         await prisma.taxRates.create({
+            data: taxRate,
+         })
+         console.log(`Taxa criada: ${taxRate.year}-${taxRate.month}`)
+      } else {
+         console.log(`Taxa já existe: ${taxRate.year}-${taxRate.month}`)
+      }
+   }
 }
 
 main()

@@ -7,6 +7,7 @@ import { healthRoutes } from './routes/health.routes'
 import { userRoutes } from './routes/user.routes'
 import { customerRoutes } from './routes/customer.routes'
 import { supplierRoutes } from './routes/supplier.routes'
+import { taxRatesRoutes } from './routes/tax-rates.routes'
 
 const server = Fastify()
 
@@ -74,6 +75,7 @@ server.register(authRoutes, { prefix: '/api/auth' })
 server.register(userRoutes, { prefix: '/api/users' })
 server.register(customerRoutes, { prefix: '/api/customers' })
 server.register(supplierRoutes, { prefix: '/api/suppliers' })
+server.register(taxRatesRoutes, { prefix: '/api/tax-rates' })
 
 export const startServer = async () => {
    try {
