@@ -8,6 +8,8 @@ import { userRoutes } from './routes/user.routes'
 import { customerRoutes } from './routes/customer.routes'
 import { supplierRoutes } from './routes/supplier.routes'
 import { taxRatesRoutes } from './routes/tax-rates.routes'
+import { paymentTermsRoutes } from './routes/payment-term.routes'
+import { costCenterRoutes } from './routes/cost-center.routes'
 
 const server = Fastify()
 
@@ -28,6 +30,16 @@ server.register(fastifySwagger, {
       schemes: process.env.BASE_URL ? ['https'] : ['http'],
       consumes: ['application/json'],
       produces: ['application/json'],
+      tags: [
+         { name: 'Health', description: 'Verifica se a API está funcionando' },
+         { name: 'Auth', description: 'Autenticação' },
+         { name: 'User', description: 'Usuários' },
+         { name: 'Customer', description: 'Clientes' },
+         { name: 'Supplier', description: 'Fornecedores' },
+         { name: 'Tax Rate', description: 'Alíquotas' },
+         { name: 'Payment Term', description: 'Condições de pagamento' },
+         { name: 'Cost Center', description: 'Centros de custo' },
+      ],
       securityDefinitions: {
          BearerAuth: {
             type: 'apiKey',
@@ -47,7 +59,7 @@ server.register(fastifySwagger, {
 server.register(fastifySwaggerUi, {
    routePrefix: '/documentation',
    uiConfig: {
-      docExpansion: 'full',
+      docExpansion: 'none',
       deepLinking: false,
    },
    uiHooks: {
@@ -76,6 +88,8 @@ server.register(userRoutes, { prefix: '/api/users' })
 server.register(customerRoutes, { prefix: '/api/customers' })
 server.register(supplierRoutes, { prefix: '/api/suppliers' })
 server.register(taxRatesRoutes, { prefix: '/api/tax-rates' })
+server.register(paymentTermsRoutes, { prefix: '/api/payment-terms' })
+server.register(costCenterRoutes, { prefix: '/api/cost-centers' })
 
 export const startServer = async () => {
    try {

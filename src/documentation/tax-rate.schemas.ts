@@ -1,6 +1,6 @@
 export const createTaxRateSchema = {
    description: 'Cria uma nova taxa',
-   tags: ['TaxRate'],
+   tags: ['Tax Rate'],
    summary: 'Criar taxa',
    body: {
       type: 'object',
@@ -87,7 +87,7 @@ export const createTaxRateSchema = {
 
 export const updateTaxRateSchema = {
    description: 'Atualiza uma taxa existente',
-   tags: ['TaxRate'],
+   tags: ['Tax Rate'],
    summary: 'Atualizar taxa',
    params: {
       type: 'object',
@@ -191,7 +191,7 @@ export const updateTaxRateSchema = {
 
 export const listTaxRateSchema = {
    description: 'Retorna uma lista de todas as taxas',
-   tags: ['TaxRate'],
+   tags: ['Tax Rate'],
    summary: 'Listar todas as taxas',
    response: {
       200: {
@@ -287,7 +287,7 @@ export const listTaxRateSchema = {
 
 export const getTaxRateByIdSchema = {
    description: 'Retorna uma taxa específica pelo ID',
-   tags: ['TaxRate'],
+   tags: ['Tax Rate'],
    summary: 'Obter taxa por ID',
    params: {
       type: 'object',
@@ -379,7 +379,7 @@ export const getTaxRateByIdSchema = {
 
 export const deleteTaxRateSchema = {
    description: 'Deleta uma taxa específica pelo ID',
-   tags: ['TaxRate'],
+   tags: ['Tax Rate'],
    summary: 'Deletar taxa por ID',
    params: {
       type: 'object',

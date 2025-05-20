@@ -167,6 +167,91 @@ async function main() {
          console.log(`Taxa já existe: ${taxRate.year}-${taxRate.month}`)
       }
    }
+
+   const paymentTerms = [
+      {
+         description: 'Boleto 07 dias',
+         tax: 0,
+         term: 7,
+      },
+      {
+         description: 'Boleto 08 dias',
+         tax: 0,
+         term: 8,
+      },
+      {
+         description: 'Boleto 10 dias',
+         tax: 0,
+         term: 10,
+      },
+      {
+         description: 'Boleto 14 dias',
+         tax: 0,
+         term: 14,
+      },
+      {
+         description: 'Boleto 15 dias',
+         tax: 0,
+         term: 15,
+      },
+      {
+         description: 'Boleto 28 dias',
+         tax: 0,
+         term: 28,
+      },
+      {
+         description: 'Boleto 30 dias',
+         tax: 0,
+         term: 30,
+      },
+      {
+         description: 'Crédito Conta 07 dias',
+         tax: 0,
+         term: 7,
+      },
+      {
+         description: 'Crédito Conta 08 dias',
+         tax: 0,
+         term: 8,
+      },
+      {
+         description: 'Crédito Conta 10 dias',
+         tax: 0,
+         term: 10,
+      },
+      {
+         description: 'Crédito Conta 14 dias',
+         tax: 0,
+         term: 14,
+      },
+      {
+         description: 'Crédito Conta 15 dias',
+         tax: 0,
+         term: 15,
+      },
+      {
+         description: 'Crédito Conta 30 dias',
+         tax: 0,
+         term: 30,
+      },
+   ]
+
+   for (const paymentTerm of paymentTerms) {
+      const existingPaymentTerm = await prisma.paymentTerms.findFirst({
+         where: {
+            description: paymentTerm.description,
+         },
+      })
+
+      if (!existingPaymentTerm) {
+         await prisma.paymentTerms.create({
+            data: paymentTerm,
+         })
+         console.log(`Condição de pagamento criada: ${paymentTerm.description}`)
+      } else {
+         console.log(`Condição de pagamento já existe: ${paymentTerm.description}`)
+      }
+   }
 }
 
 main()
