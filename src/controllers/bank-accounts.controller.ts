@@ -38,7 +38,9 @@ class BankAccountsController {
 
       const validationError = await validateSchema(createBankAccountSchema, { bank, agency, account, type }, reply)
 
-      if (validationError) {
+      console.log('validationError', validationError)
+
+      if (validationError || !['C', 'P'].includes(type)) {
          return
       }
 

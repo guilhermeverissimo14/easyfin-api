@@ -6,8 +6,10 @@ export const validateSchema = async <T>(schema: ZodSchema<T>, data: T, reply: Fa
       await schema.parse(data)
    } catch (error) {
       if (error instanceof ZodError) {
-         return reply.status(400).send({ message: error.errors.map((err) => err.message).join(', ') })
+         reply.status(400).send({ message: error.errors.map((err) => err.message).join(', ') })
+         return true
       }
-      return reply.status(500).send({ message: 'Internal server error' })
+      reply.status(500).send({ message: 'Internal server error' })
+      return true
    }
 }
