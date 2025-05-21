@@ -25,6 +25,17 @@ export const createBankAccountService = async (bankAccountData: { bank: string; 
          },
       })
 
+      if (!bankAccount) {
+         throw new Error('Erro ao criar a conta bancária')
+      }
+
+      await prisma.bankBalance.create({
+         data: {
+            bankAccountId: bankAccount.id,
+            balance: 0,
+         },
+      })
+
       return bankAccount
    } catch (error) {
       console.error(error)

@@ -9,6 +9,5 @@ export const hash = async (value: string) => {
 
 export const compare = async (password: string, hash: string) => {
    const isValid = await bcrypt.compare(password, hash)
-   console.log('isValid', isValid)
    return isValid
 }

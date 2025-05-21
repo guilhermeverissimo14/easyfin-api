@@ -142,7 +142,7 @@ model BankBalance {
 model BankTransactions {
   id                    String          @id @default(uuid()) @map("id")
   description           String
-  amount                Float
+  amount                Int // Valor em centavos
   detailing             String?
   type                  TransactionType
   transactionAt         DateTime        @map("transaction_at")

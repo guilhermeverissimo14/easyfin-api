@@ -59,6 +59,39 @@ async function main() {
       }
    }
 
+   const customers = [
+      {
+         cnpj: '12.345.678/0001-90',
+         name: 'Empresa Exemplo Ltda',
+         email: 'contato@empresaexemplo.com.br',
+         phone: '(11) 1234-5678',
+         address: 'Rua Exemplo, 123',
+         zipCode: '01234-567',
+         city: 'São Paulo',
+         state: 'SP',
+         country: 'Brasil',
+         contact: 'João da Silva',
+         retIss: false,
+      },
+   ]
+
+   for (const customer of customers) {
+      const existingCustomer = await prisma.customer.findUnique({
+         where: {
+            cnpj: customer.cnpj,
+         },
+      })
+
+      if (!existingCustomer) {
+         await prisma.customer.create({
+            data: customer,
+         })
+         console.log(`Cliente criado: ${customer.name}`)
+      } else {
+         console.log(`Cliente já existe: ${customer.name}`)
+      }
+   }
+
    const suppliers = [
       {
          cnpj: '12345678000195',

@@ -10,8 +10,6 @@ export const getSupplierByIdService = async (id: string) => {
       },
    })
 
-   console.log('Supplier found:', supplier)
-
    if (!supplier) {
       throw new AppError('Fornecedor não encontrado', 404)
    }

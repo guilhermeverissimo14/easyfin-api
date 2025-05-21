@@ -133,7 +133,7 @@ CREATE TABLE "bank_balance" (
 CREATE TABLE "bank_transactions" (
     "id" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "amount" DOUBLE PRECISION NOT NULL,
+    "amount" INTEGER NOT NULL,
     "detailing" TEXT,
     "type" "TransactionType" NOT NULL,
     "transaction_at" TIMESTAMP(3) NOT NULL,
