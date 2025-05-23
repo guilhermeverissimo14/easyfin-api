@@ -17,6 +17,13 @@ enum TransactionType {
   CREDIT
 }
 
+enum PaymentStatus {
+  PENDING
+  PAID
+  CANCELLED
+  OVERDUE
+}
+
 model User {
   id              String    @id @default(uuid()) @map("id")
   name            String
@@ -37,7 +44,7 @@ model User {
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @updatedAt @map("updated_at")
 
-  @@map("users")
+  @@map("usuarios")
 }
 
 model Customer {
@@ -57,7 +64,9 @@ model Customer {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("customers")
+  AccountsReceivable AccountsReceivable[]
+
+  @@map("clientes")
 }
 
 model Supplier {
@@ -77,7 +86,9 @@ model Supplier {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("suppliers")
+  AccountsPayable AccountsPayable[]
+
+  @@map("fornecedores")
 }
 
 model CostCenter {
@@ -86,7 +97,10 @@ model CostCenter {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("cost_centers")
+  AccountsPayable    AccountsPayable[]
+  AccountsReceivable AccountsReceivable[]
+
+  @@map("centro_custos")
 }
 
 model TaxRates {
@@ -98,18 +112,34 @@ model TaxRates {
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
 
-  @@map("tax_rates")
+  @@map("aliquotas")
 }
 
-model PaymentTerms {
-  id          String   @id @default(uuid()) @map("id")
-  description String
-  tax         Float?
-  term        Int // Prazo de pagamento em dias
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+model CashBox {
+  id        String   @id @default(uuid()) @map("id")
+  name      String
+  balance   Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("payment_terms")
+  cashTransactions CashTransaction[]
+
+  @@map("caixa")
+}
+
+model CashTransaction {
+  id            String          @id @default(uuid()) @map("id")
+  cashBoxId     String          @map("cash_box_id")
+  description   String
+  amount        Int // Valor em centavos
+  type          TransactionType // DEBIT ou CREDIT
+  transactionAt DateTime        @map("transaction_at")
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  cashBox CashBox @relation(fields: [cashBoxId], references: [id])
+
+  @@map("transacoes_caixa")
 }
 
 model BankAccounts {
@@ -117,26 +147,27 @@ model BankAccounts {
   bank      String
   agency    String
   account   String
-  type      String?
+  type      String?  @default("C")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  balances         BankBalance[]
-  BankTransactions BankTransactions[]
+  balances           BankBalance[]
+  BankTransactions   BankTransactions[]
+  AccountsReceivable AccountsReceivable[]
 
-  @@map("bank_accounts")
+  @@map("contas_bancarias")
 }
 
 model BankBalance {
   id            String   @id @default(uuid()) @map("id")
-  balance       Float
   bankAccountId String   @map("bank_account_id")
+  balance       Int // Valor em centavos
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 
   bankAccount BankAccounts @relation(fields: [bankAccountId], references: [id])
 
-  @@map("bank_balance")
+  @@map("saldo_bancario")
 }
 
 model BankTransactions {
@@ -154,5 +185,101 @@ model BankTransactions {
 
   bankAccount BankAccounts @relation(fields: [bankAccountId], references: [id])
 
-  @@map("bank_transactions")
+  @@map("transacoes_bancarias")
+}
+
+model PaymentMethod {
+  id           String   @id @default(uuid()) @map("id")
+  name         String
+  requiresBank Boolean  @default(true) @map("requires_bank")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  PaymentTerms       PaymentTerms[]
+  AccountsPayable    AccountsPayable[]
+  AccountsReceivable AccountsReceivable[]
+
+  @@map("formas_pagamento")
+}
+
+model PaymentTerms {
+  id              String   @id @default(uuid()) @map("id")
+  paymentMethodId String   @map("payment_method_id")
+  condition       String
+  description     String?
+  installments    Int?
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  paymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+
+  @@map("condicoes_pagamento")
+}
+
+model AccountsPayable {
+  id                   String        @id @default(uuid()) @map("id")
+  supplierId           String        @map("supplier_id")
+  documentNumber       String?       @map("document_number")
+  documentDate         DateTime?     @map("document_date") // data do documento
+  launchDate           DateTime?     @map("launch_date") // data de lançamento
+  dueDate              DateTime?     @map("due_date") // data de vencimento
+  paymentDate          DateTime?     @map("payment_date") // data de pagamento
+  value                Int?
+  paidValue            Int?          @map("value_paid")
+  discount             Int?
+  fine                 Int? // multa
+  interest             Int? // juros
+  installmentNumber    Int?          @map("installment_number") // número da parcela
+  totalInstallments    Int?          @map("total_installments") // total de parcelas
+  costCenterId         String?       @map("cost_center_id")
+  plannedPaymentMethod String?       @map("planned_payment_method")
+  paymentMethodId      String?       @map("payment_method_id")
+  userId               String?       @map("user_id")
+  observation          String?
+  status               PaymentStatus @default(PENDING)
+
+  Supplier      Supplier       @relation(fields: [supplierId], references: [id])
+  CostCenter    CostCenter?    @relation(fields: [costCenterId], references: [id])
+  PaymentMethod PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
+
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  cancelledAt DateTime? @map("cancelled_at")
+
+  @@map("contas_pagar")
+}
+
+model AccountsReceivable {
+  id                   String        @id @default(uuid()) @map("id")
+  customerId           String        @map("customer_id")
+  documentNumber       String?       @map("document_number")
+  documentDate         DateTime?     @map("document_date") // data do documento
+  launchDate           DateTime?     @map("launch_date") // data de lançamento
+  dueDate              DateTime?     @map("due_date") // data de vencimento
+  receiptDate          DateTime?     @map("receipt_date") // data de recebimento
+  value                Int?
+  receivedValue        Int?          @map("received_value")
+  discount             Int?
+  fine                 Int? // multa
+  interest             Int? // juros
+  installmentNumber    Int?          @map("installment_number") // número da parcela
+  totalInstallments    Int?          @map("total_installments") // total de parcelas
+  costCenterId         String?       @map("cost_center_id")
+  bankAccountId        String?       @map("bank_account_id")
+  plannedPaymentMethod String?       @map("planned_payment_method")
+  paymentMethodId      String?       @map("payment_method_id")
+  userId               String?       @map("user_id")
+  observation          String?
+  status               PaymentStatus @default(PENDING)
+
+  Customer      Customer       @relation(fields: [customerId], references: [id])
+  CostCenter    CostCenter?    @relation(fields: [costCenterId], references: [id])
+  BankAccount   BankAccounts?  @relation(fields: [bankAccountId], references: [id])
+  PaymentMethod PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
+
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  cancelledAt DateTime? @map("cancelled_at")
+
+  @@map("contas_receber")
 }

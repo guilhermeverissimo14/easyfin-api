@@ -201,81 +201,174 @@ async function main() {
       }
    }
 
+   const cashBoxes = [
+      {
+         name: 'Caixa Geral',
+         balance: 0,
+      },
+   ]
+
+   for (const cashBox of cashBoxes) {
+      const existingCashBox = await prisma.cashBox.findFirst({
+         where: {
+            name: cashBox.name,
+         },
+      })
+
+      if (!existingCashBox) {
+         await prisma.cashBox.create({
+            data: cashBox,
+         })
+         console.log(`Caixa criado: ${cashBox.name}`)
+      } else {
+         console.log(`Caixa já existe: ${cashBox.name}`)
+      }
+   }
+
+   const bankAccounts = [
+      {
+         bank: 'Banco do Brasil',
+         agency: '1234',
+         account: '56789-0',
+         type: 'C',
+      },
+   ]
+
+   for (const bankAccount of bankAccounts) {
+      const existingBankAccount = await prisma.bankAccounts.findFirst({
+         where: {
+            bank: bankAccount.bank,
+            agency: bankAccount.agency,
+            account: bankAccount.account,
+         },
+      })
+
+      if (!existingBankAccount) {
+         await prisma.bankAccounts.create({
+            data: bankAccount,
+         })
+         console.log(`Conta bancária criada: ${bankAccount.bank} - ${bankAccount.agency} - ${bankAccount.account}`)
+      } else {
+         console.log(`Conta bancária já existe: ${bankAccount.bank} - ${bankAccount.agency} - ${bankAccount.account}`)
+      }
+   }
+
+   const bank = await prisma.bankAccounts.findFirst()
+
+   const initialBalance = [
+      {
+         bankAccountId: bank!.id,
+         balance: 0,
+      },
+   ]
+
+   await prisma.bankBalance.create({
+      data: initialBalance[0],
+   })
+   console.log(`Saldo inicial criado: ${initialBalance[0].balance}`)
+
+   const paymentMethods = [
+      {
+         name: 'Boleto',
+      },
+      {
+         name: 'Dinheiro',
+         requiresBank: false,
+      },
+      {
+         name: 'Cartão de Crédito',
+      },
+      {
+         name: 'Cartão de Débito',
+      },
+      {
+         name: 'Pix',
+      },
+      {
+         name: 'Transferência Bancária',
+      },
+   ]
+
+   for (const paymentMethod of paymentMethods) {
+      const existingPaymentMethod = await prisma.paymentMethod.findFirst({
+         where: {
+            name: paymentMethod.name,
+         },
+      })
+
+      if (!existingPaymentMethod) {
+         await prisma.paymentMethod.create({
+            data: paymentMethod,
+         })
+         console.log(`Método de pagamento criado: ${paymentMethod.name}`)
+      } else {
+         console.log(`Método de pagamento já existe: ${paymentMethod.name}`)
+      }
+   }
+
+   const paymentMethodBoleto = await prisma.paymentMethod.findFirst({
+      where: {
+         name: 'Boleto',
+      },
+   })
+
+   const paymentMethodCardCredit = await prisma.paymentMethod.findFirst({
+      where: {
+         name: 'Cartão de Crédito',
+      },
+   })
+
    const paymentTerms = [
       {
+         paymentMethodId: paymentMethodBoleto!.id,
+         condition: '0,7,14',
          description: 'Boleto 07 dias',
-         tax: 0,
-         term: 7,
+         installments: 3,
       },
       {
+         paymentMethodId: paymentMethodBoleto!.id,
+         condition: '8,16',
          description: 'Boleto 08 dias',
-         tax: 0,
-         term: 8,
+         installments: 2,
       },
       {
+         paymentMethodId: paymentMethodBoleto!.id,
+         condition: '0,10,20',
          description: 'Boleto 10 dias',
-         tax: 0,
-         term: 10,
+         installments: 3,
       },
       {
+         paymentMethodId: paymentMethodBoleto!.id,
+         condition: '0,14,28',
          description: 'Boleto 14 dias',
-         tax: 0,
-         term: 14,
+         installments: 3,
       },
       {
+         paymentMethodId: paymentMethodBoleto!.id,
+         condition: '0,15,30',
          description: 'Boleto 15 dias',
-         tax: 0,
-         term: 15,
+         installments: 3,
       },
       {
-         description: 'Boleto 28 dias',
-         tax: 0,
-         term: 28,
-      },
-      {
+         paymentMethodId: paymentMethodBoleto!.id,
+         condition: '30,60,90,120',
          description: 'Boleto 30 dias',
-         tax: 0,
-         term: 30,
+         installments: 4,
       },
       {
-         description: 'Crédito Conta 07 dias',
-         tax: 0,
-         term: 7,
-      },
-      {
-         description: 'Crédito Conta 08 dias',
-         tax: 0,
-         term: 8,
-      },
-      {
-         description: 'Crédito Conta 10 dias',
-         tax: 0,
-         term: 10,
-      },
-      {
-         description: 'Crédito Conta 14 dias',
-         tax: 0,
-         term: 14,
-      },
-      {
-         description: 'Crédito Conta 15 dias',
-         tax: 0,
-         term: 15,
-      },
-      {
-         description: 'Crédito Conta 30 dias',
-         tax: 0,
-         term: 30,
+         paymentMethodId: paymentMethodCardCredit!.id,
+         condition: '30,60,90',
+         description: 'Crédito (3x)',
+         installments: 3,
       },
    ]
 
    for (const paymentTerm of paymentTerms) {
       const existingPaymentTerm = await prisma.paymentTerms.findFirst({
          where: {
-            description: paymentTerm.description,
+            condition: paymentTerm.condition,
          },
       })
-
       if (!existingPaymentTerm) {
          await prisma.paymentTerms.create({
             data: paymentTerm,
