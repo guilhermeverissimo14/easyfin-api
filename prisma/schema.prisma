@@ -176,9 +176,11 @@ model BankTransactions {
   amount                Int // Valor em centavos
   detailing             String?
   type                  TransactionType
-  transactionAt         DateTime        @map("transaction_at")
+  csv                   Boolean?        @default(false)
+  csvFileName           String?         @map("csv_file_name")
   bankAccountId         String          @map("bank_account_id")
   reasonForCancellation String?         @map("reason_for_cancellation")
+  transactionAt         DateTime        @map("transaction_at")
   createdAt             DateTime        @default(now()) @map("created_at")
   updatedAt             DateTime        @updatedAt @map("updated_at")
   cancelledAt           DateTime?       @map("cancelled_at")
@@ -237,14 +239,13 @@ model AccountsPayable {
   userId               String?       @map("user_id")
   observation          String?
   status               PaymentStatus @default(PENDING)
+  createdAt            DateTime      @default(now()) @map("created_at")
+  updatedAt            DateTime      @updatedAt @map("updated_at")
+  cancelledAt          DateTime?     @map("cancelled_at")
 
   Supplier      Supplier       @relation(fields: [supplierId], references: [id])
   CostCenter    CostCenter?    @relation(fields: [costCenterId], references: [id])
   PaymentMethod PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
-
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  cancelledAt DateTime? @map("cancelled_at")
 
   @@map("contas_pagar")
 }
@@ -271,15 +272,14 @@ model AccountsReceivable {
   userId               String?       @map("user_id")
   observation          String?
   status               PaymentStatus @default(PENDING)
+  createdAt            DateTime      @default(now()) @map("created_at")
+  updatedAt            DateTime      @updatedAt @map("updated_at")
+  cancelledAt          DateTime?     @map("cancelled_at")
 
   Customer      Customer       @relation(fields: [customerId], references: [id])
   CostCenter    CostCenter?    @relation(fields: [costCenterId], references: [id])
   BankAccount   BankAccounts?  @relation(fields: [bankAccountId], references: [id])
   PaymentMethod PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
-
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  cancelledAt DateTime? @map("cancelled_at")
 
   @@map("contas_receber")
 }
