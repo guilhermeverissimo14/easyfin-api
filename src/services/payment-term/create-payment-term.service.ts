@@ -2,7 +2,12 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export const createPaymentTermService = async (paymentTermData: { description: string; tax?: number; term: number }) => {
+export const createPaymentTermService = async (paymentTermData: {
+   paymentMethodId: string
+   condition: string
+   description?: string
+   installments?: number
+}) => {
    try {
       const paymentTerm = await prisma.paymentTerms.create({
          data: {

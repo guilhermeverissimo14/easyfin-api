@@ -14,14 +14,15 @@ class PaymentTermsController {
    public async create(
       request: FastifyRequest<{
          Body: {
-            description: string
-            tax?: number
-            term: number
+            paymentMethodId: string
+            condition: string
+            description?: string
+            installments?: number
          }
       }>,
       reply: FastifyReply,
    ) {
-      const { description, tax, term } = request.body
+      let { paymentMethodId, condition, description, installments } = request.body
       const userId = request.user?.id
       const userRole = request.user?.role
 
@@ -29,17 +30,26 @@ class PaymentTermsController {
          return reply.status(401).send({ message: 'Usuário não autenticado' })
       }
 
-      const validationError = await validateSchema(createPaymentTermSchema, { description, term }, reply)
+      const validationError = await validateSchema(createPaymentTermSchema, { paymentMethodId, condition, description, installments }, reply)
 
       if (validationError) {
          return
       }
 
+      if (!installments || installments < 1) {
+         const conditionParts = condition.split(',').map((part) => part.trim())
+         if (conditionParts.length < 1) {
+            return reply.status(400).send({ message: 'Condição de pagamento inválida' })
+         }
+         installments = conditionParts.length
+      }
+
       try {
          const paymentTerm = await createPaymentTermService({
+            paymentMethodId,
+            condition,
             description,
-            tax,
-            term,
+            installments,
          })
 
          return reply.status(201).send(paymentTerm)
@@ -93,15 +103,16 @@ class PaymentTermsController {
             id: string
          }
          Body: {
+            paymentMethodId?: string
+            condition?: string
             description?: string
-            tax?: number
-            term?: number
+            installments?: number
          }
       }>,
       reply: FastifyReply,
    ) {
       const { id } = request.params
-      const { description, tax, term } = request.body
+      const { paymentMethodId, condition, description, installments } = request.body
       const userRole = request.user?.role
 
       if (!userRole) {
@@ -109,7 +120,7 @@ class PaymentTermsController {
       }
 
       try {
-         const updatedPaymentTerm = await updatePaymentTermService(id, { description, tax, term })
+         const updatedPaymentTerm = await updatePaymentTermService(id, { paymentMethodId, condition, description, installments })
          return reply.status(200).send(updatedPaymentTerm)
       } catch (error) {
          if (error instanceof AppError) {

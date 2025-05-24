@@ -5,20 +5,24 @@ export const createPaymentTermSchema = {
    body: {
       type: 'object',
       properties: {
+         paymentMethodId: {
+            type: 'string',
+            description: 'ID do método de pagamento associado à condição de pagamento',
+         },
+         condition: {
+            type: 'string',
+            description: 'Condição de pagamento, ex: 0,30,60',
+         },
          description: {
             type: 'string',
-            description: 'Descrição da condição de pagamento',
+            description: 'Descrição da condição de pagamento, ex: Boleto 30 dias',
          },
-         tax: {
+         installments: {
             type: 'number',
-            description: 'Taxa de juros da condição de pagamento',
-         },
-         term: {
-            type: 'number',
-            description: 'Número de dias da condição de pagamento',
+            description: 'Número de parcelas da condição de pagamento',
          },
       },
-      required: ['description', 'term'],
+      required: ['paymentMethodId', 'condition'],
    },
    response: {
       201: {
@@ -29,15 +33,19 @@ export const createPaymentTermSchema = {
                type: 'string',
                description: 'ID da condição de pagamento',
             },
+            paymentMethodId: {
+               type: 'string',
+               description: 'ID do método de pagamento associado à condição de pagamento',
+            },
+            condition: {
+               type: 'string',
+               description: 'Condição de pagamento, ex: 0,30,60',
+            },
             description: {
                type: 'string',
                description: 'Descrição da condição de pagamento',
             },
-            tax: {
-               type: 'number',
-               description: 'Taxa de juros da condição de pagamento',
-            },
-            term: {
+            installments: {
                type: 'number',
                description: 'Número de parcelas da condição de pagamento',
             },
@@ -54,9 +62,10 @@ export const createPaymentTermSchema = {
          },
          example: {
             id: 'uuid',
+            paymentMethodId: '1234567890abcdef12345678',
+            condition: '0,30,60',
             description: 'Boleto 30 dias',
-            tax: 0,
-            term: 30,
+            installments: 3,
             createdAt: '2025-05-01T00:00:00Z',
             updatedAt: '2025-05-01T00:00:00Z',
          },
@@ -103,17 +112,21 @@ export const updatePaymentTermSchema = {
    body: {
       type: 'object',
       properties: {
+         paymentMethodId: {
+            type: 'string',
+            description: 'ID do método de pagamento associado à condição de pagamento',
+         },
+         condition: {
+            type: 'string',
+            description: 'Condição de pagamento, ex: 0,30,60',
+         },
          description: {
             type: 'string',
-            description: 'Descrição da condição de pagamento',
+            description: 'Descrição da condição de pagamento, ex: Boleto 30 dias',
          },
-         tax: {
+         installments: {
             type: 'number',
-            description: 'Taxa de juros da condição de pagamento',
-         },
-         term: {
-            type: 'number',
-            description: 'Número de dias da condição de pagamento',
+            description: 'Número de parcelas da condição de pagamento',
          },
       },
    },
@@ -127,17 +140,29 @@ export const updatePaymentTermSchema = {
                description: 'ID da taxa',
                example: '1234567890abcdef12345678',
             },
+            paymentMethodId: {
+               type: 'string',
+               description: 'ID do método de pagamento associado à condição de pagamento',
+            },
+            condition: {
+               type: 'string',
+               description: 'Condição de pagamento, ex: 0,30,60',
+            },
             description: {
                type: 'string',
                description: 'Descrição da condição de pagamento',
             },
-            tax: {
+            installments: {
                type: 'number',
-               description: 'Taxa de juros da condição de pagamento',
+               description: 'Número de parcelas da condição de pagamento',
             },
-            term: {
-               type: 'number',
-               description: 'Número de dias da condição de pagamento',
+            createdAt: {
+               type: 'string',
+               description: 'Data de criação da condição de pagamento',
+            },
+            updatedAt: {
+               type: 'string',
+               description: 'Data de atualização da condição de pagamento',
             },
          },
       },
@@ -181,37 +206,49 @@ export const listPaymentTermSchema = {
                   type: 'string',
                   description: 'ID da condição de pagamento',
                },
+               paymentMethodId: {
+                  type: 'string',
+                  description: 'ID do método de pagamento associado à condição de pagamento',
+               },
+               condition: {
+                  type: 'string',
+                  description: 'Condição de pagamento, ex: 0,30,60',
+               },
                description: {
                   type: 'string',
-                  description: 'Descrição da condição de pagamento',
+                  description: 'Descrição da condição de pagamento, ex: Boleto 30 dias',
                },
-               tax: {
+               installments: {
                   type: 'number',
-                  description: 'Taxa de juros da condição de pagamento',
+                  description: 'Número de parcelas da condição de pagamento',
                },
-               term: {
-                  type: 'number',
-                  description: 'Número de dias da condição de pagamento',
+               createdAt: {
+                  type: 'string',
+                  description: 'Data de criação da condição de pagamento',
+               },
+               updatedAt: {
+                  type: 'string',
+                  description: 'Data de atualização da condição de pagamento',
                },
             },
             example: [
                {
                   id: 'uuid',
+                  paymentMethodId: '1234567890abcdef12345678',
+                  condition: '0,30,60',
                   description: 'Boleto 30 dias',
-                  tax: 0,
-                  term: 30,
+                  installments: 3,
+                  createdAt: '2025-05-01T00:00:00Z',
+                  updatedAt: '2025-05-01T00:00:00Z',
                },
                {
                   id: 'uuid',
-                  description: 'Boleto 60 dias',
-                  tax: 0,
-                  term: 60,
-               },
-               {
-                  id: 'uuid',
-                  description: 'Boleto 90 dias',
-                  tax: 0,
-                  term: 90,
+                  paymentMethodId: '1234567890abcdef12345678',
+                  condition: '0,15,30',
+                  description: 'Boleto 15 dias',
+                  installments: 3,
+                  createdAt: '2025-05-01T00:00:00Z',
+                  updatedAt: '2025-05-01T00:00:00Z',
                },
             ],
          },
@@ -265,24 +302,39 @@ export const getPaymentTermByIdSchema = {
                description: 'ID da taxa',
                example: '1234567890abcdef12345678',
             },
+            paymentMethodId: {
+               type: 'string',
+               description: 'ID do método de pagamento associado à condição de pagamento',
+            },
+            condition: {
+               type: 'string',
+               description: 'Condição de pagamento, ex: 0,30,60',
+            },
             description: {
                type: 'string',
-               description: 'Descrição da condição de pagamento',
+               description: 'Descrição da condição de pagamento, ex: Boleto 30 dias',
             },
-            tax: {
+            installments: {
                type: 'number',
-               description: 'Taxa de juros da condição de pagamento',
+               description: 'Número de parcelas da condição de pagamento',
             },
-            term: {
-               type: 'number',
-               description: 'Número de dias da condição de pagamento',
+            createdAt: {
+               type: 'string',
+               description: 'Data de criação da condição de pagamento',
+            },
+            updatedAt: {
+               type: 'string',
+               description: 'Data de atualização da condição de pagamento',
             },
          },
          example: {
             id: 'uuid',
+            paymentMethodId: '1234567890abcdef12345678',
+            condition: '0,30,60',
             description: 'Boleto 30 dias',
-            tax: 0,
-            term: 30,
+            installments: 3,
+            createdAt: '2025-05-01T00:00:00Z',
+            updatedAt: '2025-05-01T00:00:00Z',
          },
       },
       404: {

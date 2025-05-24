@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 export const listPaymentTermsService = async () => {
    const paymentTerms = await prisma.paymentTerms.findMany({
       orderBy: {
-         term: 'asc',
+         installments: 'asc',
       },
    })
 
