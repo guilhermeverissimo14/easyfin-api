@@ -247,6 +247,30 @@ CREATE TABLE "contas_receber" (
     CONSTRAINT "contas_receber_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "faturas" (
+    "id" TEXT NOT NULL,
+    "invoice_number" TEXT NOT NULL,
+    "customer_id" TEXT NOT NULL,
+    "payment_condition_id" TEXT NOT NULL,
+    "issue_date" TIMESTAMP(3) NOT NULL,
+    "month" INTEGER NOT NULL,
+    "year" INTEGER NOT NULL,
+    "due_date" TIMESTAMP(3) NOT NULL,
+    "service_value" INTEGER NOT NULL,
+    "retains_iss" BOOLEAN NOT NULL,
+    "issqn_tax_rate" DOUBLE PRECISION,
+    "effective_tax_rate" DOUBLE PRECISION,
+    "issqn_value" INTEGER,
+    "net_value" INTEGER,
+    "effective_tax" INTEGER,
+    "notes" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "faturas_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "usuarios_email_key" ON "usuarios"("email");
 
@@ -294,3 +318,9 @@ ALTER TABLE "contas_receber" ADD CONSTRAINT "contas_receber_bank_account_id_fkey
 
 -- AddForeignKey
 ALTER TABLE "contas_receber" ADD CONSTRAINT "contas_receber_payment_method_id_fkey" FOREIGN KEY ("payment_method_id") REFERENCES "formas_pagamento"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "faturas" ADD CONSTRAINT "faturas_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "clientes"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "faturas" ADD CONSTRAINT "faturas_payment_condition_id_fkey" FOREIGN KEY ("payment_condition_id") REFERENCES "condicoes_pagamento"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

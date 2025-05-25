@@ -65,6 +65,7 @@ model Customer {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   AccountsReceivable AccountsReceivable[]
+  Invoice            Invoice[]
 
   @@map("clientes")
 }
@@ -214,6 +215,7 @@ model PaymentTerms {
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   paymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  Invoice       Invoice[]
 
   @@map("condicoes_pagamento")
 }
@@ -282,4 +284,30 @@ model AccountsReceivable {
   PaymentMethod PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
 
   @@map("contas_receber")
+}
+
+model Invoice {
+  id                 String   @id @default(uuid()) @map("id")
+  invoiceNumber      String   @map("invoice_number")
+  customerId         String   @map("customer_id")
+  paymentConditionId String   @map("payment_condition_id")
+  issueDate          DateTime @map("issue_date") // Emissão
+  month              Int // Mês
+  year               Int // Ano
+  dueDate            DateTime @map("due_date")
+  serviceValue       Int      @map("service_value") // Valor do serviço
+  retainsIss         Boolean  @map("retains_iss")
+  issqnTaxRate       Float?   @map("issqn_tax_rate") // Alíquota ISSQN
+  effectiveTaxRate   Float?   @map("effective_tax_rate") // Alíquota Efetiva
+  issqnValue         Int?     @map("issqn_value") // Valor do ISSQN
+  netValue           Int?     @map("net_value") // Valor líquido
+  effectiveTax       Int?     @map("effective_tax") // Imp. Efetivo
+  notes              String?  @map("notes")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  Customer         Customer     @relation(fields: [customerId], references: [id])
+  PaymentCondition PaymentTerms @relation(fields: [paymentConditionId], references: [id])
+
+  @@map("faturas")
 }
