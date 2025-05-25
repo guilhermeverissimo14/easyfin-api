@@ -11,6 +11,7 @@ import { taxRatesRoutes } from './routes/tax-rates.routes'
 import { paymentTermsRoutes } from './routes/payment-term.routes'
 import { costCenterRoutes } from './routes/cost-center.routes'
 import { bankAccountRoutes } from './routes/bank-account.routes'
+import { paymentMethodsRoutes } from './routes/payment-method.routes'
 
 const server = Fastify()
 
@@ -93,6 +94,7 @@ server.register(taxRatesRoutes, { prefix: '/api/tax-rates' })
 server.register(paymentTermsRoutes, { prefix: '/api/payment-terms' })
 server.register(costCenterRoutes, { prefix: '/api/cost-centers' })
 server.register(bankAccountRoutes, { prefix: '/api/bank-accounts' })
+server.register(paymentMethodsRoutes, { prefix: '/api/payment-methods' })
 
 export const startServer = async () => {
    try {
