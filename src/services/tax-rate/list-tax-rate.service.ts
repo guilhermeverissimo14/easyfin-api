@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 export const listTaxRateService = async () => {
    try {
       const taxRates = await prisma.taxRates.findMany({
-         orderBy: [{ year: 'asc' }, { month: 'asc' }],
+         orderBy: [{ year: 'desc' }, { month: 'desc' }],
       })
 
       if (!taxRates || taxRates.length === 0) {
