@@ -155,6 +155,7 @@ model BankAccounts {
   balances           BankBalance[]
   BankTransactions   BankTransactions[]
   AccountsReceivable AccountsReceivable[]
+  Invoice            Invoice[]
 
   @@map("contas_bancarias")
 }
@@ -302,12 +303,14 @@ model Invoice {
   issqnValue         Int?     @map("issqn_value") // Valor do ISSQN
   netValue           Int?     @map("net_value") // Valor líquido
   effectiveTax       Int?     @map("effective_tax") // Imp. Efetivo
+  bankAccountId      String?  @map("bank_account_id")
   notes              String?  @map("notes")
   createdAt          DateTime @default(now()) @map("created_at")
   updatedAt          DateTime @updatedAt @map("updated_at")
 
-  Customer         Customer     @relation(fields: [customerId], references: [id])
-  PaymentCondition PaymentTerms @relation(fields: [paymentConditionId], references: [id])
+  Customer         Customer      @relation(fields: [customerId], references: [id])
+  PaymentCondition PaymentTerms  @relation(fields: [paymentConditionId], references: [id])
+  BankAccount      BankAccounts? @relation(fields: [bankAccountId], references: [id])
 
   @@map("faturas")
 }

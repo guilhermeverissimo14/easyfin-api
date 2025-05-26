@@ -264,6 +264,7 @@ CREATE TABLE "faturas" (
     "issqn_value" INTEGER,
     "net_value" INTEGER,
     "effective_tax" INTEGER,
+    "bank_account_id" TEXT,
     "notes" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -324,3 +325,6 @@ ALTER TABLE "faturas" ADD CONSTRAINT "faturas_customer_id_fkey" FOREIGN KEY ("cu
 
 -- AddForeignKey
 ALTER TABLE "faturas" ADD CONSTRAINT "faturas_payment_condition_id_fkey" FOREIGN KEY ("payment_condition_id") REFERENCES "condicoes_pagamento"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "faturas" ADD CONSTRAINT "faturas_bank_account_id_fkey" FOREIGN KEY ("bank_account_id") REFERENCES "contas_bancarias"("id") ON DELETE SET NULL ON UPDATE CASCADE;
