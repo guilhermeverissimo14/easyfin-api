@@ -8,7 +8,7 @@ interface DecodedToken {
 }
 
 export const encrypt = async (payload: object): Promise<string> => {
-   const token = jwt.sign(payload, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: '24h' })
+   const token = jwt.sign(payload, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: '7d' })
    return token
 }
 
