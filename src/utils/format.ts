@@ -40,3 +40,11 @@ export const formatDate = (date: Date): string => {
 export const formatDateTime = (date: Date): string => {
    return date.toLocaleString('pt-BR')
 }
+
+export function setToStartOfDayUTC(date: Date) {
+   return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0, 0, 0))
+}
+
+export function setToEndOfDayUTC(date: Date) {
+   return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 23, 59, 59, 999))
+}
