@@ -4,6 +4,7 @@ meta:
   id: wrk_8d69db8920ed4afe9dbc3cd41986ce1f
   created: 1746536736139
   modified: 1746536736139
+  description: ""
 collection:
   - name: 01. Auth (Autenticação)
     meta:
@@ -11,6 +12,7 @@ collection:
       created: 1746536736147
       modified: 1747780995554
       sortKey: -1735229588718
+      description: ""
     children:
       - url: "{{ _.baseURL }}auth/login"
         name: login
@@ -19,6 +21,7 @@ collection:
           created: 1746536736149
           modified: 1746536978178
           isPrivate: false
+          description: ""
           sortKey: -1732182113718
         method: POST
         body:
@@ -48,6 +51,7 @@ collection:
           created: 1746536736150
           modified: 1746536736150
           isPrivate: false
+          description: ""
           sortKey: -1732086878480.9062
         method: POST
         body:
@@ -76,6 +80,7 @@ collection:
           created: 1746536736151
           modified: 1746536736151
           isPrivate: false
+          description: ""
           sortKey: -1732039260862.3594
         method: POST
         body:
@@ -106,6 +111,7 @@ collection:
           created: 1746536736153
           modified: 1746536736153
           isPrivate: false
+          description: ""
           sortKey: -1732039260762.3594
         method: POST
         body:
@@ -138,6 +144,7 @@ collection:
           created: 1746536736154
           modified: 1746536736154
           isPrivate: false
+          description: ""
           sortKey: -1732063069671.6328
         method: POST
         body:
@@ -166,6 +173,7 @@ collection:
       created: 1746536736157
       modified: 1747780990070
       sortKey: -1732181394868
+      description: ""
     children:
       - url: "{{ _.baseURL }}users"
         name: list
@@ -174,6 +182,7 @@ collection:
           created: 1746536736158
           modified: 1746536736158
           isPrivate: false
+          description: ""
           sortKey: -1732182113718
         method: GET
         headers:
@@ -197,6 +206,7 @@ collection:
           created: 1746536736160
           modified: 1746536736160
           isPrivate: false
+          description: ""
           sortKey: -1731324996584.1562
         method: POST
         body:
@@ -235,6 +245,7 @@ collection:
           created: 1746536736161
           modified: 1747760388280
           isPrivate: false
+          description: ""
           sortKey: -1732134496099.4531
         method: GET
         headers:
@@ -258,6 +269,7 @@ collection:
           created: 1746536736162
           modified: 1746536736162
           isPrivate: false
+          description: ""
           sortKey: -1731277378965.6094
         method: PUT
         body:
@@ -293,6 +305,7 @@ collection:
           created: 1746536736163
           modified: 1746536736163
           isPrivate: false
+          description: ""
           sortKey: -1731253570156.336
         method: PATCH
         headers:
@@ -317,6 +330,7 @@ collection:
           created: 1746536736164
           modified: 1746536736164
           isPrivate: false
+          description: ""
           sortKey: -1731310086726.0781
         method: POST
         body:
@@ -351,6 +365,7 @@ collection:
           created: 1746536736165
           modified: 1746536736165
           isPrivate: false
+          description: ""
           sortKey: -1731247617954.0176
         method: PATCH
         body:
@@ -383,6 +398,7 @@ collection:
       created: 1746536879512
       modified: 1747780983425
       sortKey: -1731800370636.75
+      description: ""
     children:
       - url: "{{ _.baseURL }}customers"
         name: list
@@ -391,6 +407,7 @@ collection:
           created: 1746536879514
           modified: 1746536895398
           isPrivate: false
+          description: ""
           sortKey: -1732182113718
         method: GET
         headers:
@@ -414,6 +431,7 @@ collection:
           created: 1746536879515
           modified: 1746537031511
           isPrivate: false
+          description: ""
           sortKey: -1731324996584.1562
         method: POST
         body:
@@ -456,6 +474,7 @@ collection:
           created: 1746536879517
           modified: 1747760404676
           isPrivate: false
+          description: ""
           sortKey: -1732134496099.4531
         method: GET
         headers:
@@ -479,6 +498,7 @@ collection:
           created: 1746536879518
           modified: 1746537553158
           isPrivate: false
+          description: ""
           sortKey: -1731277378965.6094
         method: PUT
         body:
@@ -512,6 +532,7 @@ collection:
           created: 1746536879520
           modified: 1746537548806
           isPrivate: false
+          description: ""
           sortKey: -1731253570156.336
         method: PATCH
         headers:
@@ -536,6 +557,7 @@ collection:
           created: 1746536879522
           modified: 1746537534049
           isPrivate: false
+          description: ""
           sortKey: -1731247617954.0176
         method: DELETE
         headers:
@@ -559,6 +581,7 @@ collection:
       created: 1747760471369
       modified: 1747780976394
       sortKey: -1731609858521.125
+      description: ""
     children:
       - url: "{{ _.baseURL }}suppliers"
         name: list
@@ -567,6 +590,7 @@ collection:
           created: 1747760471372
           modified: 1747760475978
           isPrivate: false
+          description: ""
           sortKey: -1732182113718
         method: GET
         headers:
@@ -590,6 +614,7 @@ collection:
           created: 1747760471374
           modified: 1747760826105
           isPrivate: false
+          description: ""
           sortKey: -1731324996584.1562
         method: POST
         body:
@@ -632,6 +657,7 @@ collection:
           created: 1747760471375
           modified: 1747760861983
           isPrivate: false
+          description: ""
           sortKey: -1732134496099.4531
         method: GET
         headers:
@@ -655,6 +681,7 @@ collection:
           created: 1747760471377
           modified: 1747760829854
           isPrivate: false
+          description: ""
           sortKey: -1731277378965.6094
         method: PUT
         body:
@@ -688,6 +715,7 @@ collection:
           created: 1747760471379
           modified: 1747760871821
           isPrivate: false
+          description: ""
           sortKey: -1731253570156.336
         method: PATCH
         headers:
@@ -712,6 +740,7 @@ collection:
           created: 1747760471380
           modified: 1747760849487
           isPrivate: false
+          description: ""
           sortKey: -1731247617954.0176
         method: DELETE
         headers:
@@ -735,6 +764,7 @@ collection:
       created: 1747764098259
       modified: 1747780969627
       sortKey: -1731514602463.3125
+      description: ""
     children:
       - url: "{{ _.baseURL }}tax-rates"
         name: list
@@ -743,6 +773,7 @@ collection:
           created: 1747764098261
           modified: 1747764102713
           isPrivate: false
+          description: ""
           sortKey: -1732182113718
         method: GET
         headers:
@@ -766,6 +797,7 @@ collection:
           created: 1747764098263
           modified: 1747764479460
           isPrivate: false
+          description: ""
           sortKey: -1731324996584.1562
         method: POST
         body:
@@ -801,6 +833,7 @@ collection:
           created: 1747764098264
           modified: 1747764202474
           isPrivate: false
+          description: ""
           sortKey: -1732134496099.4531
         method: GET
         headers:
@@ -824,6 +857,7 @@ collection:
           created: 1747764098265
           modified: 1747764440527
           isPrivate: false
+          description: ""
           sortKey: -1731277378965.6094
         method: PUT
         body:
@@ -859,6 +893,7 @@ collection:
           created: 1747764098267
           modified: 1747764122486
           isPrivate: false
+          description: ""
           sortKey: -1731247617954.0176
         method: DELETE
         headers:
@@ -882,14 +917,16 @@ collection:
       created: 1747780959516
       modified: 1747780959516
       sortKey: -1731466974434.4062
+      description: ""
     children:
       - url: "{{ _.baseURL }}payment-terms"
         name: list
         meta:
           id: req_6dab46b9dd794fd69e9bae4102ef7b35
           created: 1747780959518
-          modified: 1747781003427
+          modified: 1748113231107
           isPrivate: false
+          description: ""
           sortKey: -1732182113718
         method: GET
         headers:
@@ -913,6 +950,7 @@ collection:
           created: 1747780959520
           modified: 1747781607807
           isPrivate: false
+          description: ""
           sortKey: -1731324996584.1562
         method: POST
         body:
@@ -939,13 +977,14 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.baseURL }}payment-terms/9eb109c5-de68-477f-988b-2728689283af"
+      - url: "{{ _.baseURL }}payment-terms/71140027-6820-4b95-b2c3-aa731e9062d2"
         name: getById
         meta:
           id: req_a29d4a6105a947739940bea6536bbdb6
           created: 1747780959521
-          modified: 1747781233389
+          modified: 1748113370071
           isPrivate: false
+          description: ""
           sortKey: -1732134496099.4531
         method: GET
         headers:
@@ -969,6 +1008,7 @@ collection:
           created: 1747780959523
           modified: 1747781257485
           isPrivate: false
+          description: ""
           sortKey: -1731277378965.6094
         method: PUT
         body:
@@ -1002,6 +1042,7 @@ collection:
           created: 1747780959524
           modified: 1747781264894
           isPrivate: false
+          description: ""
           sortKey: -1731247617954.0176
         method: DELETE
         headers:
@@ -1025,6 +1066,7 @@ collection:
       created: 1747782974932
       modified: 1747782974932
       sortKey: -1731443160419.9531
+      description: ""
     children:
       - url: "{{ _.baseURL }}cost-centers"
         name: list
@@ -1033,6 +1075,7 @@ collection:
           created: 1747782974934
           modified: 1747783002019
           isPrivate: false
+          description: ""
           sortKey: -1732182113718
         method: GET
         headers:
@@ -1056,6 +1099,7 @@ collection:
           created: 1747782974935
           modified: 1747783054919
           isPrivate: false
+          description: ""
           sortKey: -1731324996584.1562
         method: POST
         body:
@@ -1088,6 +1132,7 @@ collection:
           created: 1747782974938
           modified: 1747783032860
           isPrivate: false
+          description: ""
           sortKey: -1732134496099.4531
         method: GET
         headers:
@@ -1111,6 +1156,7 @@ collection:
           created: 1747782974943
           modified: 1747783069338
           isPrivate: false
+          description: ""
           sortKey: -1731277378965.6094
         method: PUT
         body:
@@ -1143,6 +1189,7 @@ collection:
           created: 1747782974944
           modified: 1747783075245
           isPrivate: false
+          description: ""
           sortKey: -1731247617954.0176
         method: DELETE
         headers:
@@ -1166,6 +1213,7 @@ collection:
       created: 1747784420560
       modified: 1747784420560
       sortKey: -1731431253412.7266
+      description: ""
     children:
       - url: "{{ _.baseURL }}bank-accounts"
         name: list
@@ -1174,6 +1222,7 @@ collection:
           created: 1747784420562
           modified: 1747784429446
           isPrivate: false
+          description: ""
           sortKey: -1732182113718
         method: GET
         headers:
@@ -1195,8 +1244,9 @@ collection:
         meta:
           id: req_aa073f90c2854246a3cf29a7f58d885d
           created: 1747784420563
-          modified: 1747784611703
+          modified: 1747795268141
           isPrivate: false
+          description: ""
           sortKey: -1731324996584.1562
         method: POST
         body:
@@ -1232,6 +1282,7 @@ collection:
           created: 1747784420565
           modified: 1747784632150
           isPrivate: false
+          description: ""
           sortKey: -1732134496099.4531
         method: GET
         headers:
@@ -1255,6 +1306,7 @@ collection:
           created: 1747784420566
           modified: 1747784642148
           isPrivate: false
+          description: ""
           sortKey: -1731277378965.6094
         method: PUT
         body:
@@ -1290,6 +1342,7 @@ collection:
           created: 1747784420567
           modified: 1747784446733
           isPrivate: false
+          description: ""
           sortKey: -1731247617954.0176
         method: DELETE
         headers:
@@ -1299,6 +1352,257 @@ collection:
           type: bearer
           token: "{{ _.token }}"
           disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 09. Payment Methods (Formas de Pagamento)
+    meta:
+      id: fld_66b63ea6710b4eee91232f90257f6474
+      created: 1748215018430
+      modified: 1748215018430
+      sortKey: -1731425299909.1133
+      description: ""
+    children:
+      - url: "{{ _.baseURL }}payment-methods"
+        name: list
+        meta:
+          id: req_34e29f8fa82f4bb2858d5afffc593b05
+          created: 1748215018432
+          modified: 1748215043083
+          isPrivate: false
+          description: ""
+          sortKey: -1732182113718
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 10. Accounts Payable (Contas a Pagar)
+    meta:
+      id: fld_03f347ca58404a3792b7bdc2972968bc
+      created: 1749229383344
+      modified: 1749229383344
+      sortKey: -1731422323157.3066
+      description: ""
+    children:
+      - url: "{{ _.baseURL }}accounts-payable"
+        name: list
+        meta:
+          id: req_493d7f6844f747d6acedbcc2c34ba415
+          created: 1749229383346
+          modified: 1749233600353
+          isPrivate: false
+          description: ""
+          sortKey: -1732182113718
+        method: GET
+        parameters:
+          - id: pair_501d5b5b880648be92876c6c9dfee6cc
+            name: status
+            value: PENDING
+            description: ""
+            disabled: true
+          - id: pair_293d9fc1f9e54fb3b3948881ea16f769
+            name: supplierId
+            value: 3a527df3-bc9d-4aaf-9c1b-e4b179ea3d81
+            description: ""
+            disabled: true
+          - id: pair_367441c208eb4308b93aa08476ae4299
+            name: costCenterId
+            value: 3209c568-3ed9-48d7-9c26-b7fa01892fd9
+            description: ""
+            disabled: true
+          - id: pair_4c15b96d172d46b7a69058d6b6318e44
+            name: paymentMethodId
+            value: ""
+            description: ""
+            disabled: true
+          - id: pair_9f987ddcf9c349c08192c62a98d5c8ef
+            name: dueDateStart
+            value: 2025-06-01
+            description: ""
+            disabled: false
+          - id: pair_445f7824cfd84618a260b160eda4314b
+            name: dueDateEnd
+            value: 2025-07-31
+            description: ""
+            disabled: false
+          - id: pair_81faa60335834cf98b233e7431031851
+            name: documentDateStart
+            value: ""
+            description: ""
+            disabled: true
+          - id: pair_4084a1af6a6a46e9976862f4c5d21028
+            name: documentDateEnd
+            value: ""
+            description: ""
+            disabled: true
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}accounts-payable/de5f9b72-01c6-468a-ad63-53b80acacd87"
+        name: getById
+        meta:
+          id: req_c5c912fee1584ceeb3bf203e2f5c3b66
+          created: 1749229438101
+          modified: 1749230700970
+          isPrivate: false
+          description: ""
+          sortKey: -1732181369692.7102
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}accounts-payable"
+        name: create
+        meta:
+          id: req_9707e249779e43968ce0b737b50ca945
+          created: 1749229464279
+          modified: 1749232506365
+          isPrivate: false
+          description: ""
+          sortKey: -1732180997680.0654
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"supplierId": "3a527df3-bc9d-4aaf-9c1b-e4b179ea3d81",
+            	"documentNumber": "002-A",
+            	"plannedPaymentMethod": "fdf2d04d-cf56-47a6-b229-2935da01c375",
+            	"documentDate": "2025-06-01T03:00:00.000Z",
+            	"dueDate": "2025-06-30T03:00:00.000Z",
+            	"value": 95.32,
+            	"costCenterId": "3209c568-3ed9-48d7-9c26-b7fa01892fd9",
+            	"observation": "Conta de Água 06/2025"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}accounts-payable/de5f9b72-01c6-468a-ad63-53b80acacd87"
+        name: update
+        meta:
+          id: req_5b8579da2d1c431896c6629750e9d28d
+          created: 1749230592637
+          modified: 1749231330367
+          isPrivate: false
+          description: ""
+          sortKey: -1732180811673.743
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"supplierId": "3a527df3-bc9d-4aaf-9c1b-e4b179ea3d81",
+            	"documentDate": "2025-06-03T03:00:00.000Z",
+            	"dueDate": "2025-07-31T03:00:00.000Z",
+            	"value": 295.12
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}accounts-payable/9e17d75d-555a-4ba1-9608-733639016d39"
+        name: delete
+        meta:
+          id: req_2b03d393f71d442485ccfa8852a7a5bc
+          created: 1749230675481
+          modified: 1749230681668
+          isPrivate: false
+          description: ""
+          sortKey: -1732180718670.5815
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}accounts-payable/totals"
+        name: totals
+        meta:
+          id: req_8c5ae7ec74ab4dfd821c9bb046078c81
+          created: 1749234144414
+          modified: 1749234154782
+          isPrivate: false
+          description: ""
+          sortKey: -1732182113818
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -1325,12 +1629,12 @@ environments:
       meta:
         id: env_339e55f028994e779813ac8cb6de44e9
         created: 1746536736141
-        modified: 1747760368831
+        modified: 1749229411373
         isPrivate: false
         sortKey: 1735229491596
       data:
         baseURL: http://localhost:3333/api/
-        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJkMzE5N2RjMC04NzcyLTQ2MDItODUwYi1iZmRjYWExNDA1ZjgiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NDc3NjAzNTgsImV4cCI6MTc0Nzg0Njc1OH0.wqLkC8sy4RnS3HoffzjpWHTYWtaFx4M9HuKg_B_RuPI
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwMWJmOWM2Ni1lZTFiLTQ0ZTMtOWJlYi1kMjAxODY0YjIzMGQiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NDkyMjk0MDEsImV4cCI6MTc0OTgzNDIwMX0.gGcWBCRaHq8WlqNeROr16iqb8pshsz0mH45ZOFNN_Fk
       color: "#6de9ca"
     - name: Ambiente Dev
       meta:
