@@ -1,17 +1,11 @@
 import { AppError } from '@/helpers/app-error'
 import { validateSchema } from '@/helpers/validate-schema'
 import { createBankAccountSchema, updateBankAccountSchema } from '@/schemas/bank-account'
-import { createPaymentTermSchema } from '@/schemas/payment-term'
 import { createBankAccountService } from '@/services/bank-account/create-bank-account.service'
 import { deleteBankAccountService } from '@/services/bank-account/delete-bank-account.service'
 import { getBankAccountByIdService } from '@/services/bank-account/get-bank-account-by-id.service'
 import { listBankAccountsService } from '@/services/bank-account/list-bank-account.service'
 import { updateBankAccountService } from '@/services/bank-account/update-bank-account.service'
-import { createPaymentTermService } from '@/services/payment-term/create-payment-term.service'
-import { deletePaymentTermService } from '@/services/payment-term/delete-payment-term.service'
-import { getPaymentTermByIdService } from '@/services/payment-term/get-payment-term-by-id.service'
-import { listPaymentTermsService } from '@/services/payment-term/list-payment-term.service'
-import { updatePaymentTermService } from '@/services/payment-term/update-payment-term.service'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
 class BankAccountsController {
