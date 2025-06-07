@@ -2,6 +2,7 @@ import CashFlowController from '@/controllers/cash-flow.controller'
 import {
    createCashFlowSchema,
    getTotalsPerDayCashFlowSchema,
+   importBankTransactionsCashFlowSchema,
    listByAccountIdCashFlowSchema,
    listByCashCashFlowSchema,
 } from '@/documentation/cash-flow'
@@ -22,7 +23,7 @@ const cashFlowRoutes: FastifyPluginAsync = async (server) => {
    server.get('/totals-per-day', { preHandler: authMiddleware, schema: getTotalsPerDayCashFlowSchema }, CashFlowController.getTotalsPerDay)
 
    //Rota para importar transações bancárias de um arquivo XLSX
-   server.post('/import-bank-extract', { preHandler: authMiddleware }, CashFlowController.importXlsx)
+   server.post('/import-bank-extract', { preHandler: authMiddleware, schema: importBankTransactionsCashFlowSchema }, CashFlowController.importXlsx)
 }
 
 export { cashFlowRoutes }

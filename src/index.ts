@@ -42,16 +42,27 @@ server.register(fastifyMultipart, {
 })
 
 server.register(fastifySwagger, {
-   swagger: {
+   openapi: {
       info: {
          title: 'API Easyfin',
          description: 'Documentação da API para o sistema Easyfin',
          version: '1.0.0',
       },
-      host: process.env.BASE_URL || 'localhost:3333',
-      schemes: process.env.BASE_URL ? ['https'] : ['http'],
-      consumes: ['application/json'],
-      produces: ['application/json'],
+      servers: [
+         {
+            url: process.env.BASE_URL || 'http://localhost:3333',
+         },
+      ],
+      components: {
+         securitySchemes: {
+            BearerAuth: {
+               type: 'http',
+               scheme: 'bearer',
+               bearerFormat: 'JWT',
+            },
+         },
+      },
+      security: [{ BearerAuth: [] }],
       tags: [
          { name: 'Health', description: 'Verifica se a API está funcionando' },
          { name: 'Auth', description: 'Autenticação' },
@@ -67,19 +78,6 @@ server.register(fastifySwagger, {
          { name: 'Accounts Receivable', description: 'Contas a receber' },
          { name: 'Cash Flow', description: 'Fluxo de caixa' },
          { name: 'Settings', description: 'Configurações do sistema' },
-      ],
-      securityDefinitions: {
-         BearerAuth: {
-            type: 'apiKey',
-            name: 'Authorization',
-            in: 'header',
-            description: 'Bearer <token>',
-         },
-      },
-      security: [
-         {
-            BearerAuth: [],
-         },
       ],
    },
 })

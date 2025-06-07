@@ -1,3 +1,5 @@
+import fastifyMultipart from '@fastify/multipart'
+
 export const getTotalsPerDayCashFlowSchema = {
    description: 'Obtém os totais do fluxo de caixa por dia',
    tags: ['Cash Flow'],
@@ -434,6 +436,103 @@ export const listByCashCashFlowSchema = {
                type: 'string',
                description: 'Mensagem de erro',
                example: 'Erro interno do servidor',
+            },
+         },
+      },
+   },
+}
+
+export const importBankTransactionsCashFlowSchema = {
+   description: 'Importa transações bancárias de um arquivo XLSX',
+   tags: ['Cash Flow'],
+   summary: 'Importar transações bancárias',
+   consumes: ['multipart/form-data'],
+   // body: {
+   //    type: 'object',
+   //    properties: {
+   //       bankAccountId: { type: 'string', format: 'uuid' },
+   //       file: { type: 'string', format: 'binary' },
+   //    },
+   //    required: ['bankAccountId', 'file'],
+   // },
+   response: {
+      200: {
+         description: 'Importação realizada com sucesso',
+         content: {
+            'application/json': {
+               schema: {
+                  type: 'object',
+                  properties: {
+                     message: {
+                        type: 'string',
+                        example: 'Importação realizada com sucesso!',
+                     },
+                  },
+               },
+            },
+         },
+      },
+      400: {
+         description: 'Erro de validação ou dados inválidos',
+         content: {
+            'application/json': {
+               schema: {
+                  type: 'object',
+                  properties: {
+                     message: {
+                        type: 'string',
+                        example: 'Erro de validação. Verifique os campos obrigatórios e os formatos esperados.',
+                     },
+                  },
+               },
+            },
+         },
+      },
+      401: {
+         description: 'Usuário não autenticado',
+         content: {
+            'application/json': {
+               schema: {
+                  type: 'object',
+                  properties: {
+                     message: {
+                        type: 'string',
+                        example: 'Usuário não autenticado',
+                     },
+                  },
+               },
+            },
+         },
+      },
+      404: {
+         description: 'Conta bancária não encontrada',
+         content: {
+            'application/json': {
+               schema: {
+                  type: 'object',
+                  properties: {
+                     message: {
+                        type: 'string',
+                        example: 'Conta bancária não encontrada',
+                     },
+                  },
+               },
+            },
+         },
+      },
+      500: {
+         description: 'Erro interno do servidor',
+         content: {
+            'application/json': {
+               schema: {
+                  type: 'object',
+                  properties: {
+                     message: {
+                        type: 'string',
+                        example: 'Erro interno do servidor ao importar transações bancárias.',
+                     },
+                  },
+               },
             },
          },
       },
