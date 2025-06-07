@@ -100,6 +100,7 @@ model CostCenter {
 
   AccountsPayable    AccountsPayable[]
   AccountsReceivable AccountsReceivable[]
+  CashFlow           CashFlow[]
 
   @@map("centro_custos")
 }
@@ -124,6 +125,7 @@ model CashBox {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   cashTransactions CashTransaction[]
+  CashFlow         CashFlow[]
 
   @@map("caixa")
 }
@@ -156,6 +158,7 @@ model BankAccounts {
   BankTransactions   BankTransactions[]
   AccountsReceivable AccountsReceivable[]
   Invoice            Invoice[]
+  CashFlow           CashFlow[]
 
   @@map("contas_bancarias")
 }
@@ -313,4 +316,25 @@ model Invoice {
   BankAccount      BankAccounts? @relation(fields: [bankAccountId], references: [id])
 
   @@map("faturas")
+}
+
+model CashFlow {
+  id            String          @id @default(uuid()) @map("id")
+  date          DateTime        @map("date") // Data da movimentação
+  historic      String // Histórico da movimentação (ex: "Pix - Recebido", "Compra com Cartão", "Pagamento Fornecedor")
+  value         Int // Valor da movimentação (em centavos)
+  type          TransactionType // "DEBIT" (Saída) ou "CREDIT" (Entrada)
+  description   String? // Descrição detalhada da movimentação
+  costCenterId  String?         @map("cost_center_id")
+  bankAccountId String?         @map("bank_account_id") // Vincula a conta bancária, pode ser nulo se for movimentação do caixa físico
+  cashBoxId     String?         @map("cash_box_id") // Vincula ao caixa físico, pode ser nulo se for movimentação bancária
+  balance       Int // Saldo atualizado após a movimentação (em centavos)
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  CostCenter  CostCenter?   @relation(fields: [costCenterId], references: [id])
+  BankAccount BankAccounts? @relation(fields: [bankAccountId], references: [id])
+  CashBox     CashBox?      @relation(fields: [cashBoxId], references: [id])
+
+  @@map("fluxo_caixa")
 }

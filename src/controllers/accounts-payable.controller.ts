@@ -9,6 +9,7 @@ import { listAccountsPayableService } from '@/services/accounts-payable/list-acc
 import { updateAccountPayableService } from '@/services/accounts-payable/update-account-payable.service'
 import { PaymentStatus } from '@prisma/client'
 import { FastifyReply, FastifyRequest } from 'fastify'
+import { settleAccountPayableService } from '@/services/accounts-payable/settle-account-payable.service'
 
 class AccountsPayableController {
    constructor() {}
@@ -186,6 +187,47 @@ class AccountsPayableController {
       try {
          await deleteAccountPayableService(id)
          return reply.status(204).send({ message: 'Conta a pagar removida com sucesso' })
+      } catch (error) {
+         if (error instanceof AppError) {
+            return reply.status(400).send({ message: error.message })
+         } else {
+            return reply.status(500).send({ message: 'Erro interno do servidor' })
+         }
+      }
+   }
+
+   public async settle(
+      request: FastifyRequest<{
+         Params: { id: string }
+         Body: {
+            fine?: number
+            interest?: number
+            discount?: number
+            observation?: string
+            paymentMethodId?: string
+            paymentDate?: string
+            costCenterId?: string
+            bankAccountId?: string
+         }
+      }>,
+      reply: FastifyReply,
+   ) {
+      try {
+         const { id } = request.params
+         const { fine, interest, discount, observation, paymentMethodId, paymentDate, costCenterId, bankAccountId } = request.body
+
+         const settledAccount = await settleAccountPayableService(id, {
+            fine,
+            interest,
+            discount,
+            observation,
+            paymentMethodId,
+            paymentDate: paymentDate ? new Date(paymentDate) : undefined,
+            costCenterId,
+            bankAccountId,
+         })
+
+         return reply.status(200).send(settledAccount)
       } catch (error) {
          if (error instanceof AppError) {
             return reply.status(400).send({ message: error.message })

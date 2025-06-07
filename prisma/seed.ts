@@ -30,16 +30,30 @@ async function main() {
 
    const costCenters = [
       { name: 'Compras de Materiais' },
-      { name: 'Despesas Administrativas' },
-      { name: 'Despesas Bancárias' },
-      { name: 'Despesas Combustíveis' },
-      { name: 'Despesas Hospedagem' },
-      { name: 'Despesas Refeição' },
-      { name: 'Despesas Veículos' },
       { name: 'Fretes Transportes' },
       { name: 'Impostos FGTS' },
       { name: 'Impostos INSS' },
       { name: 'Impostos Simples' },
+      { name: 'Infraestrutura' },
+      { name: 'Ajustes de Saldo' },
+      { name: 'Despesas Administrativas' },
+      { name: 'Despesas Bancárias' },
+      { name: 'Despesas com Combustíveis' },
+      { name: 'Despesas com Hospedagem' },
+      { name: 'Despesas com Refeição' },
+      { name: 'Despesas com Veículos' },
+      { name: 'Despesas com Marketing' },
+      { name: 'Despesas com Vendas' },
+      { name: 'Despesas com Serviços' },
+      { name: 'Despesas com Telefonia' },
+      { name: 'Despesas com Internet' },
+      { name: 'Despesas com Energia' },
+      { name: 'Despesas com Água' },
+      { name: 'Despesas com Aluguel' },
+      { name: 'Despesas com Manutenção' },
+      { name: 'Despesas com Limpeza' },
+      { name: 'Despesas com Segurança' },
+      { name: 'Outras Despesas' },
    ]
 
    for (const costCenter of costCenters) {
@@ -216,10 +230,41 @@ async function main() {
       })
 
       if (!existingCashBox) {
-         await prisma.cashBox.create({
+         const cash = await prisma.cashBox.create({
             data: cashBox,
          })
          console.log(`Caixa criado: ${cashBox.name}`)
+
+         const cashTransaction = await prisma.cashTransaction.create({
+            data: {
+               cashBoxId: cash.id,
+               type: 'CREDIT',
+               description: 'Saldo inicial',
+               amount: cashBox.balance,
+               transactionAt: new Date(),
+            },
+         })
+         console.log(`Transação de caixa criada: ${cashTransaction.description}`)
+
+         const costCenter = await prisma.costCenter.findFirst({
+            where: {
+               name: 'Ajustes de Saldo',
+            },
+         })
+
+         await prisma.cashFlow.create({
+            data: {
+               date: new Date(new Date().setHours(3, 0, 0, 0)),
+               historic: 'Saldo inicial',
+               cashBoxId: cash.id,
+               costCenterId: costCenter!.id,
+               type: 'CREDIT',
+               description: 'Ajuste de saldo inicial',
+               value: cashBox.balance,
+               balance: cashBox.balance,
+            },
+         })
+         console.log(`Fluxo de caixa criado: ${cashBox.name} - Saldo inicial: ${cashBox.balance}`)
       } else {
          console.log(`Caixa já existe: ${cashBox.name}`)
       }
@@ -244,10 +289,42 @@ async function main() {
       })
 
       if (!existingBankAccount) {
-         await prisma.bankAccounts.create({
+         const bank = await prisma.bankAccounts.create({
             data: bankAccount,
          })
          console.log(`Conta bancária criada: ${bankAccount.bank} - ${bankAccount.agency} - ${bankAccount.account}`)
+
+         const bankTransaction = await prisma.bankTransactions.create({
+            data: {
+               bankAccountId: bank!.id,
+               type: 'CREDIT',
+               description: 'Ajuste de Saldo inicial',
+               detailing: 'Saldo inicial da conta bancária',
+               amount: 0,
+               transactionAt: new Date(),
+               csv: false,
+            },
+         })
+         console.log(`Transação bancária inicial criada: ${bankTransaction.description}`)
+
+         const costCenter = await prisma.costCenter.findFirst({
+            where: {
+               name: 'Ajustes de Saldo',
+            },
+         })
+
+         await prisma.cashFlow.create({
+            data: {
+               date: new Date(new Date().setHours(3, 0, 0, 0)),
+               historic: 'Saldo inicial',
+               bankAccountId: bank!.id,
+               costCenterId: costCenter!.id,
+               type: 'CREDIT',
+               description: 'Ajuste de saldo inicial',
+               value: bankTransaction.amount,
+               balance: bankTransaction.amount,
+            },
+         })
       } else {
          console.log(`Conta bancária já existe: ${bankAccount.bank} - ${bankAccount.agency} - ${bankAccount.account}`)
       }

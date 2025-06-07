@@ -6,6 +6,7 @@ import {
    updateAccountsPayableSchema,
    deleteAccountsPayableSchema,
    getTotalsAccountPayableSchema,
+   settleAccountsPayableSchema,
 } from '@/documentation/account-payable.schemas'
 import { authMiddleware } from '@/middleware/auth.middleware'
 import { FastifyPluginAsync } from 'fastify'
@@ -28,6 +29,9 @@ const accountPayableRoutes: FastifyPluginAsync = async (server) => {
 
    //Rota para deletar uma conta a pagar
    server.delete('/:id', { preHandler: authMiddleware, schema: deleteAccountsPayableSchema }, AccountsPayableController.delete)
+
+   //Rota para liquidar uma conta a pagar
+   server.post('/:id/settle', { preHandler: authMiddleware, schema: settleAccountsPayableSchema }, AccountsPayableController.settle)
 }
 
 export { accountPayableRoutes }

@@ -272,6 +272,24 @@ CREATE TABLE "faturas" (
     CONSTRAINT "faturas_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "fluxo_caixa" (
+    "id" TEXT NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL,
+    "historic" TEXT NOT NULL,
+    "value" INTEGER NOT NULL,
+    "type" "TransactionType" NOT NULL,
+    "description" TEXT,
+    "cost_center_id" TEXT,
+    "bank_account_id" TEXT,
+    "cash_box_id" TEXT,
+    "balance" INTEGER NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "fluxo_caixa_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "usuarios_email_key" ON "usuarios"("email");
 
@@ -328,3 +346,12 @@ ALTER TABLE "faturas" ADD CONSTRAINT "faturas_payment_condition_id_fkey" FOREIGN
 
 -- AddForeignKey
 ALTER TABLE "faturas" ADD CONSTRAINT "faturas_bank_account_id_fkey" FOREIGN KEY ("bank_account_id") REFERENCES "contas_bancarias"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "fluxo_caixa" ADD CONSTRAINT "fluxo_caixa_cost_center_id_fkey" FOREIGN KEY ("cost_center_id") REFERENCES "centro_custos"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "fluxo_caixa" ADD CONSTRAINT "fluxo_caixa_bank_account_id_fkey" FOREIGN KEY ("bank_account_id") REFERENCES "contas_bancarias"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "fluxo_caixa" ADD CONSTRAINT "fluxo_caixa_cash_box_id_fkey" FOREIGN KEY ("cash_box_id") REFERENCES "caixa"("id") ON DELETE SET NULL ON UPDATE CASCADE;

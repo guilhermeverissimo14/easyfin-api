@@ -75,7 +75,18 @@ export const createAccountPayableService = async (data: {
          },
       })
 
-      return account
+      if (!account) {
+         throw new AppError('Erro ao criar conta a pagar', 500)
+      }
+
+      return {
+         ...account,
+         value: account.value != null ? account.value / 100 : 0,
+         launchDate: account.launchDate ? account.launchDate.toISOString() : null,
+         dueDate: account.dueDate ? account.dueDate.toISOString() : null,
+         paymentDate: account.paymentDate ? account.paymentDate.toISOString() : null,
+         documentDate: account.documentDate ? account.documentDate.toISOString() : null,
+      }
    } catch (error) {
       throw new AppError('Erro ao criar conta a pagar', 500)
    }
