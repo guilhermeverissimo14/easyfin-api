@@ -18,6 +18,7 @@ import { accountPayableRoutes } from './routes/account-payable.routes'
 import { cashFlowRoutes } from './routes/cash-flow.routes'
 import { settingsRoutes } from './routes/settings.routes'
 import { accountReceivableRoutes } from './routes/account-receivable.routes'
+import { invoicesRoutes } from './routes/invoices.routes'
 
 const server = Fastify()
 
@@ -66,6 +67,7 @@ server.register(fastifySwagger, {
       tags: [
          { name: 'Health', description: 'Verifica se a API está funcionando' },
          { name: 'Auth', description: 'Autenticação' },
+         { name: 'Settings', description: 'Configurações do sistema' },
          { name: 'User', description: 'Usuários' },
          { name: 'Customer', description: 'Clientes' },
          { name: 'Supplier', description: 'Fornecedores' },
@@ -77,7 +79,7 @@ server.register(fastifySwagger, {
          { name: 'Accounts Payable', description: 'Contas a pagar' },
          { name: 'Accounts Receivable', description: 'Contas a receber' },
          { name: 'Cash Flow', description: 'Fluxo de caixa' },
-         { name: 'Settings', description: 'Configurações do sistema' },
+         { name: 'Invoice', description: 'Faturas' },
       ],
    },
 })
@@ -122,6 +124,7 @@ server.register(accountPayableRoutes, { prefix: '/api/accounts-payable' })
 server.register(accountReceivableRoutes, { prefix: '/api/accounts-receivable' })
 server.register(cashFlowRoutes, { prefix: '/api/cash-flow' })
 server.register(settingsRoutes, { prefix: '/api/settings' })
+server.register(invoicesRoutes, { prefix: '/api/invoices' })
 
 export const startServer = async () => {
    try {

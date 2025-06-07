@@ -1,5 +1,3 @@
-import fastifyMultipart from '@fastify/multipart'
-
 export const getTotalsPerDayCashFlowSchema = {
    description: 'Obtém os totais do fluxo de caixa por dia',
    tags: ['Cash Flow'],

@@ -1097,7 +1097,7 @@ collection:
         meta:
           id: req_cdc8cc3df27b4403890cbc6c0bad0995
           created: 1747782974935
-          modified: 1747783054919
+          modified: 1749309434707
           isPrivate: false
           description: ""
           sortKey: -1731324996584.1562
@@ -1106,7 +1106,7 @@ collection:
           mimeType: application/json
           text: |-
             {
-             "name": "Outro(s)"
+             "name": "Transações Bancárias"
             }
         headers:
           - name: Content-Type
@@ -1465,12 +1465,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.baseURL }}accounts-payable/de5f9b72-01c6-468a-ad63-53b80acacd87"
+      - url: "{{ _.baseURL }}accounts-payable/d8bc1ec6-827d-4c62-aa09-a59e319465ae"
         name: getById
         meta:
           id: req_c5c912fee1584ceeb3bf203e2f5c3b66
           created: 1749229438101
-          modified: 1749230700970
+          modified: 1749298119020
           isPrivate: false
           description: ""
           sortKey: -1732181369692.7102
@@ -1494,7 +1494,7 @@ collection:
         meta:
           id: req_9707e249779e43968ce0b737b50ca945
           created: 1749229464279
-          modified: 1749247641412
+          modified: 1749298058435
           isPrivate: false
           description: ""
           sortKey: -1732180997680.0654
@@ -1503,13 +1503,13 @@ collection:
           mimeType: application/json
           text: |-
             {
-            	"supplierId": "7d4f0f83-100f-4e19-819d-4c7bd62a9b89",
+            	"supplierId": "199620ec-22c8-47d7-b6a0-1d94f2665b38",
             	"documentNumber": "002-A",
-            	"plannedPaymentMethod": "1e8c124f-dfef-4afb-9efe-bd4fc51c6d14",
+            	"plannedPaymentMethod": "23840612-a48f-4304-bf62-b96a5eeccfa3",
             	"documentDate": "2025-06-01T03:00:00.000Z",
             	"dueDate": "2025-06-30T03:00:00.000Z",
             	"value": 95.32,
-            	"costCenterId": "2c8a2d71-b65f-4d2b-b123-d4a36c4a2a5c",
+            	"costCenterId": "88f7284b-214b-48e8-9d59-39c1e2e3ae64",
             	"observation": "Conta de Água 06/2025"
             }
         headers:
@@ -1658,7 +1658,7 @@ collection:
         meta:
           id: req_ed36a5c80c324d9e8c04c4bbcc33d59f
           created: 1749249413085
-          modified: 1749249432459
+          modified: 1749327111947
           isPrivate: false
           description: ""
           sortKey: -1732182113718
@@ -1686,12 +1686,12 @@ collection:
             disabled: true
           - id: pair_9f987ddcf9c349c08192c62a98d5c8ef
             name: dueDateStart
-            value: 2025-06-01
+            value: 2025-04-01
             description: ""
             disabled: false
           - id: pair_445f7824cfd84618a260b160eda4314b
             name: dueDateEnd
-            value: 2025-07-31
+            value: 2025-08-31
             description: ""
             disabled: false
           - id: pair_81faa60335834cf98b233e7431031851
@@ -1906,12 +1906,12 @@ collection:
       sortKey: -1731420090593.4517
       description: ""
     children:
-      - url: "{{ _.baseURL }}cash-flow/account/3f2d341e-7ddb-4f4e-a8d1-418f0f919cf5"
+      - url: "{{ _.baseURL }}cash-flow/account/63e4fca8-f238-41f4-bd0c-c8cc4eee2577"
         name: getByAccountId
         meta:
           id: req_33629d7ac48740b9a6d7935c3b61f977
           created: 1749249469479
-          modified: 1749296169405
+          modified: 1749308329873
           isPrivate: false
           description: ""
           sortKey: -1732181369692.7102
@@ -1935,7 +1935,7 @@ collection:
         meta:
           id: req_bb1ab0b3a04648d4bc224a2532e774d6
           created: 1749249469480
-          modified: 1749250571397
+          modified: 1749309617084
           isPrivate: false
           description: ""
           sortKey: -1732180997680.0654
@@ -1944,13 +1944,13 @@ collection:
           mimeType: application/json
           text: |-
             {
-            	"date": "2025-06-06T20:00:00.000Z",
-            	"historic": "Recebimento de cliente avulso",
+            	"date": "2025-05-07T11:00:00.000Z",
+            	"historic": "Recebimento de frete",
             	"type": "CREDIT",
-            	"description": "Transferência do cliente XYZ",
-            	"value": 200,
-            	"costCenterId": "b3709a72-a085-4afd-8021-dbee35beb096",
-            	"bankAccountId": "eccb8e43-abad-4a71-9c79-d278c6a5dbfa"
+            	"description": "Recebimento de frete",
+            	"value": 112.97,
+            	"costCenterId": "9748b091-1533-44c7-8aa3-4048de6bef2d",
+            	"bankAccountId": "63e4fca8-f238-41f4-bd0c-c8cc4eee2577"
             }
         headers:
           - name: Content-Type
@@ -1997,7 +1997,7 @@ collection:
         meta:
           id: req_25984321d7eb47018e604f1a7f5966d8
           created: 1749252683345
-          modified: 1749296280920
+          modified: 1749308517048
           isPrivate: false
           description: ""
           sortKey: -1732181183686.3877
@@ -2005,7 +2005,7 @@ collection:
         parameters:
           - id: pair_8b13ea8fa4c54cf3986f18044b55d596
             name: bankAccountId
-            value: 3f2d341e-7ddb-4f4e-a8d1-418f0f919cf5
+            value: 63e4fca8-f238-41f4-bd0c-c8cc4eee2577
             description: ""
             disabled: false
           - id: pair_05ffc81d3ed943a29d5bac4fbfe5194f
@@ -2019,6 +2019,45 @@ collection:
             description: ""
             disabled: true
         headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}cash-flow/import-bank-extract"
+        name: importExtract
+        meta:
+          id: req_0dac0346310443eea3189c7f6eaa71b0
+          created: 1749305044777
+          modified: 1749310232310
+          isPrivate: false
+          description: ""
+          sortKey: -1732180951178.4849
+        method: POST
+        body:
+          mimeType: multipart/form-data
+          params:
+            - name: bankAccountId
+              value: 63e4fca8-f238-41f4-bd0c-c8cc4eee2577
+              id: pair_4ecce22cfc364dfc89743897dd4d02e8
+            - id: pair_e3f7158130bb41bebbc655d14c59efc6
+              name: file
+              value: ""
+              description: ""
+              disabled: false
+              type: file
+              fileName: /Users/eduardotrindade/Downloads/Extrato BB 2025_04.xlsx
+        headers:
+          - name: Content-Type
+            value: multipart/form-data
           - name: User-Agent
             value: insomnia/10.3.0
         authentication:
@@ -2096,6 +2135,137 @@ collection:
             send: true
             store: true
           rebuildPath: true
+  - name: 14. Invoices (Faturas)
+    meta:
+      id: fld_9dd244bfc7264ffb98c2023820cb4d4a
+      created: 1749323407250
+      modified: 1749323407250
+      sortKey: -1731419532452.4878
+      description: ""
+    children:
+      - url: "{{ _.baseURL }}invoices/83e26544-3a85-46ea-ab17-c4ad24d9d633"
+        name: update
+        meta:
+          id: req_fcd9fac0b33b447bb44b0abc3c24943b
+          created: 1749323407252
+          modified: 1749332956003
+          isPrivate: false
+          description: ""
+          sortKey: -1732180997680.0654
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"serviceValue": 1500,
+            	"retainsIss": true,
+            	"issueDate": "2025-05-07T15:00:00.000Z",
+            	"notes": "Nota de teste",
+            	"costCenterId": "dae699f2-e3c2-4381-977d-0bbb1d1ed26c"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}invoices"
+        name: list
+        meta:
+          id: req_e71ba9ba68574e0bb7d5069ca76a99ed
+          created: 1749323407254
+          modified: 1749331390562
+          isPrivate: false
+          description: ""
+          sortKey: -1732181369792.7102
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}invoices"
+        name: create
+        meta:
+          id: req_d3ca9c6bb0964e50a8fa40ee73f7bdc7
+          created: 1749323420141
+          modified: 1749332945578
+          isPrivate: false
+          description: ""
+          sortKey: -1732181369742.7102
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"invoiceNumber": "2025/001",
+            	"customerId": "bc1d6e7b-7473-4b34-b97b-b694130e3ef2",
+            	"paymentConditionId": "003c212b-2de1-4078-ab78-c51e14c3d092",
+            	"costCenterId": "dae699f2-e3c2-4381-977d-0bbb1d1ed26c",
+            	"issueDate": "2025-05-07T15:00:00.000Z",
+            	"serviceValue": 1200,
+            	"retainsIss": false,
+            	"notes": "Nota de teste"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}invoices/83e26544-3a85-46ea-ab17-c4ad24d9d633"
+        name: getById
+        meta:
+          id: req_9be2eaee0ddd43d3a0bbeeb7a40f4ce8
+          created: 1749333790570
+          modified: 1749333797685
+          isPrivate: false
+          description: ""
+          sortKey: -1732181369767.7102
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
 cookieJar:
   name: Default Jar
   meta:
@@ -2114,12 +2284,12 @@ environments:
       meta:
         id: env_339e55f028994e779813ac8cb6de44e9
         created: 1746536736141
-        modified: 1749293724340
+        modified: 1749308277414
         isPrivate: false
         sortKey: 1735229491596
       data:
         baseURL: http://localhost:3333/api/
-        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjNjQ2ZTljZS05OTY1LTQ4YWItYWU1YS0yMTI2YWNjYzZkYmQiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NDkyOTM3MTYsImV4cCI6MTc0OTg5ODUxNn0.hkriYX_riZyeGPvc3URpKWUdM7LDStZtkEYgLIryKRA
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYTljMmY2OS02YWY5LTQwNDctODMyYy1jYTcxZDllODUyNjMiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NDkzMDgyNjksImV4cCI6MTc0OTkxMzA2OX0.T-zMs17vrO6L3asnSt81L9OcIxCK8EEfcXhgBLPfzqU
       color: "#6de9ca"
     - name: Ambiente Dev
       meta:
