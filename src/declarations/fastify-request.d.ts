@@ -7,5 +7,6 @@ declare module 'fastify' {
          id: string
          role: UserRole
       }
+      files?: () => AsyncGenerator<MultipartFile>
    }
 }

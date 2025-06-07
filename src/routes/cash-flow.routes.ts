@@ -20,6 +20,9 @@ const cashFlowRoutes: FastifyPluginAsync = async (server) => {
 
    //Rota para obter os totais do fluxo de caixa por dia
    server.get('/totals-per-day', { preHandler: authMiddleware, schema: getTotalsPerDayCashFlowSchema }, CashFlowController.getTotalsPerDay)
+
+   //Rota para importar transações bancárias de um arquivo XLSX
+   server.post('/import-bank-extract', { preHandler: authMiddleware }, CashFlowController.importXlsx)
 }
 
 export { cashFlowRoutes }

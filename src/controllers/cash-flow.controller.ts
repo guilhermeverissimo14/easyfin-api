@@ -1,12 +1,14 @@
 import { AppError } from '@/helpers/app-error'
+import { TransactionType } from '@prisma/client'
+import { FastifyReply, FastifyRequest } from 'fastify'
+import { MultipartFile } from '@fastify/multipart'
 import { validateSchema } from '@/helpers/validate-schema'
 import { createCashFlowSchema } from '@/schemas/cash-flow'
 import { createCashFlowService } from '@/services/cash-flow/create-cash-flow.service'
 import { getCashFlowTotalsPerDayService } from '@/services/cash-flow/get-cash-flow-totals-per-day.service'
 import { listCashFlowByAccountIdService } from '@/services/cash-flow/list-cash-flow-by-account-id.service'
 import { listCashFlowByCashBoxIdService } from '@/services/cash-flow/list-cash-flow-by-cash-id.service'
-import { TransactionType } from '@prisma/client'
-import { FastifyReply, FastifyRequest } from 'fastify'
+import { importBankTransactionsService } from '@/services/cash-flow/import-bank-transactions.service'
 
 class CashFlowController {
    constructor() {}
@@ -102,6 +104,49 @@ class CashFlowController {
          } else {
             return reply.status(500).send({ message: 'Erro interno do servidor' })
          }
+      }
+   }
+
+   public async importXlsx(request: FastifyRequest, reply: FastifyReply) {
+      const parts = request.parts()
+      let bankAccountId: string | null = null
+      let file: MultipartFile | null = null
+
+      for await (const part of parts) {
+         if (part.type === 'file') {
+            file = part
+         } else {
+            if (part.fieldname === 'bankAccountId') {
+               bankAccountId = part.value as string
+            }
+         }
+      }
+
+      if (!file) {
+         return reply.status(400).send({ message: 'Nenhum arquivo foi enviado.' })
+      }
+
+      if (!bankAccountId) {
+         return reply.status(400).send({ message: 'ID da conta bancária não fornecido.' })
+      }
+
+      try {
+         const filename = file.filename
+         const fileBuffer = await file.toBuffer()
+
+         if (!filename.endsWith('.xlsx')) {
+            return reply.status(400).send({ message: 'Apenas arquivos .xlsx são permitidos.' })
+         }
+
+         await importBankTransactionsService({ bankAccountId, file: fileBuffer, filename })
+
+         return reply.status(200).send({ message: 'Importação realizada com sucesso!' })
+      } catch (error) {
+         if (error instanceof AppError) {
+            return reply.status(400).send({ message: error.message })
+         }
+         console.error(error)
+         return reply.status(500).send({ message: 'Erro interno do servidor ao importar transações bancárias.' })
       }
    }
 }

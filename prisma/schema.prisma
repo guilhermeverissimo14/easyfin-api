@@ -335,6 +335,7 @@ model CashFlow {
   bankAccountId String?         @map("bank_account_id") // Vincula a conta bancária, pode ser nulo se for movimentação do caixa físico
   cashBoxId     String?         @map("cash_box_id") // Vincula ao caixa físico, pode ser nulo se for movimentação bancária
   balance       Int // Saldo atualizado após a movimentação (em centavos)
+  csvFileName   String?         @map("csv_file_name") // Nome do arquivo CSV, se aplicável
   createdAt     DateTime        @default(now()) @map("created_at")
   updatedAt     DateTime        @updatedAt @map("updated_at")
 

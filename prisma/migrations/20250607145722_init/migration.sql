@@ -288,6 +288,7 @@ CREATE TABLE "fluxo_caixa" (
     "bank_account_id" TEXT,
     "cash_box_id" TEXT,
     "balance" INTEGER NOT NULL,
+    "csv_file_name" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 

@@ -35,6 +35,7 @@ async function main() {
       { name: 'Impostos INSS' },
       { name: 'Impostos Simples' },
       { name: 'Infraestrutura' },
+      { name: 'Saldo Inicial' },
       { name: 'Ajustes de Saldo' },
       { name: 'Despesas Administrativas' },
       { name: 'Despesas Bancárias' },
@@ -54,6 +55,11 @@ async function main() {
       { name: 'Despesas com Limpeza' },
       { name: 'Despesas com Segurança' },
       { name: 'Outras Despesas' },
+      { name: 'Transações Bancárias' },
+      { name: 'Transações de Caixa' },
+      { name: 'Recebimentos a Vista' },
+      { name: 'Recebimentos a Prazo' },
+      { name: 'Outros Recebimentos' },
    ]
 
    for (const costCenter of costCenters) {
@@ -248,7 +254,7 @@ async function main() {
 
          const costCenter = await prisma.costCenter.findFirst({
             where: {
-               name: 'Ajustes de Saldo',
+               name: 'Saldo Inicial',
             },
          })
 
@@ -309,7 +315,7 @@ async function main() {
 
          const costCenter = await prisma.costCenter.findFirst({
             where: {
-               name: 'Ajustes de Saldo',
+               name: 'Saldo Inicial',
             },
          })
 

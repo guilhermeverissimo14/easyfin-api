@@ -3,6 +3,7 @@ import cors from '@fastify/cors'
 import { startOverdueUpdaterJob } from './jobs/overdue-updater.job'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUi from '@fastify/swagger-ui'
+import fastifyMultipart from '@fastify/multipart'
 import { authRoutes } from './routes/auth.routes'
 import { healthRoutes } from './routes/health.routes'
 import { userRoutes } from './routes/user.routes'
@@ -26,6 +27,18 @@ server.register(cors, {
    origin: '*',
    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
    allowedHeaders: ['Content-Type', 'Authorization'],
+})
+
+server.register(fastifyMultipart, {
+   attachFieldsToBody: false,
+   limits: {
+      fieldNameSize: 100,
+      fieldSize: 1000000,
+      fields: 10,
+      fileSize: 10000000, // 10MB
+      files: 1,
+      headerPairs: 2000,
+   },
 })
 
 server.register(fastifySwagger, {
