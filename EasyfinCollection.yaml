@@ -1747,7 +1747,7 @@ collection:
         meta:
           id: req_6b58201f991b4fc482832faf93bbe8db
           created: 1749249413088
-          modified: 1749249439737
+          modified: 1749296140165
           isPrivate: false
           description: ""
           sortKey: -1732180997680.0654
@@ -1756,14 +1756,14 @@ collection:
           mimeType: application/json
           text: |-
             {
-            	"supplierId": "7d4f0f83-100f-4e19-819d-4c7bd62a9b89",
-            	"documentNumber": "002-A",
-            	"plannedPaymentMethod": "1e8c124f-dfef-4afb-9efe-bd4fc51c6d14",
-            	"documentDate": "2025-06-01T03:00:00.000Z",
+            	"customerId": "0c0aa352-2341-472b-8793-5ebd3958dcd8",
+            	"documentNumber": "Conta 001-A",
+            	"plannedPaymentMethod": "dc861f63-126e-407f-9001-8d6473d82000",
+            	"documentDate": "2025-06-05T03:00:00.000Z",
             	"dueDate": "2025-06-30T03:00:00.000Z",
-            	"value": 95.32,
-            	"costCenterId": "2c8a2d71-b65f-4d2b-b123-d4a36c4a2a5c",
-            	"observation": "Conta de Água 06/2025"
+            	"value": 195.15,
+            	"costCenterId": "36e78c1e-eda6-4719-9b7d-3bbcf78fc430",
+            	"observation": "Venda a prazo"
             }
         headers:
           - name: Content-Type
@@ -1865,12 +1865,12 @@ collection:
             store: true
           rebuildPath: true
       - url: "{{ _.baseURL
-          }}accounts-receivable/7130636d-51c1-4f9d-ae26-4b1ed67422c3/settle"
-        name: settle
+          }}accounts-receivable/f3f30cce-a006-49a7-9de8-6997a0b23ef0/receive"
+        name: receive
         meta:
           id: req_82186b65a1e74af1802c1c26f6f55060
           created: 1749249413093
-          modified: 1749249443680
+          modified: 1749296228247
           isPrivate: false
           description: ""
           sortKey: -1732180904676.9043
@@ -1879,8 +1879,8 @@ collection:
           mimeType: application/json
           text: |-
             {
-            	"paymentDate": "2025-06-06T18:00:00.000Z",
-            	"bankAccountId": "eccb8e43-abad-4a71-9c79-d278c6a5dbfa"
+            	"paymentDate": "2025-06-07T18:00:00.000Z",
+            	"bankAccountId": "3f2d341e-7ddb-4f4e-a8d1-418f0f919cf5"
             }
         headers:
           - name: Content-Type
@@ -1906,12 +1906,12 @@ collection:
       sortKey: -1731420090593.4517
       description: ""
     children:
-      - url: "{{ _.baseURL }}cash-flow/account/eccb8e43-abad-4a71-9c79-d278c6a5dbfa"
+      - url: "{{ _.baseURL }}cash-flow/account/3f2d341e-7ddb-4f4e-a8d1-418f0f919cf5"
         name: getByAccountId
         meta:
           id: req_33629d7ac48740b9a6d7935c3b61f977
           created: 1749249469479
-          modified: 1749249772563
+          modified: 1749296169405
           isPrivate: false
           description: ""
           sortKey: -1732181369692.7102
@@ -1997,7 +1997,7 @@ collection:
         meta:
           id: req_25984321d7eb47018e604f1a7f5966d8
           created: 1749252683345
-          modified: 1749254305135
+          modified: 1749296280920
           isPrivate: false
           description: ""
           sortKey: -1732181183686.3877
@@ -2005,7 +2005,7 @@ collection:
         parameters:
           - id: pair_8b13ea8fa4c54cf3986f18044b55d596
             name: bankAccountId
-            value: eccb8e43-abad-4a71-9c79-d278c6a5dbfa
+            value: 3f2d341e-7ddb-4f4e-a8d1-418f0f919cf5
             description: ""
             disabled: false
           - id: pair_05ffc81d3ed943a29d5bac4fbfe5194f
@@ -2018,6 +2018,70 @@ collection:
             value: ""
             description: ""
             disabled: true
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 13. Settings (Configurações)
+    meta:
+      id: fld_637c423956494000939650ba0d59c501
+      created: 1749293667651
+      modified: 1749293667651
+      sortKey: -1731419718499.4758
+      description: ""
+    children:
+      - url: "{{ _.baseURL }}settings"
+        name: update
+        meta:
+          id: req_eb1b7f010ae247e9a8565957ec17c0f3
+          created: 1749293667655
+          modified: 1749294080959
+          isPrivate: false
+          description: ""
+          sortKey: -1732180997680.0654
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"cashFlowDefault": "CASH"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}settings"
+        name: list
+        meta:
+          id: req_6eb8e1dc71ac41acb8d30e041afb7ca2
+          created: 1749293667656
+          modified: 1749293710041
+          isPrivate: false
+          description: ""
+          sortKey: -1732181369792.7102
+        method: GET
         headers:
           - name: User-Agent
             value: insomnia/10.3.0
@@ -2050,12 +2114,12 @@ environments:
       meta:
         id: env_339e55f028994e779813ac8cb6de44e9
         created: 1746536736141
-        modified: 1749247671495
+        modified: 1749293724340
         isPrivate: false
         sortKey: 1735229491596
       data:
         baseURL: http://localhost:3333/api/
-        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwZmQ2NjllYS03MDNmLTRmY2MtYTU4Zi1iY2MxMmFmMDA0YzYiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NDkyNDc2NjQsImV4cCI6MTc0OTg1MjQ2NH0.Tyuqy2lRyVDznMp4mExhFC8QIVIXbpwE_Ccb8ZF-SWg
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjNjQ2ZTljZS05OTY1LTQ4YWItYWU1YS0yMTI2YWNjYzZkYmQiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NDkyOTM3MTYsImV4cCI6MTc0OTg5ODUxNn0.hkriYX_riZyeGPvc3URpKWUdM7LDStZtkEYgLIryKRA
       color: "#6de9ca"
     - name: Ambiente Dev
       meta:

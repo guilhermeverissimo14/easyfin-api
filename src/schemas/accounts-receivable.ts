@@ -1,0 +1,43 @@
+import { z } from 'zod'
+
+export const createAccountsReceivableSchema = z.object({
+   customerId: z.string().min(1, 'Cliente é obrigatório'),
+   documentNumber: z.string().min(1, 'Número do documento é obrigatório'),
+   documentDate: z.string().min(1, 'Data do documento é obrigatória'),
+   launchDate: z.string().optional(),
+   dueDate: z.string().min(1, 'Data de vencimento é obrigatória'),
+   receiptDate: z.string().optional(),
+   value: z.number().min(1, 'Valor é obrigatório e deve ser maior do que zero'),
+   paidValue: z.number().optional(),
+   discount: z.number().optional(),
+   fine: z.number().optional(),
+   interest: z.number().optional(),
+   installmentNumber: z.number().optional(),
+   totalInstallments: z.number().optional(),
+   costCenterId: z.string().optional(),
+   plannedPaymentMethod: z.string().optional(),
+   paymentMethodId: z.string().optional(),
+   observation: z.string().optional(),
+   status: z.enum(['PENDING', 'PAID', 'CANCELLED', 'OVERDUE']).optional(),
+})
+
+export const updateAccountsReceivableSchema = z.object({
+   customerId: z.string().optional(),
+   documentNumber: z.string().optional(),
+   documentDate: z.string().optional(),
+   launchDate: z.string().optional(),
+   dueDate: z.string().optional(),
+   receiptDate: z.string().optional(),
+   value: z.number().optional(),
+   paidValue: z.number().optional(),
+   discount: z.number().optional(),
+   fine: z.number().optional(),
+   interest: z.number().optional(),
+   installmentNumber: z.number().optional(),
+   totalInstallments: z.number().optional(),
+   costCenterId: z.string().optional(),
+   plannedPaymentMethod: z.string().optional(),
+   paymentMethodId: z.string().optional(),
+   observation: z.string().optional(),
+   status: z.enum(['PENDING', 'PAID', 'CANCELLED', 'OVERDUE']).optional(),
+})

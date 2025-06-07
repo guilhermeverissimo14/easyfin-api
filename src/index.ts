@@ -16,6 +16,7 @@ import { paymentMethodsRoutes } from './routes/payment-method.routes'
 import { accountPayableRoutes } from './routes/account-payable.routes'
 import { cashFlowRoutes } from './routes/cash-flow.routes'
 import { settingsRoutes } from './routes/settings.routes'
+import { accountReceivableRoutes } from './routes/account-receivable.routes'
 
 const server = Fastify()
 
@@ -50,6 +51,7 @@ server.register(fastifySwagger, {
          { name: 'Bank Account', description: 'Contas bancárias' },
          { name: 'Payment Method', description: 'Métodos de pagamento' },
          { name: 'Accounts Payable', description: 'Contas a pagar' },
+         { name: 'Accounts Receivable', description: 'Contas a receber' },
          { name: 'Cash Flow', description: 'Fluxo de caixa' },
          { name: 'Settings', description: 'Configurações do sistema' },
       ],
@@ -106,6 +108,7 @@ server.register(costCenterRoutes, { prefix: '/api/cost-centers' })
 server.register(bankAccountRoutes, { prefix: '/api/bank-accounts' })
 server.register(paymentMethodsRoutes, { prefix: '/api/payment-methods' })
 server.register(accountPayableRoutes, { prefix: '/api/accounts-payable' })
+server.register(accountReceivableRoutes, { prefix: '/api/accounts-receivable' })
 server.register(cashFlowRoutes, { prefix: '/api/cash-flow' })
 server.register(settingsRoutes, { prefix: '/api/settings' })
 
