@@ -455,6 +455,12 @@ async function main() {
          console.log(`Condição de pagamento já existe: ${paymentTerm.description}`)
       }
    }
+
+   await prisma.settings.create({
+      data: {
+         cashFlowDefault: 'CASH',
+      },
+   })
 }
 
 main()

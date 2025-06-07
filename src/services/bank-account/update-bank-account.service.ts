@@ -10,6 +10,7 @@ export const updateBankAccountService = async (
       agency?: string
       account?: string
       type?: string
+      active?: boolean
    },
 ) => {
    const bankAccount = await prisma.bankAccounts.findUnique({

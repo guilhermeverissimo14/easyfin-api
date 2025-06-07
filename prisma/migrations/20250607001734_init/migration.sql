@@ -7,6 +7,9 @@ CREATE TYPE "TransactionType" AS ENUM ('DEBIT', 'CREDIT');
 -- CreateEnum
 CREATE TYPE "PaymentStatus" AS ENUM ('PENDING', 'PAID', 'CANCELLED', 'OVERDUE');
 
+-- CreateEnum
+CREATE TYPE "CashType" AS ENUM ('BANK', 'CASH');
+
 -- CreateTable
 CREATE TABLE "usuarios" (
     "id" TEXT NOT NULL,
@@ -128,6 +131,7 @@ CREATE TABLE "contas_bancarias" (
     "agency" TEXT NOT NULL,
     "account" TEXT NOT NULL,
     "type" TEXT DEFAULT 'C',
+    "active" BOOLEAN NOT NULL DEFAULT true,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -288,6 +292,17 @@ CREATE TABLE "fluxo_caixa" (
     "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "fluxo_caixa_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "configuracoes" (
+    "id" TEXT NOT NULL,
+    "cash_flow_default" "CashType" NOT NULL DEFAULT 'CASH',
+    "bank_account_default" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "configuracoes_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex

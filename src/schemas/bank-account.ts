@@ -18,4 +18,5 @@ export const updateBankAccountSchema = z.object({
          errorMap: () => ({ message: 'Tipo deve ser "C" ou "P"' }),
       })
       .optional(),
+   active: z.boolean().optional().default(true),
 })

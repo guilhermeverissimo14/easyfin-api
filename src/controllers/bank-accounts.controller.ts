@@ -99,12 +99,13 @@ class BankAccountsController {
             agency?: string
             account?: string
             type?: string
+            active?: boolean
          }
       }>,
       reply: FastifyReply,
    ) {
       const { id } = request.params
-      const { bank, agency, account, type } = request.body
+      const { bank, agency, account, type, active } = request.body
       const userRole = request.user?.role
 
       const allowedTypes = ['C', 'P'] as const
@@ -114,14 +115,14 @@ class BankAccountsController {
          return reply.status(401).send({ message: 'Usuário não autenticado' })
       }
 
-      const validationError = await validateSchema(updateBankAccountSchema, { bank, agency, account, type: safeType }, reply)
+      const validationError = await validateSchema(updateBankAccountSchema, { bank, agency, account, type: safeType, active }, reply)
 
       if (validationError) {
          return
       }
 
       try {
-         const updatedBankAccount = await updateBankAccountService(id, { bank, agency, account, type })
+         const updatedBankAccount = await updateBankAccountService(id, { bank, agency, account, type, active })
          return reply.status(200).send(updatedBankAccount)
       } catch (error) {
          if (error instanceof AppError) {

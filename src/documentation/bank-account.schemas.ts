@@ -49,6 +49,11 @@ export const createBankAccountSchema = {
                type: 'string',
                description: 'Tipo da conta (C - Corrente, P - Poupança)',
             },
+            active: {
+               type: 'boolean',
+               description: 'Status da conta bancária (ativa/inativa)',
+               default: true,
+            },
             createdAt: {
                type: 'string',
                format: 'date-time',
@@ -128,6 +133,11 @@ export const updateBankAccountSchema = {
             type: 'string',
             description: 'Tipo da conta (C - Corrente, P - Poupança)',
          },
+         active: {
+            type: 'boolean',
+            description: 'Status da conta bancária (ativa/inativa)',
+            default: true,
+         },
       },
    },
    response: {
@@ -155,6 +165,11 @@ export const updateBankAccountSchema = {
             type: {
                type: 'string',
                description: 'Tipo da conta (C - Corrente, P - Poupança)',
+            },
+            active: {
+               type: 'boolean',
+               description: 'Status da conta bancária (ativa/inativa)',
+               default: true,
             },
             createdAt: {
                type: 'string',
@@ -223,6 +238,11 @@ export const listBankAccountSchema = {
                type: {
                   type: 'string',
                   description: 'Tipo da conta (C - Corrente, P - Poupança)',
+               },
+               active: {
+                  type: 'boolean',
+                  description: 'Status da conta bancária (ativa/inativa)',
+                  default: true,
                },
                createdAt: {
                   type: 'string',
@@ -334,6 +354,11 @@ export const getBankAccountByIdSchema = {
                type: 'string',
                description: 'Tipo da conta (C - Corrente, P - Poupança)',
                example: 'C',
+            },
+            active: {
+               type: 'boolean',
+               description: 'Status da conta bancária (ativa/inativa)',
+               default: true,
             },
             createdAt: {
                type: 'string',

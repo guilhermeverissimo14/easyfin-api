@@ -24,6 +24,11 @@ enum PaymentStatus {
   OVERDUE
 }
 
+enum CashType {
+  BANK
+  CASH
+}
+
 model User {
   id              String    @id @default(uuid()) @map("id")
   name            String
@@ -151,6 +156,7 @@ model BankAccounts {
   agency    String
   account   String
   type      String?  @default("C")
+  active    Boolean  @default(true)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -337,4 +343,14 @@ model CashFlow {
   CashBox     CashBox?      @relation(fields: [cashBoxId], references: [id])
 
   @@map("fluxo_caixa")
+}
+
+model Settings {
+  id                 String   @id @default(uuid()) @map("id")
+  cashFlowDefault    CashType @default(CASH) @map("cash_flow_default")
+  bankAccountDefault String?  @map("bank_account_default")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  @@map("configuracoes")
 }
