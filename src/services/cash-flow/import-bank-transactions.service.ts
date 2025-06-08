@@ -235,9 +235,27 @@ export const importBankTransactionsService = async ({ bankAccountId, file, filen
             },
          })
 
-         await prisma.bankBalance.create({
-            data: {
+         const bankBalance = await prisma.bankBalance.findFirst({
+            where: {
                bankAccountId,
+            },
+         })
+
+         if (!bankBalance) {
+            await prisma.bankBalance.create({
+               data: {
+                  bankAccountId,
+                  balance: recalculateBalance,
+               },
+            })
+            continue
+         }
+
+         await prisma.bankBalance.update({
+            where: {
+               id: bankBalance.id,
+            },
+            data: {
                balance: recalculateBalance,
             },
          })
