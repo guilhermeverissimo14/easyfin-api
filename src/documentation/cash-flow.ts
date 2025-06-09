@@ -479,7 +479,7 @@ export const importBankTransactionsCashFlowSchema = {
                   properties: {
                      message: {
                         type: 'string',
-                        example: 'Erro de validação. Verifique os campos obrigatórios e os formatos esperados.',
+                        example: 'Arquivo XLSX vazio ou com formato inválido.',
                      },
                   },
                },
