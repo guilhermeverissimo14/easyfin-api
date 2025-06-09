@@ -18,6 +18,16 @@ export const updateSettingsService = async (updateData: { cashFlowDefault: CashT
       throw new AppError('Conta bancária padrão é obrigatória para o tipo de fluxo de caixa BANK', 400)
    }
 
+   if (updateData.cashFlowDefault === CashType.CASH && !updateData.bankAccountDefault) {
+      const cashAccount = await prisma.cashBox.findFirst()
+
+      if (!cashAccount) {
+         throw new AppError('Conta de caixa padrão é obrigatória para o tipo de fluxo de caixa CASH', 400)
+      }
+
+      updateData.bankAccountDefault = cashAccount.id
+   }
+
    const updatedSettings = await prisma.settings.update({
       where: { id: settings.id },
       data: {
