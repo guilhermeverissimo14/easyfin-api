@@ -227,7 +227,7 @@ export const importBankTransactionsService = async ({ bankAccountId, file, filen
          where: {
             bankAccountId,
             date: transaction.transactionAt,
-            csvFileName: filename, // Garante que estamos atualizando apenas os fluxos de caixa corretos
+            // csvFileName: filename, // Garante que estamos atualizando apenas os fluxos de caixa corretos
          },
          data: {
             balance: recalculateBalance,
