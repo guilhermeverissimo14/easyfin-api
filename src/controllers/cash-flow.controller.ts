@@ -109,6 +109,8 @@ class CashFlowController {
 
    public async importXlsx(request: FastifyRequest, reply: FastifyReply) {
       const parts = request.parts()
+
+      let sheetNumber: number | undefined = undefined
       let bankAccountId: string | null = null
       let file: MultipartFile | null = null
 
@@ -118,6 +120,8 @@ class CashFlowController {
          } else {
             if (part.fieldname === 'bankAccountId') {
                bankAccountId = part.value as string
+            } else if (part.fieldname === 'sheetNumber') {
+               sheetNumber = Number(part.value)
             }
          }
       }
@@ -130,6 +134,10 @@ class CashFlowController {
          return reply.status(400).send({ message: 'ID da conta bancária não fornecido.' })
       }
 
+      if (sheetNumber !== undefined && (isNaN(sheetNumber) || sheetNumber < 0)) {
+         return reply.status(400).send({ message: 'Número da planilha inválido.' })
+      }
+
       try {
          const filename = file.filename
          const fileBuffer = await file.toBuffer()
@@ -138,7 +146,7 @@ class CashFlowController {
             return reply.status(400).send({ message: 'Apenas arquivos .xlsx são permitidos.' })
          }
 
-         await importBankTransactionsService({ bankAccountId, file: fileBuffer, filename })
+         await importBankTransactionsService({ sheetNumber, bankAccountId, file: fileBuffer, filename })
 
          return reply.status(200).send({ message: 'Importação realizada com sucesso!' })
       } catch (error) {
