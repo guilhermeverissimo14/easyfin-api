@@ -5,14 +5,15 @@ import { AppError } from '@/helpers/app-error'
 const prisma = new PrismaClient()
 
 interface ImportBankTransactionsServiceParams {
+   sheetNumber?: number
    bankAccountId: string
    file: Buffer
    filename: string
 }
 
-export const importBankTransactionsService = async ({ bankAccountId, file, filename }: ImportBankTransactionsServiceParams) => {
+export const importBankTransactionsService = async ({ sheetNumber, bankAccountId, file, filename }: ImportBankTransactionsServiceParams) => {
    const workbook = XLSX.read(file, { type: 'buffer' })
-   const sheetName = workbook.SheetNames[0]
+   const sheetName = workbook.SheetNames[sheetNumber || 0]
    const sheet = workbook.Sheets[sheetName]
    const data = XLSX.utils.sheet_to_json(sheet, { header: 1, range: 3 })
 
@@ -100,7 +101,7 @@ export const importBankTransactionsService = async ({ bankAccountId, file, filen
       let transactionDate = new Date(isoDateString)
 
       const transactionType = type.trim().toUpperCase() === 'C' ? TransactionType.CREDIT : TransactionType.DEBIT
-      const transactionValue = Math.round(Number(value) * 100)
+      const transactionValue = Number(value) * 100
 
       if (isNaN(transactionValue) || transactionValue <= 0) {
          console.warn('Linha ignorada por conter um valor inválido:', row)
