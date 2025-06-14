@@ -11,7 +11,7 @@ interface ImportBankTransactionsServiceParams {
    filename: string
 }
 
-export const importBankTransactionsService = async ({ sheetNumber, bankAccountId, file, filename }: ImportBankTransactionsServiceParams) => {
+export const importBankTransactionsService = async ({ sheetNumber = 0, bankAccountId, file, filename }: ImportBankTransactionsServiceParams) => {
    const workbook = XLSX.read(file, { type: 'buffer' })
    const sheetName = workbook.SheetNames[sheetNumber || 0]
    const sheet = workbook.Sheets[sheetName]
@@ -35,16 +35,15 @@ export const importBankTransactionsService = async ({ sheetNumber, bankAccountId
       throw new AppError('Conta bancária inativa.', 400)
    }
 
-   // 1. Obtem a data da primeira transação no CSV
    const firstRow = data[0] as [Date, string, number, string, string]
    if (!firstRow || !firstRow[0]) {
       throw new AppError('Arquivo CSV vazio ou com formato inválido.', 400)
    }
+
    const datePartsFirst = (firstRow[0] as any).split('/')
    const isoDateStringFirst = `${datePartsFirst[2]}-${datePartsFirst[1]}-${datePartsFirst[0]}`
    const firstTransactionDate = new Date(isoDateStringFirst)
 
-   // 2. Obtem o saldo bancário mais recente ANTERIOR à data da primeira transação
    const initialBalanceRecord = await prisma.bankBalance.findFirst({
       where: {
          bankAccountId,
@@ -59,7 +58,6 @@ export const importBankTransactionsService = async ({ sheetNumber, bankAccountId
 
    const initialBalance = initialBalanceRecord?.balance || 0
 
-   // 3. Remove transações existentes para este arquivo
    await prisma.$transaction([
       prisma.cashFlow.deleteMany({
          where: {
@@ -75,8 +73,11 @@ export const importBankTransactionsService = async ({ sheetNumber, bankAccountId
       }),
    ])
 
-   // 4. Importa as transações do CSV e recalcular o saldo
    let currentBalance = initialBalance
+
+   const dateControlMap = new Map<string, Date>()
+
+   let importedLinesCount = 0
 
    for (const row of data) {
       if (!Array.isArray(row) || row.length < 5) {
@@ -91,14 +92,44 @@ export const importBankTransactionsService = async ({ sheetNumber, bankAccountId
          continue
       }
 
-      // Converte a data para o formato ISO 8601 (YYYY-MM-DD)
       const dateParts = (date as any).split('/')
       if (dateParts.length !== 3) {
          console.warn('Linha ignorada por conter uma data inválida:', row)
          continue
       }
-      const isoDateString = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`
-      let transactionDate = new Date(isoDateString)
+
+      const baseDateStr = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`
+      const baseDate = new Date(`${baseDateStr}T03:00:00Z`)
+      const baseDateKey = baseDateStr
+
+      let transactionDate: Date
+
+      if (!dateControlMap.has(baseDateKey)) {
+         const lastOfDay = await prisma.bankTransactions.findFirst({
+            where: {
+               bankAccountId,
+               transactionAt: {
+                  gte: new Date(`${baseDateStr}T03:00:00Z`),
+                  lt: new Date(`${baseDateStr}T23:59:59Z`),
+               },
+            },
+            orderBy: {
+               transactionAt: 'desc',
+            },
+         })
+
+         if (lastOfDay) {
+            transactionDate = new Date(lastOfDay.transactionAt.getTime() + 1 * 60 * 1000)
+         } else {
+            transactionDate = new Date(baseDate.getTime())
+         }
+
+         dateControlMap.set(baseDateKey, new Date(transactionDate))
+      } else {
+         const lastUsed = dateControlMap.get(baseDateKey)!
+         transactionDate = new Date(lastUsed.getTime() + 1 * 60 * 1000)
+         dateControlMap.set(baseDateKey, new Date(transactionDate))
+      }
 
       const transactionType = type.trim().toUpperCase() === 'C' ? TransactionType.CREDIT : TransactionType.DEBIT
       const transactionValue = Number(value) * 100
@@ -113,49 +144,6 @@ export const importBankTransactionsService = async ({ sheetNumber, bankAccountId
          continue
       }
 
-      const timeMatch = detailing?.match(/(\d{2}:\d{2})/)
-
-      if (timeMatch) {
-         const [hours, minutes] = timeMatch[1].split(':').map(Number)
-
-         if (isNaN(hours) || isNaN(minutes) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
-            console.warn('Linha ignorada por conter um horário inválido:', row)
-            continue
-         }
-
-         transactionDate.setHours(hours)
-         transactionDate.setMinutes(minutes)
-         transactionDate.setSeconds(0)
-         transactionDate.setMilliseconds(0)
-
-         // Extrai o dia e o mês do detailing (dd/mm)
-         const detailingParts = detailing.split(' ')[0].split('/')
-         if (detailingParts.length === 2) {
-            const detailingDay = parseInt(detailingParts[0], 10)
-            const detailingMonth = parseInt(detailingParts[1], 10)
-
-            // Verifica se o dia e o mês extraídos são válidos
-            if (
-               !isNaN(detailingDay) &&
-               !isNaN(detailingMonth) &&
-               detailingDay >= 1 &&
-               detailingDay <= 31 &&
-               detailingMonth >= 1 &&
-               detailingMonth <= 12
-            ) {
-               // Define o dia e o mês da transactionDate com base no detailing
-               transactionDate.setDate(detailingDay)
-               transactionDate.setMonth(detailingMonth - 1)
-            } else {
-               console.warn('Linha ignorada por conter uma data inválida no detailing:', row)
-            }
-         } else {
-            console.warn('Linha ignorada por conter um formato inválido no detailing:', row)
-         }
-      }
-
-      transactionDate = new Date(transactionDate.getTime() - transactionDate.getTimezoneOffset() * 60000)
-
       try {
          await prisma.$transaction(async (prisma) => {
             const costCenterBankTransaction = await prisma.costCenter.findFirst({
@@ -168,7 +156,6 @@ export const importBankTransactionsService = async ({ sheetNumber, bankAccountId
             })
             const costCenterId = costCenterBankTransaction?.id || null
 
-            // 1. Cria a transação bancária
             await prisma.bankTransactions.create({
                data: {
                   bankAccountId,
@@ -182,10 +169,8 @@ export const importBankTransactionsService = async ({ sheetNumber, bankAccountId
                },
             })
 
-            // 2. Atualiza o saldo bancário
             currentBalance = transactionType === TransactionType.CREDIT ? currentBalance + transactionValue : currentBalance - transactionValue
 
-            // 3. Cria a movimentação no fluxo de caixa
             await prisma.cashFlow.create({
                data: {
                   date: transactionDate,
@@ -199,13 +184,18 @@ export const importBankTransactionsService = async ({ sheetNumber, bankAccountId
                   csvFileName: filename,
                },
             })
+
+            importedLinesCount++
          })
       } catch (error) {
          console.error('Erro ao processar a linha:', row, error)
       }
    }
 
-   // 5. Recalcula os saldos bancários e fluxos de caixa a partir da data da primeira transação do CSV
+   if (importedLinesCount === 0) {
+      throw new AppError(`Nenhuma linha da planilha [${sheetNumber + 1}] foi importada com sucesso. Verifique o formato e os dados do arquivo.`, 400)
+   }
+
    const allTransactions = await prisma.bankTransactions.findMany({
       where: {
          bankAccountId,
@@ -228,7 +218,6 @@ export const importBankTransactionsService = async ({ sheetNumber, bankAccountId
          where: {
             bankAccountId,
             date: transaction.transactionAt,
-            // csvFileName: filename, // Garante que estamos atualizando apenas os fluxos de caixa corretos
          },
          data: {
             balance: recalculateBalance,
