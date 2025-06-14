@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { AppError } from '@/helpers/app-error'
 import { createUserService } from '@/services/user/create-user.service'
-import { createUserSchema } from '@/schemas/user'
+import { createUserSchema, updateUserPasswordSchema } from '@/schemas/user'
 import { updateUserSchema } from '@/schemas/user'
 import { validateSchema } from '@/helpers/validate-schema'
 import { UserRole } from '@/models/user.model'
@@ -9,6 +9,7 @@ import { listUsersService } from '@/services/user/list-users.service'
 import { getUserByIdService } from '@/services/user/get-user-by-id.service'
 import { updateUserService } from '@/services/user/update-user.service'
 import { toggleUserStatusService } from '@/services/user/toggle-user-status.service'
+import { updateUserPasswordService } from '@/services/user/update-user-password.service'
 
 export interface Users {
    id: string
@@ -175,6 +176,41 @@ class UserController {
             return reply.status(error.statusCode).send({ message: error.message })
          }
          return reply.status(500).send({ message: 'Erro ao atualizar o usuário' })
+      }
+   }
+
+    public async updatePassword(
+      request: FastifyRequest<{
+         Body: {
+            password: string
+            newPassword: string
+         }
+      }>,
+      reply: FastifyReply,
+   ) {
+      const userId = request.user?.id
+      const userRole = request.user?.role
+      const { password, newPassword } = request.body
+      const validationError = await validateSchema(
+         updateUserPasswordSchema,
+         {
+            password,
+            newPassword,
+         },
+         reply,
+      )
+      if (validationError) return
+      if (!userId || !userRole) {
+         return reply.status(401).send({ message: 'Usuário não autenticado' })
+      }
+      try {
+         const updatedUser = await updateUserPasswordService(userId, { password, newPassword }, userRole, userId)
+         return reply.send(updatedUser)
+      } catch (error) {
+         if (error instanceof AppError) {
+            return reply.status(error.statusCode).send({ message: error.message })
+         }
+         return reply.status(500).send({ message: 'Erro ao atualizar a senha' })
       }
    }
 

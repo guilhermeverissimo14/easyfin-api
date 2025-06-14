@@ -20,3 +20,8 @@ export const updateUserSchema = z.object({
    birthdate: z.string().optional().nullable(),
    avatar: z.string().optional().nullable(),
 })
+
+export const updateUserPasswordSchema = z.object({
+   password: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres, incluindo letras e números'),
+   newPassword: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres, incluindo letras e números'),
+})
