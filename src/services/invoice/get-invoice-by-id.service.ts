@@ -32,10 +32,18 @@ export const getInvoiceByIdService = async (id: string) => {
       paymentCondition: {
          id: invoice.paymentConditionId,
          condition: invoice.PaymentCondition.condition,
+         description: invoice.PaymentCondition.description,
+         installments: invoice.PaymentCondition.installments,
       },
       issueDate: invoice.issueDate,
+      dueDate: invoice.dueDate,
       serviceValue: invoice.serviceValue / 100,
+      netValue: invoice.netValue ? invoice.netValue / 100 : invoice.serviceValue / 100,
       retainsIss: invoice.retainsIss,
+      issqnTaxRate: invoice.issqnTaxRate ? invoice.issqnTaxRate : 0,
+      effectiveTaxRate: invoice.effectiveTaxRate ? invoice.effectiveTaxRate : 0,
+      issqnValue: invoice.issqnValue ? invoice.issqnValue / 100 : 0,
+      effectiveTax: invoice.effectiveTax ? invoice.effectiveTax / 100 : 0,
       bankAccount: invoice.bankAccountId
          ? {
               id: invoice.bankAccountId,

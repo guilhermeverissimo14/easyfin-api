@@ -400,6 +400,8 @@ export const listInvoicesSchema = {
                   properties: {
                      id: { type: 'string', description: 'ID da condição de pagamento' },
                      condition: { type: 'string', description: 'Nome da condição de pagamento' },
+                     description: { type: 'string', description: 'Descrição da condição de pagamento' },
+                     installments: { type: 'number', description: 'Número de parcelas' },
                   },
                   description: 'Informações da condição de pagamento',
                },
@@ -521,6 +523,8 @@ export const getInvoiceByIdSchema = {
                properties: {
                   id: { type: 'string', description: 'ID da condição de pagamento' },
                   condition: { type: 'string', description: 'Nome da condição de pagamento' },
+                  description: { type: 'string', description: 'Descrição da condição de pagamento' },
+                  installments: { type: 'number', description: 'Número de parcelas' },
                },
                description: 'Informações da condição de pagamento',
             },

@@ -83,6 +83,8 @@ export const listInvoicesService = async (filters: { customerId?: string; bankAc
       paymentCondition: {
          id: invoice.paymentConditionId,
          condition: invoice.PaymentCondition.condition,
+         description: invoice.PaymentCondition.description,
+         installments: invoice.PaymentCondition.installments,
       },
       costCenter: {
          id: accountsReceivable.find((ar) => ar.documentNumber === invoice.invoiceNumber)?.CostCenter?.id || null,
