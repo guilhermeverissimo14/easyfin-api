@@ -23,6 +23,7 @@ export const loginService = async (email: string, password: string) => {
       if (user.failedAttempts + 1 >= 5) {
          await prisma.user.update({
             where: { id: user.id },
+            data: { active: false },
          })
          throw new AppError('Usuário bloqueado após 5 tentativas de login falhadas.', 403)
       }
