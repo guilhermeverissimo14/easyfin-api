@@ -1,3 +1,4 @@
+import './config/module-alias'
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import { startOverdueUpdaterJob } from './jobs/overdue-updater.job'
@@ -107,7 +108,7 @@ server.register(fastifySwaggerUi, {
 })
 
 server.get('/', async (request, reply) => {
-   return { message: 'API Minas Drones está funcionando! 🚀' }
+   return { message: 'API Easyfin está funcionando! 🚀' }
 })
 
 server.register(healthRoutes, { prefix: '/' })
@@ -128,7 +129,7 @@ server.register(invoicesRoutes, { prefix: '/api/invoices' })
 
 export const startServer = async () => {
    try {
-      const PORT = process.env.PORT || 3333
+      const PORT = process.env.PORT || 8080
       await server.listen({ port: Number(PORT), host: '0.0.0.0' })
 
       console.log(`Server running at http://localhost:${PORT} 🚀`)
