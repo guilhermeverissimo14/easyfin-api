@@ -79,84 +79,84 @@ async function main() {
       }
    }
 
-   const customers = [
-      {
-         cnpj: '12.345.678/0001-90',
-         name: 'Empresa Exemplo Ltda',
-         email: 'contato@empresaexemplo.com.br',
-         phone: '(11) 1234-5678',
-         address: 'Rua Exemplo, 123',
-         zipCode: '01234-567',
-         city: 'São Paulo',
-         state: 'SP',
-         country: 'Brasil',
-         contact: 'João da Silva',
-         retIss: false,
-      },
-   ]
+   // const customers = [
+   //    {
+   //       cnpj: '12.345.678/0001-90',
+   //       name: 'Empresa Exemplo Ltda',
+   //       email: 'contato@empresaexemplo.com.br',
+   //       phone: '(11) 1234-5678',
+   //       address: 'Rua Exemplo, 123',
+   //       zipCode: '01234-567',
+   //       city: 'São Paulo',
+   //       state: 'SP',
+   //       country: 'Brasil',
+   //       contact: 'João da Silva',
+   //       retIss: false,
+   //    },
+   // ]
 
-   for (const customer of customers) {
-      const existingCustomer = await prisma.customer.findUnique({
-         where: {
-            cnpj: customer.cnpj,
-         },
-      })
+   // for (const customer of customers) {
+   //    const existingCustomer = await prisma.customer.findUnique({
+   //       where: {
+   //          cnpj: customer.cnpj,
+   //       },
+   //    })
 
-      if (!existingCustomer) {
-         await prisma.customer.create({
-            data: customer,
-         })
-         console.log(`Cliente criado: ${customer.name}`)
-      } else {
-         console.log(`Cliente já existe: ${customer.name}`)
-      }
-   }
+   //    if (!existingCustomer) {
+   //       await prisma.customer.create({
+   //          data: customer,
+   //       })
+   //       console.log(`Cliente criado: ${customer.name}`)
+   //    } else {
+   //       console.log(`Cliente já existe: ${customer.name}`)
+   //    }
+   // }
 
-   const suppliers = [
-      {
-         cnpj: '12345678000195',
-         name: 'Fornecedor 1',
-         email: 'fornecedor1@email.com',
-         phone: '11999999999',
-         address: 'Rua A, 123',
-         zipCode: '12345678',
-         city: 'São Paulo',
-         state: 'SP',
-         country: 'Brasil',
-         contact: 'Contato 1',
-         retIss: false,
-      },
-      {
-         cnpj: '98765432000196',
-         name: 'Fornecedor 2',
-         email: 'fornecedor2@email.com',
-         phone: '11988888888',
-         address: 'Rua B, 456',
-         zipCode: '87654321',
-         city: 'Rio de Janeiro',
-         state: 'RJ',
-         country: 'Brasil',
-         contact: 'Contato 2',
-         retIss: true,
-      },
-   ]
+   // const suppliers = [
+   //    {
+   //       cnpj: '12345678000195',
+   //       name: 'Fornecedor 1',
+   //       email: 'fornecedor1@email.com',
+   //       phone: '11999999999',
+   //       address: 'Rua A, 123',
+   //       zipCode: '12345678',
+   //       city: 'São Paulo',
+   //       state: 'SP',
+   //       country: 'Brasil',
+   //       contact: 'Contato 1',
+   //       retIss: false,
+   //    },
+   //    {
+   //       cnpj: '98765432000196',
+   //       name: 'Fornecedor 2',
+   //       email: 'fornecedor2@email.com',
+   //       phone: '11988888888',
+   //       address: 'Rua B, 456',
+   //       zipCode: '87654321',
+   //       city: 'Rio de Janeiro',
+   //       state: 'RJ',
+   //       country: 'Brasil',
+   //       contact: 'Contato 2',
+   //       retIss: true,
+   //    },
+   // ]
 
-   for (const supplier of suppliers) {
-      const existingSupplier = await prisma.supplier.findUnique({
-         where: {
-            cnpj: supplier.cnpj,
-         },
-      })
+   // for (const supplier of suppliers) {
+   //    const existingSupplier = await prisma.supplier.findUnique({
+   //       where: {
+   //          cnpj: supplier.cnpj,
+   //       },
+   //    })
 
-      if (!existingSupplier) {
-         await prisma.supplier.create({
-            data: supplier,
-         })
-         console.log(`Fornecedor criado: ${supplier.name}`)
-      } else {
-         console.log(`Fornecedor já existe: ${supplier.name}`)
-      }
-   }
+   //    if (!existingSupplier) {
+   //       await prisma.supplier.create({
+   //          data: supplier,
+   //       })
+   //       console.log(`Fornecedor criado: ${supplier.name}`)
+   //    } else {
+   //       console.log(`Fornecedor já existe: ${supplier.name}`)
+   //    }
+   // }
 
    const taxRates = [
       {
@@ -276,79 +276,79 @@ async function main() {
       }
    }
 
-   const bankAccounts = [
-      {
-         bank: 'Banco do Brasil',
-         agency: '1234',
-         account: '56789-0',
-         type: 'C',
-      },
-   ]
+   // const bankAccounts = [
+   //    {
+   //       bank: 'Banco do Brasil',
+   //       agency: '1234',
+   //       account: '56789-0',
+   //       type: 'C',
+   //    },
+   // ]
 
-   for (const bankAccount of bankAccounts) {
-      const existingBankAccount = await prisma.bankAccounts.findFirst({
-         where: {
-            bank: bankAccount.bank,
-            agency: bankAccount.agency,
-            account: bankAccount.account,
-         },
-      })
+   // for (const bankAccount of bankAccounts) {
+   //    const existingBankAccount = await prisma.bankAccounts.findFirst({
+   //       where: {
+   //          bank: bankAccount.bank,
+   //          agency: bankAccount.agency,
+   //          account: bankAccount.account,
+   //       },
+   //    })
 
-      if (!existingBankAccount) {
-         const bank = await prisma.bankAccounts.create({
-            data: bankAccount,
-         })
-         console.log(`Conta bancária criada: ${bankAccount.bank} - ${bankAccount.agency} - ${bankAccount.account}`)
+   //    if (!existingBankAccount) {
+   //       const bank = await prisma.bankAccounts.create({
+   //          data: bankAccount,
+   //       })
+   //       console.log(`Conta bancária criada: ${bankAccount.bank} - ${bankAccount.agency} - ${bankAccount.account}`)
 
-         const bankTransaction = await prisma.bankTransactions.create({
-            data: {
-               bankAccountId: bank!.id,
-               type: 'CREDIT',
-               description: 'Ajuste de Saldo inicial',
-               detailing: 'Saldo inicial da conta bancária',
-               amount: 0,
-               transactionAt: new Date(),
-               csv: false,
-            },
-         })
-         console.log(`Transação bancária inicial criada: ${bankTransaction.description}`)
+   //       const bankTransaction = await prisma.bankTransactions.create({
+   //          data: {
+   //             bankAccountId: bank!.id,
+   //             type: 'CREDIT',
+   //             description: 'Ajuste de Saldo inicial',
+   //             detailing: 'Saldo inicial da conta bancária',
+   //             amount: 0,
+   //             transactionAt: new Date(),
+   //             csv: false,
+   //          },
+   //       })
+   //       console.log(`Transação bancária inicial criada: ${bankTransaction.description}`)
 
-         const costCenter = await prisma.costCenter.findFirst({
-            where: {
-               name: 'Saldo Inicial',
-            },
-         })
+   //       const costCenter = await prisma.costCenter.findFirst({
+   //          where: {
+   //             name: 'Saldo Inicial',
+   //          },
+   //       })
 
-         await prisma.cashFlow.create({
-            data: {
-               date: new Date(new Date().setHours(3, 0, 0, 0)),
-               historic: 'Saldo inicial',
-               bankAccountId: bank!.id,
-               costCenterId: costCenter!.id,
-               type: 'CREDIT',
-               description: 'Ajuste de saldo inicial',
-               value: bankTransaction.amount,
-               balance: bankTransaction.amount,
-            },
-         })
-      } else {
-         console.log(`Conta bancária já existe: ${bankAccount.bank} - ${bankAccount.agency} - ${bankAccount.account}`)
-      }
-   }
+   //       await prisma.cashFlow.create({
+   //          data: {
+   //             date: new Date(new Date().setHours(3, 0, 0, 0)),
+   //             historic: 'Saldo inicial',
+   //             bankAccountId: bank!.id,
+   //             costCenterId: costCenter!.id,
+   //             type: 'CREDIT',
+   //             description: 'Ajuste de saldo inicial',
+   //             value: bankTransaction.amount,
+   //             balance: bankTransaction.amount,
+   //          },
+   //       })
+   //    } else {
+   //       console.log(`Conta bancária já existe: ${bankAccount.bank} - ${bankAccount.agency} - ${bankAccount.account}`)
+   //    }
+   // }
 
-   const bank = await prisma.bankAccounts.findFirst()
+   // const bank = await prisma.bankAccounts.findFirst()
 
-   const initialBalance = [
-      {
-         bankAccountId: bank!.id,
-         balance: 0,
-      },
-   ]
+   // const initialBalance = [
+   //    {
+   //       bankAccountId: bank!.id,
+   //       balance: 0,
+   //    },
+   // ]
 
-   await prisma.bankBalance.create({
-      data: initialBalance[0],
-   })
-   console.log(`Saldo inicial criado: ${initialBalance[0].balance}`)
+   // await prisma.bankBalance.create({
+   //    data: initialBalance[0],
+   // })
+   // console.log(`Saldo inicial criado: ${initialBalance[0].balance}`)
 
    const paymentMethods = [
       {
