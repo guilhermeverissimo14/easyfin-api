@@ -67,7 +67,7 @@ export const sendWelcomeEmail = async (email: string, name: string, password: st
 
                   <div style="width: 100%; text-align: center;">
                      <button style="background-color: #0052cc; color: white; border: none; padding: 10px 40px; border-radius: 5px; cursor: pointer; margin-top: 24px; margin-bottom: 24px; transition: background-color 0.3s;" onmouseover="this.style.backgroundColor='#003d99'" onmouseout="this.style.backgroundColor='#0052cc'">
-                        <a href="http://localhost:3000/login" style="text-decoration: none; color: white; align-items: center; justify-content: center;">Ir para o sistema 🚀</a>
+                        <a href="https://easyfin-front-isomorphic.vercel.app/login" style="text-decoration: none; color: white; align-items: center; justify-content: center;">Ir para o sistema 🚀</a>
                      </button>
                   </div>
                   <p style="color: #333333; font-size: 16px;">
