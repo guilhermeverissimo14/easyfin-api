@@ -6,6 +6,15 @@ const prisma = new PrismaClient()
 export const getTotalsAccountReceivableService = async () => {
    const today = new Date()
 
+   const totalReceivable = await prisma.accountsReceivable.aggregate({
+      _sum: {
+         value: true,
+      },
+      where: {
+         status: PaymentStatus.PENDING,
+      },
+   })
+
    const totalReceived = await prisma.accountsReceivable.aggregate({
       _sum: {
          receivedValue: true,
@@ -67,6 +76,7 @@ export const getTotalsAccountReceivableService = async () => {
    })
 
    return {
+      totalReceivable: totalReceivable._sum.value ? totalReceivable._sum.value / 100 : 0,
       totalReceived: totalReceived._sum.receivedValue ? totalReceived._sum.receivedValue / 100 : 0,
       receivedThisMonth: receivedThisMonth._sum.receivedValue ? receivedThisMonth._sum.receivedValue / 100 : 0,
       receivedThisWeek: receivedThisWeek._sum.receivedValue ? receivedThisWeek._sum.receivedValue / 100 : 0,
