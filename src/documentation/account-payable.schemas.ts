@@ -7,6 +7,10 @@ export const getTotalsAccountPayableSchema = {
          description: 'Totais das contas a pagar',
          type: 'object',
          properties: {
+            totalPayable: {
+               type: 'number',
+               description: 'Total de contas a pagar (Total Pendente)',
+            },
             totalOverdue: {
                type: 'number',
                description: 'Total de contas a pagar em atraso (Todal Vencido)',
@@ -25,6 +29,7 @@ export const getTotalsAccountPayableSchema = {
             },
          },
          example: {
+            totalPayable: 5000.0,
             totalOverdue: 1000.0,
             overdueThisMonth: 500.0,
             overdueThisWeek: 200.0,

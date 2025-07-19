@@ -6,6 +6,17 @@ const prisma = new PrismaClient()
 export const getTotalsAccountPayableService = async () => {
    const today = new Date()
 
+   const totalPayable = await prisma.accountsPayable.aggregate({
+      _sum: {
+         value: true,
+      },
+      where: {
+         status: {
+            not: PaymentStatus.PAID,
+         },
+      },
+   })
+
    const totalOverdue = await prisma.accountsPayable.aggregate({
       _sum: {
          value: true,
@@ -75,6 +86,7 @@ export const getTotalsAccountPayableService = async () => {
    })
 
    return {
+      totalPayable: totalPayable._sum.value ? totalPayable._sum.value / 100 : 0,
       totalOverdue: totalOverdue._sum.value ? totalOverdue._sum.value / 100 : 0,
       overdueThisMonth: overdueThisMonth._sum.value ? overdueThisMonth._sum.value / 100 : 0,
       overdueThisWeek: overdueThisWeek._sum.value ? overdueThisWeek._sum.value / 100 : 0,
