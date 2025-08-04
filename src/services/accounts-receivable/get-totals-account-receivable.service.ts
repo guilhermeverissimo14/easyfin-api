@@ -38,7 +38,6 @@ export const getTotalsAccountReceivableService = async () => {
          receiptDate: {
             gte: startOfCurrentMonth,
             lte: endOfCurrentMonth,
-            lt: today,
          },
          status: PaymentStatus.PAID,
       },
@@ -55,7 +54,6 @@ export const getTotalsAccountReceivableService = async () => {
          receiptDate: {
             gte: startOfCurrentWeek,
             lte: endOfCurrentWeek,
-            lt: today,
          },
          status: PaymentStatus.PAID,
       },
@@ -69,7 +67,6 @@ export const getTotalsAccountReceivableService = async () => {
          receiptDate: {
             gte: startOfDay(today),
             lte: endOfDay(today),
-            lt: today,
          },
          status: PaymentStatus.PAID,
       },
