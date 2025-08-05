@@ -74,7 +74,7 @@ export const getTotalsAccountPayableService = async () => {
       where: {
          dueDate: {
             gte: startOfDay(today),
-            lt: today,
+            lte: today,
          },
          status: {
             not: PaymentStatus.PAID,

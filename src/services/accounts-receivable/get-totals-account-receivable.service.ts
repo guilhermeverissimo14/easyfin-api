@@ -30,16 +30,19 @@ export const getTotalsAccountReceivableService = async () => {
    const startOfCurrentMonth = startOfMonth(today)
    const endOfCurrentMonth = endOfMonth(today)
 
+   console.log('startOfCurrentMonth', startOfCurrentMonth)
+   console.log('endOfCurrentMonth', endOfCurrentMonth)
+
    const receivedThisMonth = await prisma.accountsReceivable.aggregate({
       _sum: {
-         receivedValue: true,
+         value: true,
       },
       where: {
-         receiptDate: {
+         dueDate: {
             gte: startOfCurrentMonth,
             lte: endOfCurrentMonth,
          },
-         status: PaymentStatus.PAID,
+         status: PaymentStatus.PENDING,
       },
    })
 
@@ -48,35 +51,35 @@ export const getTotalsAccountReceivableService = async () => {
 
    const receivedThisWeek = await prisma.accountsReceivable.aggregate({
       _sum: {
-         receivedValue: true,
+         value: true,
       },
       where: {
-         receiptDate: {
+         dueDate: {
             gte: startOfCurrentWeek,
             lte: endOfCurrentWeek,
          },
-         status: PaymentStatus.PAID,
+         status: PaymentStatus.PENDING,
       },
    })
 
    const receivedToday = await prisma.accountsReceivable.aggregate({
       _sum: {
-         receivedValue: true,
+         value: true,
       },
       where: {
-         receiptDate: {
+         dueDate: {
             gte: startOfDay(today),
             lte: endOfDay(today),
          },
-         status: PaymentStatus.PAID,
+         status: PaymentStatus.PENDING,
       },
    })
 
    return {
       totalReceivable: totalReceivable._sum.value ? totalReceivable._sum.value / 100 : 0,
       totalReceived: totalReceived._sum.receivedValue ? totalReceived._sum.receivedValue / 100 : 0,
-      receivedThisMonth: receivedThisMonth._sum.receivedValue ? receivedThisMonth._sum.receivedValue / 100 : 0,
-      receivedThisWeek: receivedThisWeek._sum.receivedValue ? receivedThisWeek._sum.receivedValue / 100 : 0,
-      receivedToday: receivedToday._sum.receivedValue ? receivedToday._sum.receivedValue / 100 : 0,
+      receivedThisMonth: receivedThisMonth._sum.value ? receivedThisMonth._sum.value / 100 : 0,
+      receivedThisWeek: receivedThisWeek._sum.value ? receivedThisWeek._sum.value / 100 : 0,
+      receivedToday: receivedToday._sum.value ? receivedToday._sum.value / 100 : 0,
    }
 }
