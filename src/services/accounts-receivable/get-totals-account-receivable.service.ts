@@ -27,6 +27,20 @@ export const getTotalsAccountReceivableService = async () => {
       },
    })
 
+   const yesterday = startOfDay(new Date())
+
+   const totalDueReceivable = await prisma.accountsReceivable.aggregate({
+      _sum: {
+         value: true,
+      },
+      where: {
+         dueDate: {
+            lt: yesterday,
+         },
+         status: PaymentStatus.PENDING,
+      },
+   })
+
    const startOfCurrentMonth = startOfMonth(today)
    const endOfCurrentMonth = endOfMonth(today)
 
@@ -77,6 +91,7 @@ export const getTotalsAccountReceivableService = async () => {
 
    return {
       totalReceivable: totalReceivable._sum.value ? totalReceivable._sum.value / 100 : 0,
+      totalDueReceivable: totalDueReceivable._sum.value ? totalDueReceivable._sum.value / 100 : 0,
       totalReceived: totalReceived._sum.receivedValue ? totalReceived._sum.receivedValue / 100 : 0,
       receivedThisMonth: receivedThisMonth._sum.value ? receivedThisMonth._sum.value / 100 : 0,
       receivedThisWeek: receivedThisWeek._sum.value ? receivedThisWeek._sum.value / 100 : 0,

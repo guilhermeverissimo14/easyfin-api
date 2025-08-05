@@ -11,6 +11,10 @@ export const getTotalsAccountReceivableSchema = {
                type: 'number',
                description: 'Total de contas a receber (Total Pendente)',
             },
+            totalDueReceivable: {
+               type: 'number',
+               description: 'Total de contas a receber em atraso (Total Vencido)',
+            },
             totalReceived: {
                type: 'number',
                description: 'Total de contas a receber em atraso (Total Vencido)',
@@ -30,6 +34,7 @@ export const getTotalsAccountReceivableSchema = {
          },
          example: {
             totalReceivable: 5000.0,
+            totalDueReceivable: 1500.0,
             totalReceived: 1000.0,
             receivedThisMonth: 500.0,
             receivedThisWeek: 200.0,
