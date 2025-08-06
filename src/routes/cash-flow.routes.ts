@@ -3,7 +3,7 @@ import {
    createCashFlowSchema,
    getTotalsPerDayCashFlowSchema,
    importBankTransactionsCashFlowSchema,
-   listByAccountIdCashFlowSchema,
+   listByAccountCashFlowSchema,
    listByCashCashFlowSchema,
 } from '@/documentation/cash-flow'
 import { authMiddleware } from '@/middleware/auth.middleware'
@@ -14,7 +14,7 @@ const cashFlowRoutes: FastifyPluginAsync = async (server) => {
    server.post('/', { preHandler: authMiddleware, schema: createCashFlowSchema }, CashFlowController.create)
 
    //Rota para listar os lançamentos do fluxo de caixa por conta bancária
-   server.get('/account/:bankAccountId', { preHandler: authMiddleware, schema: listByAccountIdCashFlowSchema }, CashFlowController.listByAccountId)
+   server.get('/account/:bankAccountId', { preHandler: authMiddleware, schema: listByAccountCashFlowSchema }, CashFlowController.listByAccountId)
 
    //Rota para listar os lançamentos do fluxo de caixa por caixa
    server.get('/cash', { preHandler: authMiddleware, schema: listByCashCashFlowSchema }, CashFlowController.listByCash)

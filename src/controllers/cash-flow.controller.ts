@@ -77,13 +77,37 @@ class CashFlowController {
    public async listByAccountId(
       request: FastifyRequest<{
          Params: { bankAccountId: string }
+         Querystring: {
+            page?: string
+            limit?: string
+            type?: string
+            description?: string
+            history?: string
+            costCenterId?: string
+            dateStart?: string
+            dateEnd?: string
+            valueMin?: string
+            valueMax?: string
+         }
       }>,
       reply: FastifyReply,
    ) {
       const { bankAccountId } = request.params
+      const { page = '1', limit = '10', type, description, history, costCenterId, dateStart, dateEnd, valueMin, valueMax } = request.query
 
       try {
-         const cashFlowList = await listCashFlowByAccountIdService(bankAccountId)
+         const cashFlowList = await listCashFlowByAccountIdService(bankAccountId, {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            type,
+            description,
+            history,
+            costCenterId,
+            dateStart: dateStart ? new Date(dateStart) : undefined,
+            dateEnd: dateEnd ? new Date(dateEnd) : undefined,
+            valueMin: valueMin ? parseFloat(valueMin) : undefined,
+            valueMax: valueMax ? parseFloat(valueMax) : undefined,
+         })
          return reply.status(200).send(cashFlowList)
       } catch (error) {
          if (error instanceof AppError) {
@@ -94,9 +118,39 @@ class CashFlowController {
       }
    }
 
-   public async listByCash(request: FastifyRequest, reply: FastifyReply) {
+   public async listByCash(
+      request: FastifyRequest<{
+         Params: { cashId: string }
+         Querystring: {
+            page?: string
+            limit?: string
+            type?: string
+            description?: string
+            history?: string
+            costCenterId?: string
+            dateStart?: string
+            dateEnd?: string
+            valueMin?: string
+            valueMax?: string
+         }
+      }>,
+      reply: FastifyReply,
+   ) {
+      const { page = '1', limit = '10', type, description, history, costCenterId, dateStart, dateEnd, valueMin, valueMax } = request.query
+
       try {
-         const cashFlowList = await listCashFlowByCashBoxIdService()
+         const cashFlowList = await listCashFlowByCashBoxIdService({
+            page: parseInt(page),
+            limit: parseInt(limit),
+            type,
+            description,
+            history,
+            costCenterId,
+            dateStart: dateStart ? new Date(dateStart) : undefined,
+            dateEnd: dateEnd ? new Date(dateEnd) : undefined,
+            valueMin: valueMin ? parseFloat(valueMin) : undefined,
+            valueMax: valueMax ? parseFloat(valueMax) : undefined,
+         })
          return reply.status(200).send(cashFlowList)
       } catch (error) {
          if (error instanceof AppError) {

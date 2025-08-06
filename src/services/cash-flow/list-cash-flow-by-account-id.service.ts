@@ -3,7 +3,93 @@ import { AppError } from '@/helpers/app-error'
 
 const prisma = new PrismaClient()
 
-export const listCashFlowByAccountIdService = async (bankAccountId: string) => {
+interface CashFlowFilters {
+   page: number
+   limit: number
+   type?: string
+   description?: string
+   history?: string
+   costCenterId?: string
+   dateStart?: Date
+   dateEnd?: Date
+   valueMin?: number
+   valueMax?: number
+}
+
+const setToStartOfDayUTC = (date: Date) => {
+   const newDate = new Date(date)
+   newDate.setUTCHours(0, 0, 0, 0)
+   return newDate
+}
+
+const setToEndOfDayUTC = (date: Date) => {
+   const newDate = new Date(date)
+   newDate.setUTCHours(23, 59, 59, 999)
+   return newDate
+}
+
+const formatCurrency = (value: number) => {
+   return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+   }).format(value)
+}
+
+export const listCashFlowByAccountIdService = async (bankAccountId: string, filters: CashFlowFilters) => {
+   const { page, limit, type, description, history, costCenterId, dateStart, dateEnd, valueMin, valueMax } = filters
+   const skip = (page - 1) * limit
+
+   // Preparar filtros de data
+   let startDate = dateStart
+   let endDate = dateEnd
+   
+   if (startDate) {
+      startDate = setToStartOfDayUTC(startDate)
+   }
+   if (endDate) {
+      endDate = setToEndOfDayUTC(endDate)
+   }
+
+   // Construir whereClause
+   const whereClause: any = {
+      bankAccountId,
+   }
+
+   if (type) {
+      whereClause.type = type
+   }
+
+   if (description) {
+      whereClause.description = {
+         contains: description,
+         mode: 'insensitive'
+      }
+   }
+
+   if (history) {
+      whereClause.historic = {
+         contains: history,
+         mode: 'insensitive'
+      }
+   }
+
+   if (costCenterId) {
+      whereClause.costCenterId = costCenterId
+   }
+
+   if (startDate || endDate) {
+      whereClause.date = {
+         ...(startDate ? { gte: startDate } : {}),
+         ...(endDate ? { lte: endDate } : {}),
+      }
+   }
+
+   if (valueMin !== undefined || valueMax !== undefined) {
+      whereClause.value = {
+         ...(valueMin !== undefined ? { gte: Math.round(valueMin * 100) } : {}),
+         ...(valueMax !== undefined ? { lte: Math.round(valueMax * 100) } : {}),
+      }
+   }
    try {
       const bankAccount = await prisma.bankAccounts.findUnique({
          where: {
@@ -15,28 +101,51 @@ export const listCashFlowByAccountIdService = async (bankAccountId: string) => {
          throw new AppError('Conta bancária não encontrada', 404)
       }
 
-      const cashFlowList = await prisma.cashFlow.findMany({
-         where: {
-            bankAccountId,
-         },
-         include: {
-            CostCenter: true,
-         },
-         orderBy: {
-            date: 'desc',
-         },
-      })
+      // Buscar dados com paginação
+      const [cashFlowList, totalCount] = await Promise.all([
+         prisma.cashFlow.findMany({
+            where: whereClause,
+            include: {
+               CostCenter: true,
+            },
+            orderBy: {
+               date: 'desc',
+            },
+            skip,
+            take: limit,
+         }),
+         prisma.cashFlow.count({
+            where: whereClause,
+         })
+      ])
 
-      return cashFlowList.map((cashFlow) => ({
-         ...cashFlow,
-         value: cashFlow.value / 100,
-         balance: cashFlow.balance / 100,
-         date: cashFlow.date.toISOString(),
-         costCenter: {
-            id: cashFlow.CostCenter?.id,
-            name: cashFlow.CostCenter?.name,
+      const totalPages = Math.ceil(totalCount / limit)
+      const hasNextPage = page < totalPages
+      const hasPreviousPage = page > 1
+
+      return {
+         data: cashFlowList.map((cashFlow) => ({
+            id: cashFlow.id,
+            type: cashFlow.type,
+            description: cashFlow.description,
+            history: cashFlow.historic,
+            value: formatCurrency(cashFlow.value / 100),
+            balance: formatCurrency(cashFlow.balance / 100),
+            date: cashFlow.date.toISOString(),
+            costCenter: {
+               id: cashFlow.costCenterId,
+               name: cashFlow.CostCenter?.name || null,
+            },
+         })),
+         pagination: {
+            page,
+            limit,
+            totalCount,
+            totalPages,
+            hasNextPage,
+            hasPreviousPage,
          },
-      }))
+      }
    } catch (error) {
       if (error instanceof AppError) {
          throw error
