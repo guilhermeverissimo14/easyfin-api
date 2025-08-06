@@ -27,15 +27,13 @@ export const getTotalsAccountReceivableService = async () => {
       },
    })
 
-   const yesterday = startOfDay(new Date())
-
    const totalDueReceivable = await prisma.accountsReceivable.aggregate({
       _sum: {
          value: true,
       },
       where: {
          dueDate: {
-            lt: yesterday,
+            lt: startOfDay(today),
          },
          status: PaymentStatus.PENDING,
       },
