@@ -1,8 +1,14 @@
 import { FastifyPluginAsync } from 'fastify'
 import UserController from '@/controllers/user.controller'
-import { createUserSchema, listUsersSchema, listUserById, updateUserSchema, toogleUserStatusSchema } from '@/documentation/user.schemas'
+import {
+   createUserSchema,
+   listUsersSchema,
+   listUserById,
+   updateUserSchema,
+   updateUserPasswordSchema,
+   toogleUserStatusSchema,
+} from '@/documentation/user.schemas'
 import { authMiddleware } from '@/middleware/auth.middleware'
-import { updateUserPasswordSchema } from '@/schemas/user'
 
 const userRoutes: FastifyPluginAsync = async (server) => {
    // Rota para listar usuários

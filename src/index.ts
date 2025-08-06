@@ -20,6 +20,7 @@ import { cashFlowRoutes } from './routes/cash-flow.routes'
 import { settingsRoutes } from './routes/settings.routes'
 import { accountReceivableRoutes } from './routes/account-receivable.routes'
 import { invoicesRoutes } from './routes/invoices.routes'
+import { dashboardRoutes } from './routes/dashboard.routes'
 
 const server = Fastify()
 
@@ -81,6 +82,7 @@ server.register(fastifySwagger, {
          { name: 'Accounts Receivable', description: 'Contas a receber' },
          { name: 'Cash Flow', description: 'Fluxo de caixa' },
          { name: 'Invoice', description: 'Faturas' },
+         { name: 'Dashboard', description: 'Dashboard e relatórios' },
       ],
    },
 })
@@ -126,6 +128,7 @@ server.register(accountReceivableRoutes, { prefix: '/api/accounts-receivable' })
 server.register(cashFlowRoutes, { prefix: '/api/cash-flow' })
 server.register(settingsRoutes, { prefix: '/api/settings' })
 server.register(invoicesRoutes, { prefix: '/api/invoices' })
+server.register(dashboardRoutes, { prefix: '/api/dashboard' })
 
 export const startServer = async () => {
    try {

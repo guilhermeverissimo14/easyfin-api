@@ -340,6 +340,86 @@ export const updateUserSchema = {
    },
 }
 
+export const updateUserPasswordSchema = {
+   description: 'Atualiza a senha de um usuário',
+   tags: ['User'],
+   params: {
+      type: 'object',
+      properties: {
+         id: { type: 'string' },
+      },
+   },
+   body: {
+      type: 'object',
+      properties: {
+         password: { type: 'string', minLength: 6, maxLength: 24 },
+      },
+      required: ['password'],
+   },
+   response: {
+      200: {
+         description: 'Senha atualizada com sucesso',
+         type: 'object',
+         properties: {
+            message: { type: 'string' },
+         },
+         example: {
+            message: 'Senha atualizada com sucesso',
+         },
+      },
+      400: {
+         description: 'Erro na validação dos dados',
+         type: 'object',
+         properties: {
+            message: { type: 'string' },
+         },
+         example: {
+            message: 'Senha inválida',
+         },
+      },
+      401: {
+         description: 'Não autorizado',
+         type: 'object',
+         properties: {
+            message: { type: 'string' },
+         },
+         example: {
+            message: 'Não autorizado',
+         },
+      },
+      403: {
+         description: 'Acesso negado',
+         type: 'object',
+         properties: {
+            message: { type: 'string' },
+         },
+         example: {
+            message: 'Acesso negado',
+         },
+      },
+      404: {
+         description: 'Usuário não encontrado',
+         type: 'object',
+         properties: {
+            message: { type: 'string' },
+         },
+         example: {
+            message: 'Usuário não encontrado',
+         },
+      },
+      500: {
+         description: 'Erro ao atualizar a senha do usuário',
+         type: 'object',
+         properties: {
+            message: { type: 'string' },
+         },
+         example: {
+            message: 'Erro ao atualizar a senha do usuário',
+         },
+      },
+   },
+}
+
 export const toogleUserStatusSchema = {
    description: 'Ativa ou desativa um usuário',
    tags: ['User'],

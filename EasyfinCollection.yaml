@@ -19,7 +19,7 @@ collection:
         meta:
           id: req_b34cf8e0320e4e519884106add4800ab
           created: 1746536736149
-          modified: 1746536978178
+          modified: 1754447343783
           isPrivate: false
           description: ""
           sortKey: -1732182113718
@@ -204,7 +204,7 @@ collection:
         meta:
           id: req_5f5b41bba10f446694c5723f8c573670
           created: 1746536736160
-          modified: 1746536736160
+          modified: 1752962059011
           isPrivate: false
           description: ""
           sortKey: -1731324996584.1562
@@ -215,7 +215,7 @@ collection:
             {
                 "name": "Eduardo Trindade",
                 "email": "eduardoepalmeiras@gmail.com",
-                "role": "manager",
+                "role": "admin",
                 "commission": 23,
                 "birthdate": "1989-02-15",
                 "phone": "38999705297",
@@ -1405,7 +1405,7 @@ collection:
         meta:
           id: req_493d7f6844f747d6acedbcc2c34ba415
           created: 1749229383346
-          modified: 1749233600353
+          modified: 1754352942764
           isPrivate: false
           description: ""
           sortKey: -1732182113718
@@ -1433,12 +1433,12 @@ collection:
             disabled: true
           - id: pair_9f987ddcf9c349c08192c62a98d5c8ef
             name: dueDateStart
-            value: 2025-06-01
+            value: 2025-08-01
             description: ""
             disabled: false
           - id: pair_445f7824cfd84618a260b160eda4314b
             name: dueDateEnd
-            value: 2025-07-31
+            value: 2025-08-31
             description: ""
             disabled: false
           - id: pair_81faa60335834cf98b233e7431031851
@@ -1658,7 +1658,7 @@ collection:
         meta:
           id: req_ed36a5c80c324d9e8c04c4bbcc33d59f
           created: 1749249413085
-          modified: 1749327111947
+          modified: 1754352893097
           isPrivate: false
           description: ""
           sortKey: -1732182113718
@@ -1686,7 +1686,7 @@ collection:
             disabled: true
           - id: pair_9f987ddcf9c349c08192c62a98d5c8ef
             name: dueDateStart
-            value: 2025-04-01
+            value: 2025-08-01
             description: ""
             disabled: false
           - id: pair_445f7824cfd84618a260b160eda4314b
@@ -1906,12 +1906,12 @@ collection:
       sortKey: -1731420090593.4517
       description: ""
     children:
-      - url: "{{ _.baseURL }}cash-flow/account/63e4fca8-f238-41f4-bd0c-c8cc4eee2577"
+      - url: "{{ _.baseURL }}cash-flow/account/22313ed4-3ad6-44a1-a377-7b866d326ded"
         name: getByAccountId
         meta:
           id: req_33629d7ac48740b9a6d7935c3b61f977
           created: 1749249469479
-          modified: 1749308329873
+          modified: 1754420403941
           isPrivate: false
           description: ""
           sortKey: -1732181369692.7102
@@ -1997,7 +1997,7 @@ collection:
         meta:
           id: req_25984321d7eb47018e604f1a7f5966d8
           created: 1749252683345
-          modified: 1749308517048
+          modified: 1749932228374
           isPrivate: false
           description: ""
           sortKey: -1732181183686.3877
@@ -2005,7 +2005,7 @@ collection:
         parameters:
           - id: pair_8b13ea8fa4c54cf3986f18044b55d596
             name: bankAccountId
-            value: 63e4fca8-f238-41f4-bd0c-c8cc4eee2577
+            value: 0b7c5d51-648e-4d91-a22c-4b098152067b
             description: ""
             disabled: false
           - id: pair_05ffc81d3ed943a29d5bac4fbfe5194f
@@ -2037,7 +2037,7 @@ collection:
         meta:
           id: req_0dac0346310443eea3189c7f6eaa71b0
           created: 1749305044777
-          modified: 1749310232310
+          modified: 1749931086729
           isPrivate: false
           description: ""
           sortKey: -1732180951178.4849
@@ -2046,7 +2046,7 @@ collection:
           mimeType: multipart/form-data
           params:
             - name: bankAccountId
-              value: 63e4fca8-f238-41f4-bd0c-c8cc4eee2577
+              value: 0b7c5d51-648e-4d91-a22c-4b098152067b
               id: pair_4ecce22cfc364dfc89743897dd4d02e8
             - id: pair_e3f7158130bb41bebbc655d14c59efc6
               name: file
@@ -2054,7 +2054,7 @@ collection:
               description: ""
               disabled: false
               type: file
-              fileName: /Users/eduardotrindade/Downloads/Extrato BB 2025_04.xlsx
+              fileName: /Users/eduardotrindade/Downloads/Extrato BB 2025_04_Guilherme.xlsx
         headers:
           - name: Content-Type
             value: multipart/form-data
@@ -2084,7 +2084,7 @@ collection:
         meta:
           id: req_eb1b7f010ae247e9a8565957ec17c0f3
           created: 1749293667655
-          modified: 1749294080959
+          modified: 1749475117032
           isPrivate: false
           description: ""
           sortKey: -1732180997680.0654
@@ -2093,7 +2093,7 @@ collection:
           mimeType: application/json
           text: |-
             {
-            	"cashFlowDefault": "CASH"
+            	"cashFlowDefault": "BANK"
             }
         headers:
           - name: Content-Type
@@ -2184,7 +2184,7 @@ collection:
         meta:
           id: req_e71ba9ba68574e0bb7d5069ca76a99ed
           created: 1749323407254
-          modified: 1749331390562
+          modified: 1749938862546
           isPrivate: false
           description: ""
           sortKey: -1732181369792.7102
@@ -2208,7 +2208,7 @@ collection:
         meta:
           id: req_d3ca9c6bb0964e50a8fa40ee73f7bdc7
           created: 1749323420141
-          modified: 1749332945578
+          modified: 1749940388578
           isPrivate: false
           description: ""
           sortKey: -1732181369742.7102
@@ -2218,10 +2218,10 @@ collection:
           text: |-
             {
             	"invoiceNumber": "2025/001",
-            	"customerId": "bc1d6e7b-7473-4b34-b97b-b694130e3ef2",
-            	"paymentConditionId": "003c212b-2de1-4078-ab78-c51e14c3d092",
-            	"costCenterId": "dae699f2-e3c2-4381-977d-0bbb1d1ed26c",
-            	"issueDate": "2025-05-07T15:00:00.000Z",
+            	"customerId": "414f3b1e-7460-4a26-bb08-8bcbc5a623e0",
+            	"paymentConditionId": "89f4f354-9fdd-49c8-9d3f-852424976ec9",
+            	"costCenterId": "04dcf5b9-c5a3-4b5a-8fcc-440beeca9fed",
+            	"issueDate": "2025-06-14T15:00:00.000Z",
             	"serviceValue": 1200,
             	"retainsIss": false,
             	"notes": "Nota de teste"
@@ -2266,6 +2266,134 @@ collection:
             send: true
             store: true
           rebuildPath: true
+  - name: 15. Dashboard (Relatórios)
+    meta:
+      id: fld_8a509a2706384a988afe9e6c3c250dd2
+      created: 1754446614504
+      modified: 1754446614504
+      sortKey: -1731419439428.994
+      description: ""
+    children:
+      - url: "{{ _.baseURL }}dashboard/overview"
+        name: overview
+        meta:
+          id: req_05f5ab55ed284c5fb588404869541b90
+          created: 1754446614509
+          modified: 1754446641924
+          isPrivate: false
+          description: ""
+          sortKey: -1732181369792.7102
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}dashboard/charts"
+        name: charts
+        meta:
+          id: req_04920cdead404559b0fb70fb4a266217
+          created: 1754446674924
+          modified: 1754446678891
+          isPrivate: false
+          description: ""
+          sortKey: -1732181369780.2102
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}dashboard/top-customers"
+        name: top-customers
+        meta:
+          id: req_c4888664ea694b8faf9d727bdeaf86c4
+          created: 1754446690112
+          modified: 1754446725119
+          isPrivate: false
+          description: ""
+          sortKey: -1732181369773.9602
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}dashboard/top-suppliers"
+        name: top-suppliers
+        meta:
+          id: req_c80c6371669e4bb69f4b6449e5d28099
+          created: 1754446696754
+          modified: 1754446719622
+          isPrivate: false
+          description: ""
+          sortKey: -1732181369770.8352
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}dashboard/recent-transactions"
+        name: recent-transactions
+        meta:
+          id: req_178347e171714954941c70c55fdfb2f6
+          created: 1754446705590
+          modified: 1754446712170
+          isPrivate: false
+          description: ""
+          sortKey: -1732181369769.2727
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
 cookieJar:
   name: Default Jar
   meta:
@@ -2284,21 +2412,21 @@ environments:
       meta:
         id: env_339e55f028994e779813ac8cb6de44e9
         created: 1746536736141
-        modified: 1749308277414
+        modified: 1754447357377
         isPrivate: false
         sortKey: 1735229491596
       data:
         baseURL: http://localhost:3333/api/
-        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYTljMmY2OS02YWY5LTQwNDctODMyYy1jYTcxZDllODUyNjMiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NDkzMDgyNjksImV4cCI6MTc0OTkxMzA2OX0.T-zMs17vrO6L3asnSt81L9OcIxCK8EEfcXhgBLPfzqU
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjZTk1YjJhMC1hZGE1LTQ0N2EtODhlOC0yMWE2Y2Y1MmE4N2MiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTQ0NDczNDcsImV4cCI6MTc1NTA1MjE0N30.kfQxMotfFzeLg2XZtzWUAYUoLOp0_wBHDLSCGdjnKbg
       color: "#6de9ca"
     - name: Ambiente Dev
       meta:
         id: env_1c0c26c31ee5417c9e754c2c48ed60b4
         created: 1746536736143
-        modified: 1746536736143
+        modified: 1752074128029
         isPrivate: false
         sortKey: 1735229491646
       data:
-        baseURL: https://minas-drones-api.onrender.com/api/
+        baseURL: https://easyfin-api.onrender.com/api/
         token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3YzgxYmQxZS1lNzRiLTRkNTQtOTgyZC0zMzZjZjNjNWU1MjMiLCJyb2xlIjoiTUFOQUdFUiIsImlhdCI6MTc0NTUxMzUxMSwiZXhwIjoxNzQ1NTk5OTExfQ.IDJSPbb4ULCG9tufol2koPeMk2xuiy2I9cTD13Et66U
       color: "#d4e96d"
