@@ -48,3 +48,9 @@ export function setToStartOfDayUTC(date: Date) {
 export function setToEndOfDayUTC(date: Date) {
    return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 23, 59, 59, 999))
 }
+
+export function getTodayInBrazilTimezone(): Date {
+   const now = new Date()
+   const brazilTime = new Date(now.getTime() - 3 * 60 * 60 * 1000)
+   return brazilTime
+}

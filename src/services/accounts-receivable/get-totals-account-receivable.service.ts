@@ -1,10 +1,11 @@
 import { PaymentStatus, PrismaClient } from '@prisma/client'
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, startOfDay, endOfDay } from 'date-fns'
+import { getTodayInBrazilTimezone } from '@/utils/format'
 
 const prisma = new PrismaClient()
 
 export const getTotalsAccountReceivableService = async () => {
-   const today = new Date()
+   const today = getTodayInBrazilTimezone()
 
    const totalReceivable = await prisma.accountsReceivable.aggregate({
       _sum: {
