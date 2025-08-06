@@ -14,47 +14,71 @@ const createCashFlowEntry = async (
    bankAccountId: string | null | undefined,
    cashBoxId: string | null | undefined,
 ) => {
-   let lastBalance = 0
-
-   if (bankAccountId) {
-      const lastCashFlow = await prisma.cashFlow.findFirst({
-         where: {
-            bankAccountId,
-         },
-         orderBy: {
-            date: 'desc',
-         },
-      })
-
-      lastBalance = lastCashFlow?.balance || 0
-   }
-
-   if (cashBoxId) {
-      const lastCashFlow = await prisma.cashFlow.findFirst({
-         where: {
-            cashBoxId,
-         },
-         orderBy: {
-            date: 'desc',
-         },
-      })
-
-      lastBalance = lastCashFlow?.balance || 0
-   }
-
-   await prisma.cashFlow.create({
+   // Cria o lançamento primeiro com saldo temporário
+   const newEntry = await prisma.cashFlow.create({
       data: {
          date,
          historic,
          type,
          description,
          value,
-         balance: type === TransactionType.CREDIT ? lastBalance + value : lastBalance - value,
+         balance: 0, // Será recalculado
          costCenterId,
          bankAccountId: bankAccountId || null,
          cashBoxId: cashBoxId || null,
       },
    })
+
+   // Recalcula todos os saldos da conta/caixa ordenando por data
+   if (bankAccountId) {
+      await recalculateBalancesForAccount(prisma, bankAccountId)
+   }
+   
+   if (cashBoxId) {
+      await recalculateBalancesForCashBox(prisma, cashBoxId)
+   }
+
+   return newEntry
+}
+
+// Função auxiliar para recalcular saldos de conta bancária
+const recalculateBalancesForAccount = async (prisma: any, bankAccountId: string) => {
+   const entries = await prisma.cashFlow.findMany({
+      where: { bankAccountId },
+      orderBy: [
+         { date: 'asc' },
+         { createdAt: 'asc' }
+      ],
+   })
+
+   let balance = 0
+   for (const entry of entries) {
+      balance = entry.type === TransactionType.CREDIT ? balance + entry.value : balance - entry.value
+      await prisma.cashFlow.update({
+         where: { id: entry.id },
+         data: { balance },
+      })
+   }
+}
+
+// Função auxiliar para recalcular saldos de caixa
+const recalculateBalancesForCashBox = async (prisma: any, cashBoxId: string) => {
+   const entries = await prisma.cashFlow.findMany({
+      where: { cashBoxId },
+      orderBy: [
+         { date: 'asc' },
+         { createdAt: 'asc' }
+      ],
+   })
+
+   let balance = 0
+   for (const entry of entries) {
+      balance = entry.type === TransactionType.CREDIT ? balance + entry.value : balance - entry.value
+      await prisma.cashFlow.update({
+         where: { id: entry.id },
+         data: { balance },
+      })
+   }
 }
 
 export const receiveAccountReceivableService = async (

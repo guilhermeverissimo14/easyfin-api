@@ -44,9 +44,6 @@ export const getTotalsAccountReceivableService = async () => {
    const startOfCurrentMonth = startOfMonth(today)
    const endOfCurrentMonth = endOfMonth(today)
 
-   console.log('startOfCurrentMonth', startOfCurrentMonth)
-   console.log('endOfCurrentMonth', endOfCurrentMonth)
-
    const receivedThisMonth = await prisma.accountsReceivable.aggregate({
       _sum: {
          value: true,
