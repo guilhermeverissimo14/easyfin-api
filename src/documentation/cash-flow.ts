@@ -261,16 +261,6 @@ export const listByCashCashFlowSchema = {
    description: 'Lista os lançamentos do fluxo de caixa por caixa com paginação e filtros',
    tags: ['Cash Flow'],
    summary: 'Listar lançamentos do fluxo de caixa por caixa',
-   params: {
-      type: 'object',
-      properties: {
-         cashId: {
-            type: 'string',
-            description: 'ID do caixa',
-         },
-      },
-      required: ['cashId'],
-   },
    querystring: {
       type: 'object',
       properties: {

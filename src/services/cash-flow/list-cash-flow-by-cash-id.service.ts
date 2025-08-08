@@ -79,16 +79,6 @@ export const listCashFlowByCashBoxIdService = async (filters: CashFlowFilters) =
       }
    }
    try {
-      const cashBox = await prisma.cashBox.findUnique({
-         where: {
-            id: cashBoxId,
-         },
-      })
-
-      if (!cashBox) {
-         throw new AppError('Caixa não encontrado', 404)
-      }
-
       // Buscar dados com paginação
       const [cashFlowList, totalCount] = await Promise.all([
          prisma.cashFlow.findMany({
