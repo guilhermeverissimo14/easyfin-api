@@ -110,7 +110,7 @@ export const createInvoiceService = async (data: InvoiceData) => {
                documentDate: issueDateObj,
                launchDate: new Date(),
                dueDate,
-               value: (serviceValue / totalInstallments) * 100,
+               value: (netValue / totalInstallments) * 100,
                receivedValue: 0,
                discount: 0,
                interest: 0,

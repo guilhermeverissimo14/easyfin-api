@@ -126,7 +126,7 @@ export const updateInvoiceService = async (data: UpdateInvoiceData) => {
             const totalInstallments = accountsReceivable.length
 
             for (const receivable of accountsReceivable) {
-               const newValue = (serviceValue / totalInstallments) * 100
+               const newValue = (netValue / totalInstallments) * 100
 
                await prisma.accountsReceivable.update({
                   where: {
