@@ -1018,3 +1018,86 @@ export const settleAccountsPayableSchema = {
       },
    },
 }
+
+export const reverseAccountsPayableSchema = {
+	description: 'Estorna uma conta a pagar liquidada',
+	tags: ['Accounts Payable'],
+	summary: 'Estornar conta a pagar',
+	params: {
+		type: 'object',
+		properties: {
+			id: {
+				type: 'string',
+				description: 'ID da conta a pagar a ser estornada',
+			},
+		},
+		required: ['id'],
+	},
+	body: {
+		type: 'object',
+		properties: {
+			reason: {
+				type: 'string',
+				description: 'Motivo do estorno',
+			},
+		},
+		required: ['reason'],
+	},
+	response: {
+		200: {
+			description: 'Conta a pagar estornada com sucesso',
+			type: 'object',
+			properties: {
+				message: {
+					type: 'string',
+					description: 'Mensagem de sucesso',
+					example: 'Conta a pagar estornada com sucesso',
+				},
+			},
+		},
+		400: {
+			description: 'Erro ao estornar a conta a pagar',
+			type: 'object',
+			properties: {
+				message: {
+					type: 'string',
+					description: 'Mensagem de erro',
+					example: 'Apenas contas com status PAID podem ser estornadas',
+				},
+			},
+		},
+		401: {
+			description: 'Usuário não autenticado',
+			type: 'object',
+			properties: {
+				message: {
+					type: 'string',
+					description: 'Mensagem de erro',
+					example: 'Usuário não autenticado',
+				},
+			},
+		},
+		404: {
+			description: 'Conta a pagar não encontrada',
+			type: 'object',
+			properties: {
+				message: {
+					type: 'string',
+					description: 'Mensagem de erro',
+					example: 'Conta a pagar não encontrada',
+				},
+			},
+		},
+		500: {
+			description: 'Erro interno do servidor',
+			type: 'object',
+			properties: {
+				message: {
+					type: 'string',
+					description: 'Mensagem de erro',
+					example: 'Erro interno do servidor',
+				},
+			},
+		},
+	},
+}

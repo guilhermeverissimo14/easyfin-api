@@ -876,6 +876,89 @@ export const deleteAccountsReceivableSchema = {
    },
 }
 
+export const reverseAccountsReceivableSchema = {
+   description: 'Estorna uma conta a receber liquidada',
+   tags: ['Accounts Receivable'],
+   summary: 'Estornar conta a receber',
+   params: {
+      type: 'object',
+      properties: {
+         id: {
+            type: 'string',
+            description: 'ID da conta a receber a ser estornada',
+         },
+      },
+      required: ['id'],
+   },
+   body: {
+      type: 'object',
+      properties: {
+         reason: {
+            type: 'string',
+            description: 'Motivo do estorno',
+         },
+      },
+      required: ['reason'],
+   },
+   response: {
+      200: {
+         description: 'Conta a receber estornada com sucesso',
+         type: 'object',
+         properties: {
+            message: {
+               type: 'string',
+               description: 'Mensagem de sucesso',
+               example: 'Conta a receber estornada com sucesso',
+            },
+         },
+      },
+      400: {
+         description: 'Erro ao estornar a conta a receber',
+         type: 'object',
+         properties: {
+            message: {
+               type: 'string',
+               description: 'Mensagem de erro',
+               example: 'Apenas contas com status PAID podem ser estornadas',
+            },
+         },
+      },
+      401: {
+         description: 'Usuário não autenticado',
+         type: 'object',
+         properties: {
+            message: {
+               type: 'string',
+               description: 'Mensagem de erro',
+               example: 'Usuário não autenticado',
+            },
+         },
+      },
+      404: {
+         description: 'Conta a receber não encontrada',
+         type: 'object',
+         properties: {
+            message: {
+               type: 'string',
+               description: 'Mensagem de erro',
+               example: 'Conta a receber não encontrada',
+            },
+         },
+      },
+      500: {
+         description: 'Erro interno do servidor',
+         type: 'object',
+         properties: {
+            message: {
+               type: 'string',
+               description: 'Mensagem de erro',
+               example: 'Erro interno do servidor',
+            },
+         },
+      },
+   },
+}
+
 export const receiveAccountsReceivableSchema = {
    description: 'Liquida uma conta a receber',
    tags: ['Accounts Receivable'],
