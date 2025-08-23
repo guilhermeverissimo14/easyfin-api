@@ -53,10 +53,10 @@ export const reverseAccountReceivableService = async (
 				data: {
 					status: PaymentStatus.PENDING,
 					receiptDate: null,
-					receivedValue: null,
-					fine: null,
-					interest: null,
-					discount: null,
+					receivedValue: 0,
+					fine: 0,
+					interest: 0,
+					discount: 0,
 					observation: reason ? `ESTORNADO: ${reason}` : "ESTORNADO",
 				},
 			});
