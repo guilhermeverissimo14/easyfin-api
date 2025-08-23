@@ -1,170 +1,223 @@
-import { PrismaClient, PaymentStatus } from '@prisma/client'
-import { AppError } from '@/helpers/app-error'
+import { PrismaClient, PaymentStatus, Customer } from "@prisma/client";
+import { AppError } from "@/helpers/app-error";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 interface UpdateInvoiceData {
-   id: string
-   invoiceNumber?: string
-   customerId?: string
-   paymentConditionId?: string
-   issueDate?: string
-   serviceValue?: number
-   retainsIss?: boolean
-   bankAccountId?: string
-   costCenterId?: string
-   notes?: string
-   userId?: string
+	id: string;
+	invoiceNumber?: string;
+	customerId?: string;
+	paymentConditionId?: string;
+	issueDate?: string;
+	serviceValue?: number;
+	retainsIss?: boolean;
+	bankAccountId?: string;
+	costCenterId?: string;
+	notes?: string;
+	userId?: string;
 }
 
 export const updateInvoiceService = async (data: UpdateInvoiceData) => {
-   const { id, invoiceNumber, customerId, paymentConditionId, issueDate, serviceValue, retainsIss, bankAccountId, costCenterId, notes, userId } = data
+	const {
+		id,
+		invoiceNumber,
+		customerId,
+		paymentConditionId,
+		issueDate,
+		serviceValue,
+		retainsIss,
+		bankAccountId,
+		costCenterId,
+		notes,
+		userId,
+	} = data;
 
-   try {
-      return await prisma.$transaction(async (prisma) => {
-         const existingInvoice = await prisma.invoice.findUnique({ where: { id } })
+	try {
+		return await prisma.$transaction(async (prisma) => {
+			const existingInvoice = await prisma.invoice.findUnique({
+				where: { id },
+			});
 
-         if (!existingInvoice) {
-            throw new AppError('Fatura não encontrada', 404)
-         }
+			if (!existingInvoice) {
+				throw new AppError("Fatura não encontrada", 404);
+			}
 
-         let customer
-         if (customerId) {
-            customer = await prisma.customer.findUnique({ where: { id: customerId } })
-            if (!customer) {
-               throw new AppError('Cliente não encontrado', 404)
-            }
-         }
+			let customer: Customer | null = null;
 
-         let issueDateObj
-         let year
-         let month
-         let taxRates
+			if (customerId) {
+				customer = await prisma.customer.findUnique({
+					where: { id: customerId },
+				});
+				if (!customer) {
+					throw new AppError("Cliente não encontrado", 404);
+				}
+			}
 
-         if (issueDate) {
-            issueDateObj = new Date(issueDate)
-            year = issueDateObj.getFullYear()
-            month = issueDateObj.getMonth() + 1
+			let issueDateObj;
+			let year;
+			let month;
+			let taxRates;
 
-            taxRates = await prisma.taxRates.findFirst({
-               where: {
-                  year,
-                  month,
-               },
-            })
-         }
+			if (issueDate) {
+				issueDateObj = new Date(issueDate);
+				year = issueDateObj.getFullYear();
+				month = issueDateObj.getMonth() + 1;
 
-         let issqnTaxRate: number | null = existingInvoice.issqnTaxRate
-         let effectiveTaxRate: number | null = existingInvoice.effectiveTaxRate
-         let issqnValue: number | null = existingInvoice.issqnValue ? existingInvoice.issqnValue / 100 : null
-         let netValue: number = existingInvoice.netValue ? existingInvoice.netValue / 100 : existingInvoice.serviceValue / 100
-         let effectiveTax: number | null = existingInvoice.effectiveTax ? existingInvoice.effectiveTax / 100 : null
+				taxRates = await prisma.taxRates.findFirst({
+					where: {
+						year,
+						month,
+					},
+				});
+			}
 
-         if (typeof retainsIss === 'boolean' && issueDate && serviceValue) {
-            if (retainsIss) {
-               if (!taxRates) {
-                  throw new AppError('Alíquota não encontrada para o mês e ano informados', 404)
-               }
+			let issqnTaxRate: number | null = existingInvoice.issqnTaxRate;
+			let effectiveTaxRate: number | null = existingInvoice.effectiveTaxRate;
+			let issqnValue: number | null = existingInvoice.issqnValue
+				? existingInvoice.issqnValue / 100
+				: null;
+			let netValue: number = existingInvoice.netValue
+				? existingInvoice.netValue / 100
+				: existingInvoice.serviceValue / 100;
+			let effectiveTax: number | null = existingInvoice.effectiveTax
+				? existingInvoice.effectiveTax / 100
+				: null;
 
-               issqnTaxRate = taxRates.issqnTaxRate
-               effectiveTaxRate = taxRates.effectiveTaxRate
+			if (typeof retainsIss === "boolean" && issueDate && serviceValue) {
+				if (retainsIss) {
+					if (!taxRates) {
+						throw new AppError(
+							"Alíquota não encontrada para o mês e ano informados",
+							404,
+						);
+					}
 
-               const serviceValueInReais = serviceValue / 100
+					issqnTaxRate = taxRates.issqnTaxRate;
+					effectiveTaxRate = taxRates.effectiveTaxRate;
 
-               issqnValue = serviceValueInReais * issqnTaxRate
-               netValue = serviceValue - issqnValue
-            } else {
-               issqnTaxRate = null
-               issqnValue = null
-               netValue = serviceValue
-            }
+					const serviceValueInRS = serviceValue / 100;
 
-            if (effectiveTaxRate !== null) {
-               const serviceValueInReais = serviceValue / 100
-               effectiveTax = serviceValueInReais * effectiveTaxRate
+					issqnValue = serviceValueInRS * issqnTaxRate;
+					netValue = serviceValue - issqnValue;
+				} else {
+					issqnTaxRate = null;
+					issqnValue = null;
+					netValue = serviceValue;
+				}
 
-               if (retainsIss && issqnValue !== null) {
-                  effectiveTax = effectiveTax - issqnValue
-               }
-               effectiveTax = effectiveTax * 100
-            }
-         }
+				if (effectiveTaxRate !== null) {
+					const serviceValueInRS = serviceValue / 100;
+					effectiveTax = serviceValueInRS * effectiveTaxRate;
 
-         const updatedInvoice = await prisma.invoice.update({
-            where: { id },
-            data: {
-               invoiceNumber: invoiceNumber !== undefined ? invoiceNumber : existingInvoice.invoiceNumber,
-               customerId: customerId !== undefined ? customerId : existingInvoice.customerId,
-               paymentConditionId: paymentConditionId !== undefined ? paymentConditionId : existingInvoice.paymentConditionId,
-               issueDate: issueDate ? issueDateObj : existingInvoice.issueDate,
-               month: issueDate ? month : existingInvoice.month,
-               year: issueDate ? year : existingInvoice.year,
-               dueDate: issueDate ? issueDateObj : existingInvoice.dueDate,
-               serviceValue: serviceValue !== undefined ? serviceValue * 100 : existingInvoice.serviceValue,
-               retainsIss: retainsIss !== undefined ? retainsIss : existingInvoice.retainsIss,
-               issqnTaxRate: issqnTaxRate,
-               effectiveTaxRate: effectiveTaxRate,
-               issqnValue: issqnValue !== null ? issqnValue * 100 : null,
-               netValue: netValue * 100,
-               effectiveTax: effectiveTax !== null ? effectiveTax : null,
-               bankAccountId: bankAccountId !== undefined ? bankAccountId : existingInvoice.bankAccountId,
-               notes: notes !== undefined ? notes : existingInvoice.notes,
-            },
-         })
+					if (retainsIss && issqnValue !== null) {
+						effectiveTax = effectiveTax - issqnValue;
+					}
+					effectiveTax = effectiveTax * 100;
+				}
+			}
 
-         if (typeof retainsIss === 'boolean' && serviceValue && existingInvoice.retainsIss !== retainsIss) {
-            const accountsReceivable = await prisma.accountsReceivable.findMany({
-               where: {
-                  documentNumber: existingInvoice.invoiceNumber,
-                  customerId: existingInvoice.customerId,
-                  status: {
-                     not: PaymentStatus.PAID,
-                  },
-               },
-            })
+			const updatedInvoice = await prisma.invoice.update({
+				where: { id },
+				data: {
+					invoiceNumber:
+						invoiceNumber !== undefined
+							? invoiceNumber
+							: existingInvoice.invoiceNumber,
+					customerId:
+						customerId !== undefined ? customerId : existingInvoice.customerId,
+					paymentConditionId:
+						paymentConditionId !== undefined
+							? paymentConditionId
+							: existingInvoice.paymentConditionId,
+					issueDate: issueDate ? issueDateObj : existingInvoice.issueDate,
+					month: issueDate ? month : existingInvoice.month,
+					year: issueDate ? year : existingInvoice.year,
+					dueDate: issueDate ? issueDateObj : existingInvoice.dueDate,
+					serviceValue:
+						serviceValue !== undefined
+							? serviceValue * 100
+							: existingInvoice.serviceValue,
+					retainsIss:
+						retainsIss !== undefined ? retainsIss : existingInvoice.retainsIss,
+					issqnTaxRate: issqnTaxRate,
+					effectiveTaxRate: effectiveTaxRate,
+					issqnValue: issqnValue !== null ? issqnValue * 100 : null,
+					netValue: netValue * 100,
+					effectiveTax: effectiveTax !== null ? effectiveTax : null,
+					bankAccountId:
+						bankAccountId !== undefined
+							? bankAccountId
+							: existingInvoice.bankAccountId,
+					notes: notes !== undefined ? notes : existingInvoice.notes,
+				},
+			});
 
-            const totalInstallments = accountsReceivable.length
+			if (
+				(typeof retainsIss === "boolean" &&
+					serviceValue &&
+					existingInvoice.retainsIss !== retainsIss) ||
+				(serviceValue !== undefined &&
+					serviceValue !== existingInvoice.serviceValue / 100)
+			) {
+				const accountsReceivable = await prisma.accountsReceivable.findMany({
+					where: {
+						documentNumber: existingInvoice.invoiceNumber,
+						customerId: existingInvoice.customerId,
+						status: {
+							not: PaymentStatus.PAID,
+						},
+					},
+				});
 
-            for (const receivable of accountsReceivable) {
-               const newValue = (netValue / totalInstallments) * 100
+				const totalInstallments = accountsReceivable.length;
 
-               await prisma.accountsReceivable.update({
-                  where: {
-                     id: receivable.id,
-                  },
-                  data: {
-                     value: newValue,
-                     costCenterId: costCenterId !== undefined ? costCenterId : receivable.costCenterId,
-                     userId: userId !== undefined ? userId : receivable.userId,
-                  },
-               })
-            }
-         } else if (costCenterId) {
-            await prisma.accountsReceivable.updateMany({
-               where: {
-                  documentNumber: updatedInvoice.invoiceNumber,
-                  customerId: updatedInvoice.customerId,
-               },
-               data: {
-                  costCenterId,
-                  userId: userId !== undefined ? userId : undefined,
-               },
-            })
-         }
+				for (const receivable of accountsReceivable) {
+					const newValue = (netValue / totalInstallments) * 100;
 
-         return {
-            ...updatedInvoice,
-            serviceValue: updatedInvoice.serviceValue / 100,
-            issqnValue: updatedInvoice.issqnValue ? updatedInvoice.issqnValue / 100 : 0,
-            netValue: updatedInvoice.netValue ? updatedInvoice.netValue / 100 : 0,
-            effectiveTax: updatedInvoice.effectiveTax ? updatedInvoice.effectiveTax / 100 : 0,
-         }
-      })
-   } catch (error: any) {
-      if (error instanceof AppError) {
-         throw error
-      }
-      console.error(error)
-      throw new AppError('Erro ao atualizar fatura', 500)
-   }
-}
+					await prisma.accountsReceivable.update({
+						where: {
+							id: receivable.id,
+						},
+						data: {
+							value: newValue,
+							costCenterId:
+								costCenterId !== undefined
+									? costCenterId
+									: receivable.costCenterId,
+							userId: userId !== undefined ? userId : receivable.userId,
+						},
+					});
+				}
+			} else if (costCenterId) {
+				await prisma.accountsReceivable.updateMany({
+					where: {
+						documentNumber: updatedInvoice.invoiceNumber,
+						customerId: updatedInvoice.customerId,
+					},
+					data: {
+						costCenterId,
+						userId: userId !== undefined ? userId : undefined,
+					},
+				});
+			}
+
+			return {
+				...updatedInvoice,
+				serviceValue: updatedInvoice.serviceValue / 100,
+				issqnValue: updatedInvoice.issqnValue
+					? updatedInvoice.issqnValue / 100
+					: 0,
+				netValue: updatedInvoice.netValue ? updatedInvoice.netValue / 100 : 0,
+				effectiveTax: updatedInvoice.effectiveTax
+					? updatedInvoice.effectiveTax / 100
+					: 0,
+			};
+		});
+	} catch (error: any) {
+		if (error instanceof AppError) {
+			throw error;
+		}
+		console.error(error);
+		throw new AppError("Erro ao atualizar fatura", 500);
+	}
+};
