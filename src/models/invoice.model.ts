@@ -36,3 +36,7 @@ export interface ListInvoicesRequest {
       issueDateEnd?: string
    }
 }
+
+export interface DeleteInvoiceRequest {
+	Params: { id: string }
+}
