@@ -21,8 +21,7 @@ transporter.set(
 	},
 );
 
-const LOGO_URL =
-	"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSI5i9r4-A1OU8UTZqkwPwEDzXcdq_2XtCAXg&s";
+const LOGO_URL = "https://easyapp-api.mgioqc.easypanel.host/logo.png";
 
 export const sendWelcomeEmail = async (
 	email: string,
