@@ -144,7 +144,9 @@ export const startServer = async () => {
 		const PORT = process.env.PORT || 8080;
 		await server.listen({ port: Number(PORT), host: "0.0.0.0" });
 
-		console.log(`Server running at http://localhost:${PORT} 🚀`);
+		console.log(
+			`Server running at https://easyapp-api.mgioqc.easypanel.host:${PORT} 🚀`,
+		);
 		server.swagger();
 	} catch (err) {
 		console.log(err);
