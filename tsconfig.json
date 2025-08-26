@@ -7,6 +7,7 @@
     "paths": {
       "@/*": ["*"],
        "@/prisma/*":["prisma/*"],
+       "@/public/*":["public/*"],
     },
     "outDir": "dist",                                  
     "esModuleInterop": true,                             
