@@ -5,6 +5,7 @@ ENV HOST 0.0.0.0
 ENV PATH /node_modules/.bin:$PATH
 COPY package*.json ./
 COPY .env ./
+COPY public ./public
 RUN npm install -g npm@10.8.3
 RUN npm install
 COPY tsconfig.json ./
