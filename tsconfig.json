@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",                                  
     "module": "commonjs",                                
-    "rootDirs": ["src", "prisma"],                                  
+    "rootDirs": ["src", "prisma", "public"],                                  
     "baseUrl": "src",                                  
     "paths": {
       "@/*": ["*"],
@@ -15,7 +15,7 @@
     "skipLibCheck": true,
     "resolveJsonModule": true                                    
   },
-  "include": ["src", "prisma"],
+  "include": ["src", "prisma", "public"],
   "exclude": ["node_modules"],
   "env": {
     "node": true,
