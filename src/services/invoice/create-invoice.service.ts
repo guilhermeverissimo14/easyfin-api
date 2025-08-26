@@ -1,4 +1,4 @@
-import { PrismaClient, PaymentStatus, TransactionType } from "@prisma/client";
+import { PrismaClient, PaymentStatus } from "@prisma/client";
 import { AppError } from "@/helpers/app-error";
 
 const prisma = new PrismaClient();
@@ -45,9 +45,16 @@ export const createInvoiceService = async (data: InvoiceData) => {
 			throw new AppError("Condição de pagamento não encontrada", 404);
 		}
 
+		const conditions = paymentTerms.condition.split(",").map(Number);
+		const totalInstallments = conditions.length;
 		const issueDateObj = new Date(issueDate);
+
 		const year = issueDateObj.getFullYear();
 		const month = issueDateObj.getMonth() + 1;
+
+		const maxConditionDays = Math.max(...conditions);
+		const newDueDate = new Date(issueDate);
+		newDueDate.setDate(issueDateObj.getDate() + maxConditionDays);
 
 		const taxRates = await prisma.taxRates.findFirst({
 			where: {
@@ -76,20 +83,17 @@ export const createInvoiceService = async (data: InvoiceData) => {
 			issqnTaxRate = taxRates.issqnTaxRate;
 			effectiveTaxRate = taxRates.effectiveTaxRate;
 
-			const serviceValueInReais = serviceValue / 100;
-
-			issqnValue = serviceValueInReais * issqnTaxRate;
-			netValue = serviceValue - issqnValue * 100;
+			issqnValue = serviceValue * (issqnTaxRate / 100);
+			netValue = serviceValue - issqnValue;
 		}
 
 		if (effectiveTaxRate !== null) {
-			const serviceValueInReais = serviceValue / 100;
-			effectiveTax = serviceValueInReais * effectiveTaxRate;
+			effectiveTax = serviceValue * effectiveTaxRate;
 
 			if (retainsIss && issqnValue !== null) {
 				effectiveTax = effectiveTax - issqnValue;
 			}
-			effectiveTax = effectiveTax * 100; // Imposto efetivo
+			effectiveTax = Math.round(effectiveTax);
 		}
 
 		const invoice = await prisma.invoice.create({
@@ -100,21 +104,18 @@ export const createInvoiceService = async (data: InvoiceData) => {
 				issueDate: issueDateObj,
 				month,
 				year,
-				dueDate: issueDateObj,
+				dueDate: newDueDate,
 				serviceValue: serviceValue * 100,
 				retainsIss,
 				issqnTaxRate,
 				effectiveTaxRate,
-				issqnValue: issqnValue !== null ? issqnValue * 100 : null,
+				issqnValue: issqnValue !== null ? issqnValue : null,
 				netValue: netValue * 100,
 				effectiveTax: effectiveTax !== null ? effectiveTax : null,
 				bankAccountId,
 				notes,
 			},
 		});
-
-		const conditions = paymentTerms.condition.split(",").map(Number);
-		const totalInstallments = conditions.length;
 
 		for (let i = 0; i < conditions.length; i++) {
 			const daysToAdd = conditions[i];

@@ -53,10 +53,29 @@ export const updateInvoiceService = async (data: UpdateInvoiceData) => {
 				}
 			}
 
-			let issueDateObj;
-			let year;
-			let month;
+			let paymentTerms = null;
+			let conditions: number[] = [];
+			let paymentConditionChanged = false;
+
+			if (
+				paymentConditionId &&
+				paymentConditionId !== existingInvoice.paymentConditionId
+			) {
+				paymentTerms = await prisma.paymentTerms.findUnique({
+					where: { id: paymentConditionId },
+				});
+				if (!paymentTerms) {
+					throw new AppError("Condição de pagamento não encontrada", 404);
+				}
+				conditions = paymentTerms.condition.split(",").map(Number);
+				paymentConditionChanged = true;
+			}
+
+			let issueDateObj = existingInvoice.issueDate;
+			let year = existingInvoice.year;
+			let month = existingInvoice.month;
 			let taxRates;
+			let newDueDate = existingInvoice.dueDate;
 
 			if (issueDate) {
 				issueDateObj = new Date(issueDate);
@@ -69,6 +88,26 @@ export const updateInvoiceService = async (data: UpdateInvoiceData) => {
 						month,
 					},
 				});
+			}
+
+			if (paymentConditionChanged || issueDate) {
+				if (paymentConditionChanged) {
+					const maxConditionDays = Math.max(...conditions);
+					newDueDate = new Date(issueDateObj);
+					newDueDate.setDate(issueDateObj.getDate() + maxConditionDays);
+				} else if (issueDate) {
+					const existingPaymentTerms = await prisma.paymentTerms.findUnique({
+						where: { id: existingInvoice.paymentConditionId },
+					});
+					if (existingPaymentTerms) {
+						const existingConditions = existingPaymentTerms.condition
+							.split(",")
+							.map(Number);
+						const maxConditionDays = Math.max(...existingConditions);
+						newDueDate = new Date(issueDateObj);
+						newDueDate.setDate(issueDateObj.getDate() + maxConditionDays);
+					}
+				}
 			}
 
 			let issqnTaxRate: number | null = existingInvoice.issqnTaxRate;
@@ -129,10 +168,10 @@ export const updateInvoiceService = async (data: UpdateInvoiceData) => {
 						paymentConditionId !== undefined
 							? paymentConditionId
 							: existingInvoice.paymentConditionId,
-					issueDate: issueDate ? issueDateObj : existingInvoice.issueDate,
-					month: issueDate ? month : existingInvoice.month,
-					year: issueDate ? year : existingInvoice.year,
-					dueDate: issueDate ? issueDateObj : existingInvoice.dueDate,
+					issueDate: issueDateObj,
+					month: month,
+					year: year,
+					dueDate: newDueDate, // Usar o newDueDate calculado
 					serviceValue:
 						serviceValue !== undefined
 							? serviceValue * 100
@@ -153,13 +192,14 @@ export const updateInvoiceService = async (data: UpdateInvoiceData) => {
 			});
 
 			if (
+				paymentConditionChanged ||
 				(typeof retainsIss === "boolean" &&
 					serviceValue &&
 					existingInvoice.retainsIss !== retainsIss) ||
 				(serviceValue !== undefined &&
 					serviceValue !== existingInvoice.serviceValue / 100)
 			) {
-				const accountsReceivable = await prisma.accountsReceivable.findMany({
+				await prisma.accountsReceivable.deleteMany({
 					where: {
 						documentNumber: existingInvoice.invoiceNumber,
 						customerId: existingInvoice.customerId,
@@ -169,22 +209,47 @@ export const updateInvoiceService = async (data: UpdateInvoiceData) => {
 					},
 				});
 
-				const totalInstallments = accountsReceivable.length;
+				const finalConditions = paymentConditionChanged
+					? conditions
+					: (
+							await prisma.paymentTerms.findUnique({
+								where: { id: existingInvoice.paymentConditionId },
+							})
+						)?.condition
+							.split(",")
+							.map(Number) || [];
 
-				for (const receivable of accountsReceivable) {
-					const newValue = (netValue / totalInstallments) * 100;
+				const finalPaymentTerms =
+					paymentTerms ||
+					(await prisma.paymentTerms.findUnique({
+						where: { id: existingInvoice.paymentConditionId },
+					}));
 
-					await prisma.accountsReceivable.update({
-						where: {
-							id: receivable.id,
-						},
+				for (let i = 0; i < finalConditions.length; i++) {
+					const daysToAdd = finalConditions[i];
+					const dueDate = new Date(issueDateObj);
+					dueDate.setDate(dueDate.getDate() + daysToAdd);
+
+					await prisma.accountsReceivable.create({
 						data: {
-							value: newValue,
-							costCenterId:
-								costCenterId !== undefined
-									? costCenterId
-									: receivable.costCenterId,
-							userId: userId !== undefined ? userId : receivable.userId,
+							customerId: updatedInvoice.customerId,
+							documentNumber: updatedInvoice.invoiceNumber,
+							documentDate: issueDateObj,
+							launchDate: new Date(),
+							dueDate,
+							value: Math.round(netValue / finalConditions.length) * 100,
+							receivedValue: 0,
+							discount: 0,
+							interest: 0,
+							fine: 0,
+							installmentNumber: i + 1,
+							totalInstallments: finalConditions.length,
+							status: PaymentStatus.PENDING,
+							paymentMethodId: finalPaymentTerms?.paymentMethodId,
+							bankAccountId: updatedInvoice.bankAccountId,
+							costCenterId: costCenterId || undefined,
+							plannedPaymentMethod: finalPaymentTerms?.paymentMethodId,
+							userId: userId,
 						},
 					});
 				}
