@@ -1,4 +1,4 @@
-import { PrismaClient, UserRole  } from '@prisma/client'
+import { PrismaClient, UserRole } from '@prisma/client'
 import { AppError } from '@/helpers/app-error'
 import { formatCpfCnpj, formatPhone } from '@/utils/format'
 import { hash } from '@/gateways/criptography/bcrypt'
@@ -31,7 +31,7 @@ export const createUserService = async (userData: {
       throw new AppError('E-mail já está em uso', 400)
    }
 
-   const generatePassword = Math.random().toString(36).slice(-8)
+   const generatePassword = userData.password ? userData.password : Math.random().toString(36).slice(-8)
    const hashedPassword = await hash(generatePassword)
 
    if (userData.cpfCnpj) {
