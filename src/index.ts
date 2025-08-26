@@ -1,6 +1,7 @@
 import "./config/module-alias";
 import Fastify from "fastify";
 import fastifyStatic from "@fastify/static";
+import fs from "fs";
 import path from "path";
 import cors from "@fastify/cors";
 import { startOverdueUpdaterJob } from "./jobs/overdue-updater.job";
@@ -48,7 +49,7 @@ server.register(fastifyMultipart, {
 
 server.register(fastifyStatic, {
 	root: path.join(__dirname, "../public"),
-	prefix: "/static/",
+	prefix: "/public/",
 });
 
 server.register(fastifySwagger, {
@@ -138,6 +139,16 @@ server.register(cashFlowRoutes, { prefix: "/api/cash-flow" });
 server.register(settingsRoutes, { prefix: "/api/settings" });
 server.register(invoicesRoutes, { prefix: "/api/invoices" });
 server.register(dashboardRoutes, { prefix: "/api/dashboard" });
+
+server.get("/logo.png", async (request, reply) => {
+	const logoPath = path.join(__dirname, "../public/logo.png");
+
+	if (!fs.existsSync(logoPath)) {
+		return reply.status(404).send({ error: "Arquivo não encontrado" });
+	}
+
+	return reply.sendFile("logo.png", path.join(__dirname, "../public"));
+});
 
 export const startServer = async () => {
 	try {
