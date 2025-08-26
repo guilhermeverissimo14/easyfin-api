@@ -1,32 +1,40 @@
-import nodemailer from 'nodemailer'
+import nodemailer from "nodemailer";
 
-const userTokens = new Map<string, string>()
+const userTokens = new Map<string, string>();
 
 const transporter = nodemailer.createTransport({
-   service: 'gmail',
-   auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-   },
-})
+	service: "gmail",
+	auth: {
+		user: process.env.EMAIL_USER,
+		pass: process.env.EMAIL_PASS,
+	},
+});
 
-transporter.set('oauth2_provision_cb', (user: any, renew: any, callback: any) => {
-   const accessToken = userTokens.get(user)
-   if (!accessToken) {
-      return callback(new Error('Unknown user'))
-   }
-   return callback(null, accessToken)
-})
+transporter.set(
+	"oauth2_provision_cb",
+	(user: any, renew: any, callback: any) => {
+		const accessToken = userTokens.get(user);
+		if (!accessToken) {
+			return callback(new Error("Unknown user"));
+		}
+		return callback(null, accessToken);
+	},
+);
 
-const LOGO_URL = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSI5i9r4-A1OU8UTZqkwPwEDzXcdq_2XtCAXg&s'
+const LOGO_URL =
+	"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSI5i9r4-A1OU8UTZqkwPwEDzXcdq_2XtCAXg&s";
 
-export const sendWelcomeEmail = async (email: string, name: string, password: string) => {
-   const mailOptions = {
-      from: '"Easyfin" <no-reply@example.com>',
-      to: email,
-      subject: 'Bem-vindo ao sistema Easyfin!',
-      text: `Olá! Bem-vindo ao sistema Easyfin. Sua senha é: ${password}`,
-      html: `
+export const sendWelcomeEmail = async (
+	email: string,
+	name: string,
+	password: string,
+) => {
+	const mailOptions = {
+		from: '"Easyfin" <no-reply@example.com>',
+		to: email,
+		subject: "Bem-vindo ao sistema Easyfin!",
+		text: `Olá! Bem-vindo ao sistema Easyfin. Sua senha é: ${password}`,
+		html: `
          <div style="font-family: Arial, sans-serif; background-color: #f7f7f7; padding: 20px; margin: 0;">
             <div style="max-width: 800px; margin: auto; background-color: white; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden;">
                <div style="text-align: center; padding: 8px;">
@@ -67,7 +75,7 @@ export const sendWelcomeEmail = async (email: string, name: string, password: st
 
                   <div style="width: 100%; text-align: center;">
                      <button style="background-color: #0052cc; color: white; border: none; padding: 10px 40px; border-radius: 5px; cursor: pointer; margin-top: 24px; margin-bottom: 24px; transition: background-color 0.3s;" onmouseover="this.style.backgroundColor='#003d99'" onmouseout="this.style.backgroundColor='#0052cc'">
-                        <a href="https://easyfin-front-isomorphic.vercel.app/login" style="text-decoration: none; color: white; align-items: center; justify-content: center;">Ir para o sistema 🚀</a>
+                        <a href="https://easyfin-front-isomorphic.vercel.app/signin" style="text-decoration: none; color: white; align-items: center; justify-content: center;">Ir para o sistema 🚀</a>
                      </button>
                   </div>
                   <p style="color: #333333; font-size: 16px;">
@@ -83,24 +91,28 @@ export const sendWelcomeEmail = async (email: string, name: string, password: st
             </div>
          </div>
       `,
-   }
+	};
 
-   try {
-      console.log('Enviando e-mail de boas-vindas para:', email)
-      console.log('Autenticando com:', process.env.EMAIL_USER)
-      await transporter.sendMail(mailOptions)
-      console.log('E-mail de boas-vindas enviado para:', email)
-   } catch (error) {
-      console.error('Erro ao enviar e-mail:', error)
-   }
-}
+	try {
+		console.log("Enviando e-mail de boas-vindas para:", email);
+		console.log("Autenticando com:", process.env.EMAIL_USER);
+		await transporter.sendMail(mailOptions);
+		console.log("E-mail de boas-vindas enviado para:", email);
+	} catch (error) {
+		console.error("Erro ao enviar e-mail:", error);
+	}
+};
 
-export const sendRecoveryEmail = async (email: string, name: string, recoveryCode: string) => {
-   const mailOptions = {
-      from: '"Easyfin" <no-reply@example.com>',
-      to: email,
-      subject: 'Recuperação de Senha',
-      html: `
+export const sendRecoveryEmail = async (
+	email: string,
+	name: string,
+	recoveryCode: string,
+) => {
+	const mailOptions = {
+		from: '"Easyfin" <no-reply@example.com>',
+		to: email,
+		subject: "Recuperação de Senha",
+		html: `
          <div style="font-family: Arial, sans-serif; background-color: #f7f7f7; padding: 20px; margin: 0;">
             <div style="max-width: 800px; margin: auto; background-color: white; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden;">
                <div style="text-align: center; padding: 8px;">
@@ -123,13 +135,13 @@ export const sendRecoveryEmail = async (email: string, name: string, recoveryCod
             </div>
          </div>
       `,
-   }
+	};
 
-   try {
-      console.log('Enviando e-mail de recuperação para:', email)
-      await transporter.sendMail(mailOptions)
-      console.log('E-mail de recuperação enviado para:', email)
-   } catch (error) {
-      console.error('Erro ao enviar e-mail:', error)
-   }
-}
+	try {
+		console.log("Enviando e-mail de recuperação para:", email);
+		await transporter.sendMail(mailOptions);
+		console.log("E-mail de recuperação enviado para:", email);
+	} catch (error) {
+		console.error("Erro ao enviar e-mail:", error);
+	}
+};
