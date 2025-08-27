@@ -13,6 +13,7 @@ export const createUserService = async (userData: {
    role: UserRole
    phone?: string | null
    cpfCnpj?: string | null
+   birthdate?:string | null 
    userRole: UserRole
 }) => {
    const { email, role, userRole } = userData
@@ -42,6 +43,11 @@ export const createUserService = async (userData: {
       userData.phone = formatPhone(userData.phone)
    }
 
+   let birthdateFormatted: Date | null = null
+   if (userData.birthdate) {
+      birthdateFormatted = new Date(userData.birthdate)
+   }
+
    const { userRole: userRoleToRemove, ...userDataWithoutUserRole } = userData
 
    let user = null
@@ -52,6 +58,7 @@ export const createUserService = async (userData: {
             ...userDataWithoutUserRole,
             role: role,
             password: hashedPassword,
+            birthdate: birthdateFormatted,
          },
       })
    } catch (error) {
