@@ -45,7 +45,8 @@ export const createUserService = async (userData: {
 
    let birthdateFormatted: Date | null = null
    if (userData.birthdate) {
-      birthdateFormatted = new Date(userData.birthdate)
+      const [year, month, day] = userData.birthdate.split('-').map(Number)
+      birthdateFormatted = new Date(year, month - 1, day) 
    }
 
    const { userRole: userRoleToRemove, ...userDataWithoutUserRole } = userData
