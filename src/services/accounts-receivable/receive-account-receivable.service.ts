@@ -156,9 +156,9 @@ export const receiveAccountReceivableService = async (
 					id,
 				},
 				data: {
-					fine,
-					interest,
-					discount,
+					fine: fine * 100,
+					interest: interest * 100,
+					discount: discount * 100,
 					observation,
 					paymentMethodId: finalPaymentMethodId,
 					receiptDate,
