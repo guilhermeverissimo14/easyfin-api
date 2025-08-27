@@ -158,6 +158,16 @@ export const reverseAccountReceivableService = async (
 						orderBy: { createdAt: "desc" },
 					});
 
+					// Atualizar saldo do caixa
+					await prisma.cashBox.update({
+						where: { id: cash.id },
+						data: {
+							balance: {
+								decrement: receivedAmount,
+							},
+						},
+					});
+
 					if (cashTransaction) {
 						// Criar transação de estorno (débito)
 						await prisma.cashTransaction.create({
@@ -167,16 +177,6 @@ export const reverseAccountReceivableService = async (
 								description: "Estorno de recebimento de conta a receber",
 								amount: receivedAmount,
 								transactionAt: new Date(),
-							},
-						});
-
-						// Atualizar saldo do caixa
-						await prisma.cashBox.update({
-							where: { id: cash.id },
-							data: {
-								balance: {
-									decrement: receivedAmount,
-								},
 							},
 						});
 					}
