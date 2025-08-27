@@ -64,6 +64,10 @@ export const reverseAccountReceivableService = async (
 			// 2. Se foi liquidado em conta bancária, estornar transações bancárias
 			if (account.bankAccountId) {
 				// Buscar a transação bancária relacionada ao recebimento
+				console.log('Buscando transação bancária relacionada ao recebimento')
+				console.log('account.bankAccountId', account.bankAccountId)
+				console.log('receivedAmount', receivedAmount)
+				
 				const bankTransaction = await prisma.bankTransactions.findFirst({
 					where: {
 						bankAccountId: account.bankAccountId,
@@ -135,8 +139,6 @@ export const reverseAccountReceivableService = async (
 					await prisma.cashFlow.delete({
 						where: { id: cashFlowEntry.id },
 					});
-
-					// Use a função externa FORA da transação
 				}
 			} else {
 				// 3. Se foi liquidado em caixa, estornar transações de caixa
@@ -144,6 +146,10 @@ export const reverseAccountReceivableService = async (
 
 				if (cash) {
 					// Buscar a transação de caixa relacionada ao recebimento
+					console.log('Buscando transação de caixa relacionada ao recebimento')
+					console.log('cash.id', cash.id)
+					console.log('receivedAmount', receivedAmount)
+					console.log('account.receiptDate', account.receiptDate)
 					const cashTransaction = await prisma.cashTransaction.findFirst({
 						where: {
 							cashBoxId: cash.id,
@@ -208,9 +214,6 @@ export const reverseAccountReceivableService = async (
 						await prisma.cashFlow.delete({
 							where: { id: cashFlowEntry.id },
 						});
-
-						// Recalcular saldos do caixa
-						await recalculateCashFlowBalances(account!.bankAccountId!);
 					}
 				}
 			}
@@ -219,6 +222,8 @@ export const reverseAccountReceivableService = async (
 				...reversedAccount,
 				value: reversedAccount.value ? reversedAccount.value / 100 : 0,
 			};
+		}, {
+			timeout: 30000,
 		});
 
 		// Recalcular saldos APÓS a transação

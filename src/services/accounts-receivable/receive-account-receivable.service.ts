@@ -145,10 +145,12 @@ export const receiveAccountReceivableService = async (
 		throw new AppError("O valor da conta a receber está ausente", 400);
 	}
 
-	const amountToReceive = account.value - discount + fine + interest;
+	const amountToReceive = account.value - (discount * 100) + (fine * 100) + (interest * 100);
+
+	console.log('amountToReceive', amountToReceive)
 
 	try {
-		const updatedAccount = await prisma.$transaction(async (prisma) => {
+		await prisma.$transaction(async (prisma) => {
 			const updatedAccount = await prisma.accountsReceivable.update({
 				where: {
 					id,
@@ -274,11 +276,6 @@ export const receiveAccountReceivableService = async (
 			};
 		});
 
-		// return {
-		//    ...updatedAccount,
-		//    value: updatedAccount.value ? updatedAccount.value / 100 : 0,
-		//    receivedValue: updatedAccount.receivedValue ? updatedAccount.receivedValue / 100 : 0,
-		// }
 	} catch (error) {
 		throw new AppError("Error receiving account receivable", 500);
 	}

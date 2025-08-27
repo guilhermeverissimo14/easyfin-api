@@ -20,6 +20,10 @@ export const recalculateCashFlowBalances = async (bankAccountId: string) => {
 
    let currentBalance = 0
 
+   if (cashFlowEntries.length === 0) {
+      return currentBalance
+   }
+
    // Recalcula o saldo sequencialmente
    for (const entry of cashFlowEntries) {
       if (entry.type === TransactionType.CREDIT) {
