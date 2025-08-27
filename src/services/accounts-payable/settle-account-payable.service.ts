@@ -128,7 +128,7 @@ export const settleAccountPayableService = async (
       throw new AppError('O valor da conta a pagar está ausente', 400)
    }
 
-   const amountToSettle = account.value - discount + fine + interest
+   const amountToSettle = account.value - (discount * 100) + (fine * 100) + (interest * 100)
 
    try {
       const updatedAccount = await prisma.$transaction(async (prisma) => {
