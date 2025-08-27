@@ -11,6 +11,32 @@ interface ImportBankTransactionsServiceParams {
    filename: string
 }
 
+// Função para converter valor brasileiro para número
+function parseValueBR(value: string): number {
+   if (!value || typeof value !== 'string') return 0
+   
+   // Remove espaços
+   const cleanValue = value.trim()
+   
+   // Se não tem vírgula, é um valor inteiro (ex: "1000")
+   if (!cleanValue.includes(',')) {
+      return parseFloat(cleanValue.replace(/\./g, '')) || 0
+   }
+   
+   // Se tem vírgula, separa a parte inteira da decimal
+   const parts = cleanValue.split(',')
+   if (parts.length !== 2) return 0
+   
+   // Remove pontos da parte inteira (separadores de milhares)
+   const integerPart = parts[0].replace(/\./g, '')
+   const decimalPart = parts[1]
+   
+   // Reconstrói no formato americano
+   const americanFormat = `${integerPart}.${decimalPart}`
+   
+   return parseFloat(americanFormat) || 0
+}
+
 export const importBankTransactionsService = async ({ sheetNumber = 0, bankAccountId, file, filename }: ImportBankTransactionsServiceParams) => {
    const workbook = XLSX.read(file, { type: 'buffer' })
    const sheetName = workbook.SheetNames[sheetNumber || 0]
@@ -85,9 +111,15 @@ export const importBankTransactionsService = async ({ sheetNumber = 0, bankAccou
          continue
       }
 
-      const [date, historic, value, type, detailing] = row as [Date, string, number, string, string]
+      // Aplicar trim em todas as colunas
+      const [dateRaw, historicRaw, valueRaw, typeRaw, detailingRaw] = row as [string, string, string, string, string]
+      const date = dateRaw?.toString().trim()
+      const historic = historicRaw?.toString().trim()
+      const valueStr = valueRaw?.toString().trim()
+      const type = typeRaw?.toString().trim()
+      const detailing = detailingRaw?.toString().trim()
 
-      if (!date || !historic || !value || !type) {
+      if (!date || !historic || !valueStr || !type) {
          console.warn('Linha ignorada por conter dados incompletos:', row)
          continue
       }
@@ -132,7 +164,7 @@ export const importBankTransactionsService = async ({ sheetNumber = 0, bankAccou
       }
 
       const transactionType = type.trim().toUpperCase() === 'C' ? TransactionType.CREDIT : TransactionType.DEBIT
-      const transactionValue = Number(value) * 100
+      const transactionValue = parseValueBR(valueStr) * 100
 
       if (isNaN(transactionValue) || transactionValue <= 0) {
          console.warn('Linha ignorada por conter um valor inválido:', row)
