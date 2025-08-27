@@ -19,12 +19,6 @@ export const reverseAccountReceivableService = async (
 		throw new AppError("Conta a receber não encontrada", 404);
 	}
 
-	console.log("Conta a receber encontrada: ", account);
-	console.log("Recebimento: ", account.receivedValue);
-	console.log("Data de recebimento: ", account.receiptDate);
-	console.log("Status: ", account.status);
-	console.log("Razão: ", reason);
-
 	if (account.status !== PaymentStatus.PAID) {
 		throw new AppError(
 			"Esta conta não está liquidada e não pode ser estornada",
@@ -146,10 +140,6 @@ export const reverseAccountReceivableService = async (
 
 				if (cash) {
 					// Buscar a transação de caixa relacionada ao recebimento
-					console.log('Buscando transação de caixa relacionada ao recebimento')
-					console.log('cash.id', cash.id)
-					console.log('receivedAmount', receivedAmount)
-					console.log('account.receiptDate', account.receiptDate)
 					const cashTransaction = await prisma.cashTransaction.findFirst({
 						where: {
 							cashBoxId: cash.id,
@@ -158,10 +148,10 @@ export const reverseAccountReceivableService = async (
 							description: { contains: "Recebimento de conta a receber" },
 							transactionAt: {
 								gte: new Date(
-									account.receiptDate!.getTime() - 24 * 60 * 60 * 1000,
+									account.receiptDate!.getTime() - 72 * 60 * 60 * 1000,
 								),
 								lte: new Date(
-									account.receiptDate!.getTime() + 24 * 60 * 60 * 1000,
+									account.receiptDate!.getTime() + 72 * 60 * 60 * 1000,
 								),
 							},
 						},
