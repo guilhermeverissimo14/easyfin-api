@@ -13,6 +13,7 @@ const createCashFlowEntry = async (
    costCenterId: string | null | undefined,
    bankAccountId: string | null | undefined,
    cashBoxId: string | null | undefined,
+   documentNumber: string | null | undefined,
 ) => {
    // Cria o lançamento primeiro com saldo temporário
    const newEntry = await prisma.cashFlow.create({
@@ -26,6 +27,7 @@ const createCashFlowEntry = async (
          costCenterId,
          bankAccountId: bankAccountId || null,
          cashBoxId: cashBoxId || null,
+         documentNumber: documentNumber || null,
       },
    })
 
@@ -198,6 +200,7 @@ export const settleAccountPayableService = async (
                costCenterId,
                bankAccount.id,
                undefined,
+               account.documentNumber // NOVO PARÂMETRO
             )
 
             return {
@@ -244,6 +247,7 @@ export const settleAccountPayableService = async (
             costCenterId,
             undefined,
             cash.id,
+            account.documentNumber,
          )
 
          return {

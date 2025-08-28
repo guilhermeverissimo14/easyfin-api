@@ -13,6 +13,7 @@ const createCashFlowEntry = async (
 	costCenterId: string | null | undefined,
 	bankAccountId: string | null | undefined,
 	cashBoxId: string | null | undefined,
+	documentNumber: string | null | undefined,
 ) => {
 	const newEntry = await prisma.cashFlow.create({
 		data: {
@@ -25,6 +26,7 @@ const createCashFlowEntry = async (
 			costCenterId,
 			bankAccountId: bankAccountId || null,
 			cashBoxId: cashBoxId || null,
+			documentNumber: documentNumber || null, 
 		},
 	});
 
@@ -217,6 +219,7 @@ export const receiveAccountReceivableService = async (
 					costCenterId,
 					bankAccount.id,
 					undefined,
+					account.documentNumber || null,
 				);
 
 				return {
@@ -265,6 +268,7 @@ export const receiveAccountReceivableService = async (
 				costCenterId,
 				undefined,
 				cash.id,
+				account.documentNumber || null,
 			);
 
 			return {

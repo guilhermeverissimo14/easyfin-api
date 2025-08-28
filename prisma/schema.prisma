@@ -326,16 +326,17 @@ model Invoice {
 
 model CashFlow {
   id            String          @id @default(uuid()) @map("id")
-  date          DateTime        @map("date") // Data da movimentação
-  historic      String // Histórico da movimentação (ex: "Pix - Recebido", "Compra com Cartão", "Pagamento Fornecedor")
-  value         Int // Valor da movimentação (em centavos)
-  type          TransactionType // "DEBIT" (Saída) ou "CREDIT" (Entrada)
-  description   String? // Descrição detalhada da movimentação
+  date          DateTime        @map("date")
+  historic      String
+  value         Int
+  type          TransactionType
+  description   String?
+  documentNumber String?        @map("document_number")
   costCenterId  String?         @map("cost_center_id")
-  bankAccountId String?         @map("bank_account_id") // Vincula a conta bancária, pode ser nulo se for movimentação do caixa físico
-  cashBoxId     String?         @map("cash_box_id") // Vincula ao caixa físico, pode ser nulo se for movimentação bancária
-  balance       Int // Saldo atualizado após a movimentação (em centavos)
-  csvFileName   String?         @map("csv_file_name") // Nome do arquivo CSV, se aplicável
+  bankAccountId String?         @map("bank_account_id")
+  cashBoxId     String?         @map("cash_box_id")
+  balance       Int
+  csvFileName   String?         @map("csv_file_name")
   createdAt     DateTime        @default(now()) @map("created_at")
   updatedAt     DateTime        @updatedAt @map("updated_at")
 

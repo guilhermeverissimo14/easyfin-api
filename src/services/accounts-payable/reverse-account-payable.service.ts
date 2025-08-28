@@ -68,16 +68,13 @@ export const reverseAccountPayableService = async (
 
 			// 3. Buscar entradas do fluxo de caixa relacionadas
 			const cashFlowEntries = await prisma.cashFlow.findMany({
-				where: {
-					historic: { contains: "Liquidação de conta a pagar" },
-					value: account!.paidValue!,
-					type: TransactionType.DEBIT,
-					createdAt: {
-						gte: account.paymentDate || account.updatedAt,
-					},
-				},
-				orderBy: { createdAt: "desc" },
-				take: 1,
+			   where: {
+			      documentNumber: account.documentNumber,
+			      type: TransactionType.DEBIT,
+			      value: account!.paidValue!,
+			   },
+			   orderBy: { createdAt: "desc" },
+			   take: 1,
 			});
 
 			// 4. Estornar transações bancárias

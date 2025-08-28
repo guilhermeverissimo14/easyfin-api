@@ -112,22 +112,14 @@ export const reverseAccountReceivableService = async (
 
 				// Remover entrada do fluxo de caixa bancário
 				const cashFlowEntry = await prisma.cashFlow.findFirst({
-					where: {
-						bankAccountId: account.bankAccountId,
-						type: TransactionType.CREDIT,
-						value: receivedAmount,
-						historic: { contains: "Recebimento de conta a receber" },
-						date: {
-							gte: new Date(
-								account.receiptDate!.getTime() - 24 * 60 * 60 * 1000,
-							),
-							lte: new Date(
-								account.receiptDate!.getTime() + 24 * 60 * 60 * 1000,
-							),
-						},
-					},
-					orderBy: { createdAt: "desc" },
-				});
+               where: {
+                  documentNumber: account.documentNumber,
+                  bankAccountId: account.bankAccountId,
+                  type: TransactionType.CREDIT,
+                  value: receivedAmount,
+               },
+               orderBy: { createdAt: 'desc' },
+            })
 
 				if (cashFlowEntry) {
 					await prisma.cashFlow.delete({
@@ -183,22 +175,14 @@ export const reverseAccountReceivableService = async (
 
 					// Remover entrada do fluxo de caixa
 					const cashFlowEntry = await prisma.cashFlow.findFirst({
-						where: {
-							cashBoxId: cash.id,
-							type: TransactionType.CREDIT,
-							value: receivedAmount,
-							historic: { contains: "Recebimento de conta a receber" },
-							date: {
-								gte: new Date(
-									account.receiptDate!.getTime() - 24 * 60 * 60 * 1000,
-								),
-								lte: new Date(
-									account.receiptDate!.getTime() + 24 * 60 * 60 * 1000,
-								),
-							},
-						},
-						orderBy: { createdAt: "desc" },
-					});
+                  where: {
+                     documentNumber: account.documentNumber,
+                     cashBoxId: cash.id,
+                     type: TransactionType.CREDIT,
+                     value: receivedAmount,
+                  },
+                  orderBy: { createdAt: 'desc' },
+               })
 
 					if (cashFlowEntry) {
 						await prisma.cashFlow.delete({
