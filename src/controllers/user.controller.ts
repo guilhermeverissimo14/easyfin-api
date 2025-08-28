@@ -39,14 +39,14 @@ class UserController {
             email: string
             password: string
             role: UserRole
-            birthdate?: Date
+            birthdate?: string
             phone?: string
             cpfCnpj?: string
          }
       }>,
       reply: FastifyReply,
    ) {
-      const { name, email, password, role, phone, cpfCnpj } = request.body
+      const { name, email, password, role, phone, cpfCnpj, birthdate } = request.body
       const userId = request.user?.id
       const userRole = request.user?.role
 
@@ -56,9 +56,21 @@ class UserController {
          return reply.status(401).send({ message: 'Usuário não autenticado' })
       }
 
-      const validationError = await validateSchema(createUserSchema, { name, email, password, role, phone, cpfCnpj }, reply)
+      const validationError = await validateSchema(
+         createUserSchema,
+         {
+            name,
+            email,
+            password,
+            role,
+            phone,
+            cpfCnpj,
+            birthdate,
+         },
+         reply,
+      )
       if (validationError) return
-
+      
       try {
          const user = await createUserService({
             name,
@@ -67,6 +79,7 @@ class UserController {
             role: newUserRole,
             phone,
             cpfCnpj,
+            birthdate,
             userRole,
          })
 

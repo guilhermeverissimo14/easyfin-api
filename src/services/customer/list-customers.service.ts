@@ -6,11 +6,7 @@ const prisma = new PrismaClient()
 
 export const listCustomersService = async (userId: string, userRole: string) => {
    try {
-      if (userRole !== UserRole.ADMIN) {
-         throw new AppError('Permissão negada', 403)
-      }
-
-      const customers = await prisma.customer.findMany()
+   const customers = await prisma.customer.findMany()
 
       return customers
    } catch (error) {
