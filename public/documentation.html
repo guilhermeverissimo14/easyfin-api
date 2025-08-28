@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação API Easyfin</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #0F172A;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #10B981 0%, #059669 50%, #047857 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.1) 75%);
+            background-size: 20px 20px;
+            animation: slide 20s linear infinite;
+        }
+
+        @keyframes slide {
+            0% { transform: translateX(-20px); }
+            100% { transform: translateX(0); }
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav {
+            background: #0F172A;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            white-space: nowrap;
+        }
+
+        .nav a:hover {
+            background: #10B981;
+            color: white;
+            border-color: #10B981;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+            padding: 1.5rem;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border-left: 4px solid #10B981;
+        }
+
+        .section h2 {
+            color: #0F172A;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .section h3 {
+            color: #0F172A;
+            margin: 1.5rem 0 1rem 0;
+            font-size: 1.4rem;
+        }
+
+        .section h4 {
+            color: #666;
+            margin: 1rem 0 0.5rem 0;
+            font-size: 1.2rem;
+        }
+
+        .code-block {
+            background: #0F172A;
+            color: #10B981;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+            line-height: 1.4;
+        }
+
+        .folder-structure {
+            background: #0F172A;
+            color: #10B981;
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+            overflow-x: auto;
+            margin: 1rem 0;
+            line-height: 1.6;
+            border: 2px solid #10B981;
+        }
+
+        .mermaid {
+            text-align: center;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        .endpoint {
+            background: #e8f5e8;
+            border-left: 4px solid #10B981;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+        }
+
+        .endpoint-title {
+            font-weight: bold;
+            color: white;
+            margin-bottom: 0.5rem;
+            background: #10B981;
+            padding: 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .tech-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #10B981;
+            transition: transform 0.3s;
+        }
+
+        .tech-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #10B981;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 4px solid #10B981;
+        }
+
+        .info {
+            background: #e8f4fd;
+            border: 1px solid #10B981;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 4px solid #10B981;
+        }
+
+        .footer {
+            background: #0F172A;
+            color: #10B981;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        .json-code {
+            background: #0F172A;
+            color: #10B981;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 0.5rem 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+            line-height: 1.4;
+            border: 1px solid #10B981;
+        }
+
+        .margin-left {
+            margin-left: 16px;
+        }
+
+        /* CORREÇÕES PARA MOBILE */
+        @media (max-width: 768px) {
+            .nav {
+                padding: 0.5rem;
+                position: relative;
+            }
+            
+            .nav ul {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .nav a {
+                display: block;
+                text-align: center;
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+            
+            .content {
+                padding: 1rem;
+            }
+            
+            .header {
+                padding: 1.5rem 1rem;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .section {
+                padding: 1rem;
+                margin-bottom: 2rem;
+            }
+            
+            .section h2 {
+                font-size: 1.5rem;
+            }
+            
+            .section h3 {
+                font-size: 1.3rem;
+            }
+            
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .mermaid {
+                font-size: 12px;
+                padding: 0.5rem;
+            }
+            
+            .folder-structure {
+                font-size: 0.8rem;
+                padding: 1rem;
+            }
+            
+            .code-block {
+                font-size: 0.8rem;
+                padding: 0.75rem;
+            }
+            
+            .json-code {
+                font-size: 0.8rem;
+                padding: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .nav a {
+                font-size: 0.8rem;
+                padding: 0.6rem;
+            }
+            
+            .section h2 {
+                font-size: 1.3rem;
+            }
+            
+            .mermaid {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>💰 API Easyfin</h1>
+            <p>Documentação Técnica Completa - Sistema de Gestão Financeira</p>
+        </header>
+
+        <nav class="nav">
+            <ul class="margin-left">
+                <li><a href="#overview">Visão Geral</a></li>
+                <li><a href="#architecture">Arquitetura</a></li>
+                <li><a href="#database">Modelo de Dados</a></li>
+                <li><a href="#flows">Fluxos</a></li>
+                <li><a href="#endpoints">Endpoints</a></li>
+                <li><a href="#security">Segurança</a></li>
+                <li><a href="#tech">Tecnologias</a></li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <section id="overview" class="section">
+                <h2>📋 Visão Geral</h2>
+                <p>A <strong>API Easyfin</strong> é um sistema completo de gestão financeira desenvolvido em Node.js com Fastify, que oferece funcionalidades abrangentes para controle de contas a pagar, contas a receber, fluxo de caixa, faturas e relatórios gerenciais.</p>
+                
+                <div class="info">
+                    <strong>Principais Funcionalidades:</strong>
+                    <ul class="margin-left">
+                        <li>📊 <strong>Contas a Pagar:</strong> Gestão completa de obrigações financeiras</li>
+                        <li>💰 <strong>Contas a Receber:</strong> Controle de recebimentos e faturamento</li>
+                        <li>🏦 <strong>Fluxo de Caixa:</strong> Movimentações bancárias e controle de saldo</li>
+                        <li>📄 <strong>Faturas:</strong> Emissão e controle de notas fiscais</li>
+                        <li>👥 <strong>Clientes e Fornecedores:</strong> Cadastro e gestão de parceiros</li>
+                        <li>📈 <strong>Dashboard:</strong> Relatórios e indicadores financeiros</li>
+                        <li>🔐 <strong>Autenticação:</strong> Sistema seguro com JWT</li>
+                        <li>⚙️ <strong>Configurações:</strong> Personalização do sistema</li>
+                    </ul>
+                </div>
+
+                <div class="warning">
+                    <strong>🎯 Objetivo:</strong> Fornecer uma solução robusta e escalável para empresas que precisam de controle financeiro eficiente, com APIs RESTful bem documentadas e fáceis de integrar.
+                </div>
+            </section>
+
+            <section id="architecture" class="section">
+                <h2>🏗️ Arquitetura do Sistema</h2>
+                
+                <h3>Estrutura de Pastas</h3>
+                <div class="folder-structure">src/
+├── config/              # Configurações do sistema
+│   └── module-alias.ts  # Aliases para imports
+├── controllers/         # Controladores da API
+│   ├── auth.controller.ts
+│   ├── user.controller.ts
+│   ├── customer.controller.ts
+│   ├── supplier.controller.ts
+│   ├── accounts-payable.controller.ts
+│   ├── accounts-receivable.controller.ts
+│   ├── cash-flow.controller.ts
+│   ├── invoice.controller.ts
+│   ├── dashboard.controller.ts
+│   └── ...
+├── services/            # Lógica de negócio
+│   ├── auth/
+│   ├── user/
+│   ├── customer/
+│   ├── accounts-payable/
+│   ├── accounts-receivable/
+│   ├── cash-flow/
+│   └── ...
+├── routes/              # Definição de rotas
+│   ├── auth.routes.ts
+│   ├── user.routes.ts
+│   ├── customer.routes.ts
+│   └── ...
+├── schemas/             # Validação de dados
+├── documentation/       # Schemas para Swagger
+├── middleware/          # Middlewares
+│   └── auth.middleware.ts
+├── gateways/           # Integrações externas
+│   ├── criptography/
+│   ├── email/
+│   └── jwt/
+├── helpers/            # Utilitários
+├── models/             # Modelos de dados
+└── lib/                # Bibliotecas
+    └── prisma.ts</div>
+
+                <h3>Padrões Arquiteturais</h3>
+                <div class="tech-grid">
+                    <div class="tech-card">
+                        <h4>🏛️ Clean Architecture</h4>
+                        <p>Separação clara entre camadas de apresentação, negócio e dados</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>🎯 MVC Pattern</h4>
+                        <p>Controllers, Services e Models bem definidos</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>🔌 Dependency Injection</h4>
+                        <p>Baixo acoplamento entre componentes</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>📝 Schema Validation</h4>
+                        <p>Validação rigorosa de entrada e saída</p>
+                    </div>
+                </div>
+
+                <h3>Diagrama de Arquitetura</h3>
+                <div class="mermaid">
+graph TB
+    subgraph "🌐 Camada de Apresentação"
+        A["🔗 Fastify Routes<br/>(HTTP Endpoints)"]
+        B["🛡️ Middlewares<br/>(Auth, Validation)"]
+        C["🎮 Controllers<br/>(Request/Response)"]
+    end
+    
+    subgraph "💼 Camada de Negócio"
+        D["⚙️ Services<br/>(Business Logic)"]
+        E["📋 Schemas<br/>(Data Validation)"]
+        F["🔧 Helpers<br/>(Utilities)"]
+    end
+    
+    subgraph "💾 Camada de Dados"
+        G["🗄️ Prisma ORM<br/>(Database Access)"]
+        H["🐘 PostgreSQL<br/>(Database)"]
+    end
+    
+    subgraph "🔌 Integrações"
+        I["📧 Email Gateway"]
+        J["🔐 JWT Gateway"]
+        K["🔒 Cryptography"]
+    end
+    
+    %% Fluxo de dados
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    D --> F
+    D --> G
+    G --> H
+    D --> I
+    D --> J
+    D --> K
+    
+    %% Estilos
+    classDef presentation fill:#10B981,stroke:#0F172A,stroke-width:2px,color:white
+    classDef business fill:#F3F4F6,stroke:#0F172A,stroke-width:2px,color:#0F172A
+    classDef data fill:#EFF6FF,stroke:#0F172A,stroke-width:2px,color:#0F172A
+    classDef integration fill:#FEF3C7,stroke:#0F172A,stroke-width:2px,color:#0F172A
+    
+    class A,B,C presentation
+    class D,E,F business
+    class G,H data
+    class I,J,K integration
+                </div>
+            </section>
+
+            <section id="database" class="section">
+                <h2>📊 Modelo de Dados</h2>
+                
+                <h3>Diagrama de Entidades</h3>
+                <div class="mermaid">
+erDiagram
+    User {
+        string id PK
+        string name
+        string email UK
+        string password
+        UserRole role
+        DateTime birthdate
+        string phone
+        string cpfCnpj
+        string avatar
+        boolean firstAccess
+        boolean active
+        DateTime createdAt
+        DateTime updatedAt
+    }
+    
+    Customer {
+        string id PK
+        string cnpj UK
+        string name
+        string email UK
+        string phone
+        string address
+        boolean retIss
+        boolean active
+        DateTime createdAt
+        DateTime updatedAt
+    }
+    
+    Supplier {
+        string id PK
+        string cnpj UK
+        string name
+        string email UK
+        string phone
+        string address
+        boolean retIss
+        boolean active
+        DateTime createdAt
+        DateTime updatedAt
+    }
+    
+    AccountsPayable {
+        string id PK
+        string supplierId FK
+        string documentNumber
+        DateTime documentDate
+        DateTime dueDate
+        DateTime paymentDate
+        int value
+        int paidValue
+        PaymentStatus status
+        DateTime createdAt
+        DateTime updatedAt
+    }
+    
+    AccountsReceivable {
+        string id PK
+        string customerId FK
+        string documentNumber
+        DateTime documentDate
+        DateTime dueDate
+        DateTime receiptDate
+        int value
+        int receivedValue
+        PaymentStatus status
+        DateTime createdAt
+        DateTime updatedAt
+    }
+    
+    Invoice {
+        string id PK
+        string invoiceNumber
+        string customerId FK
+        DateTime issueDate
+        DateTime dueDate
+        int serviceValue
+        boolean retainsIss
+        int netValue
+        DateTime createdAt
+        DateTime updatedAt
+    }
+    
+    CashFlow {
+        string id PK
+        DateTime date
+        string historic
+        int value
+        TransactionType type
+        string description
+        int balance
+        DateTime createdAt
+        DateTime updatedAt
+    }
+    
+    BankAccounts {
+        string id PK
+        string bank
+        string agency
+        string account
+        string type
+        boolean active
+        DateTime createdAt
+        DateTime updatedAt
+    }
+    
+    CostCenter {
+        string id PK
+        string name
+        DateTime createdAt
+        DateTime updatedAt
+    }
+    
+    PaymentMethod {
+        string id PK
+        string name
+        boolean requiresBank
+        DateTime createdAt
+        DateTime updatedAt
+    }
+    
+    %% Relacionamentos
+    Customer ||--o{ AccountsReceivable : "tem"
+    Customer ||--o{ Invoice : "possui"
+    Supplier ||--o{ AccountsPayable : "tem"
+    CostCenter ||--o{ AccountsPayable : "categoriza"
+    CostCenter ||--o{ AccountsReceivable : "categoriza"
+    CostCenter ||--o{ CashFlow : "categoriza"
+    BankAccounts ||--o{ AccountsReceivable : "recebe_em"
+    BankAccounts ||--o{ CashFlow : "movimenta"
+    PaymentMethod ||--o{ AccountsPayable : "usa"
+    PaymentMethod ||--o{ AccountsReceivable : "usa"
+                </div>
+
+                <h3>Enums e Tipos</h3>
+                <div class="tech-grid">
+                    <div class="tech-card">
+                        <h4>👤 UserRole</h4>
+                        <p><strong>ADMIN:</strong> Administrador do sistema<br/>
+                        <strong>USER:</strong> Usuário padrão</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>💸 TransactionType</h4>
+                        <p><strong>DEBIT:</strong> Saída de dinheiro<br/>
+                        <strong>CREDIT:</strong> Entrada de dinheiro</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>📋 PaymentStatus</h4>
+                        <p><strong>PENDING:</strong> Pendente<br/>
+                        <strong>PAID:</strong> Pago<br/>
+                        <strong>CANCELLED:</strong> Cancelado<br/>
+                        <strong>OVERDUE:</strong> Vencido</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>💰 CashType</h4>
+                        <p><strong>BANK:</strong> Conta bancária<br/>
+                        <strong>CASH:</strong> Dinheiro físico</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="flows" class="section">
+                <h2>🔄 Fluxos de Negócio</h2>
+                
+                <h3>Diagrama de Estados - Contas a Pagar/Receber</h3>
+                <div class="mermaid">
+stateDiagram-v2
+    [*] --> Criada
+    Criada --> Pendente : Salvar
+    Pendente --> Paga : Liquidar
+    Pendente --> Vencida : Data vencimento
+    Pendente --> Cancelada : Cancelar
+    Vencida --> Paga : Liquidar com juros
+    Vencida --> Cancelada : Cancelar
+    Paga --> Estornada : Estornar pagamento
+    Estornada --> Pendente : Reativar
+    Cancelada --> [*]
+    Paga --> [*]
+                </div>
+
+                <h3>Fluxo de Geração de Faturas</h3>
+                <div class="mermaid">
+flowchart TD
+    A["📋 Criar Fatura"] --> B["👤 Selecionar Cliente"]
+    B --> C["💰 Definir Valor do Serviço"]
+    C --> D["📅 Definir Data de Vencimento"]
+    D --> E{"🏛️ Retém ISS?"}
+    E -->|Sim| F["📊 Calcular ISSQN"]
+    E -->|Não| G["💵 Valor Líquido = Valor Bruto"]
+    F --> H["💵 Calcular Valor Líquido"]
+    G --> I["🏦 Selecionar Conta Bancária"]
+    H --> I
+    I --> J["💾 Salvar Fatura"]
+    J --> K["📄 Gerar Conta a Receber"]
+    K --> L["✅ Fatura Criada"]
+    
+    classDef process fill:#10B981,stroke:#0F172A,stroke-width:2px,color:white
+    classDef decision fill:#F59E0B,stroke:#0F172A,stroke-width:2px,color:white
+    classDef success fill:#059669,stroke:#0F172A,stroke-width:2px,color:white
+    
+    class A,B,C,D,I,J,K process
+    class E decision
+    class L success
+                </div>
+
+                <h3>Fluxo de Caixa - Movimentações</h3>
+                <div class="mermaid">
+flowchart LR
+    A["💳 Transação Bancária"] --> B["📊 Registrar no Fluxo"]
+    C["💰 Pagamento Conta"] --> B
+    D["💸 Recebimento"] --> B
+    E["📄 Liquidação Fatura"] --> B
+    
+    B --> F["🔄 Atualizar Saldo"]
+    F --> G["📈 Recalcular Balanceamento"]
+    G --> H["💾 Persistir Dados"]
+    H --> I["📊 Dashboard Atualizado"]
+    
+    classDef input fill:#3B82F6,stroke:#0F172A,stroke-width:2px,color:white
+    classDef process fill:#10B981,stroke:#0F172A,stroke-width:2px,color:white
+    classDef output fill:#8B5CF6,stroke:#0F172A,stroke-width:2px,color:white
+    
+    class A,C,D,E input
+    class B,F,G,H process
+    class I output
+                </div>
+            </section>
+
+            <section id="endpoints" class="section">
+                <h2>🔗 Documentação de Endpoints</h2>
+
+                <h3>🔐 Autenticação</h3>
+                
+                <div class="endpoint">
+                    <div class="endpoint-title">POST /api/auth/login</div>
+                    <p><strong>Descrição:</strong> Autenticar usuário no sistema</p>
+                    <p><strong>Body:</strong></p>
+                    <div class="json-code">{
+  "email": "usuario@exemplo.com",
+  "password": "senha123"
+}</div>
+                    <p><strong>Resposta (200):</strong></p>
+                    <div class="json-code">{
+  "user": {
+    "id": "uuid",
+    "name": "Nome do Usuário",
+    "email": "usuario@exemplo.com",
+    "role": "USER"
+  },
+  "token": "jwt_token_aqui"
+}</div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-title">POST /api/auth/forgot-password</div>
+                    <p><strong>Descrição:</strong> Solicitar recuperação de senha</p>
+                    <p><strong>Body:</strong></p>
+                    <div class="json-code">{
+  "email": "usuario@exemplo.com"
+}</div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-title">POST /api/auth/reset-password</div>
+                    <p><strong>Descrição:</strong> Redefinir senha com código de recuperação</p>
+                    <p><strong>Body:</strong></p>
+                    <div class="json-code">{
+  "email": "usuario@exemplo.com",
+  "code": "123456",
+  "newPassword": "novaSenha123"
+}</div>
+                </div>
+
+                <h3>👥 Usuários</h3>
+                
+                <div class="endpoint">
+                    <div class="endpoint-title">GET /api/users</div>
+                    <p><strong>Descrição:</strong> Listar todos os usuários</p>
+                    <p><strong>Headers:</strong> Authorization: Bearer {token}</p>
+                    <p><strong>Query Params:</strong> page, limit, search</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-title">POST /api/users</div>
+                    <p><strong>Descrição:</strong> Criar novo usuário</p>
+                    <p><strong>Body:</strong></p>
+                    <div class="json-code">{
+  "name": "Nome do Usuário",
+  "email": "usuario@exemplo.com",
+  "password": "senha123",
+  "role": "USER",
+  "phone": "11999999999",
+  "cpfCnpj": "12345678901"
+}</div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-title">PUT /api/users/:id</div>
+                    <p><strong>Descrição:</strong> Atualizar dados do usuário</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-title">PATCH /api/users/:id/toggle-status</div>
+                    <p><strong>Descrição:</strong> Ativar/desativar usuário</p>
+                </div>
+
+                <h3>👤 Clientes</h3>
+                
+                <div class="endpoint">
+                    <div class="endpoint-title">GET /api/customers</div>
+                    <p><strong>Descrição:</strong> Listar clientes</p>
+                    <p><strong>Query Params:</strong> page, limit, search, active</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-title">POST /api/customers</div>
+                    <p><strong>Descrição:</strong> Criar novo cliente</p>
+                    <p><strong>Body:</strong></p>
+                    <div class="json-code">{
+  "cnpj": "12345678000199",
+  "name": "Empresa Cliente Ltda",
+  "email": "contato@cliente.com",
+  "phone": "11999999999",
+  "address": "Rua das Empresas, 123",
+  "zipCode": "01234567",
+  "city": "São Paulo",
+  "state": "SP",
+  "retIss": false
+}</div>
+                </div>
+
+                <h3>🏭 Fornecedores</h3>
+                
+                <div class="endpoint">
+                    <div class="endpoint-title">GET /api/suppliers</div>
+                    <p><strong>Descrição:</strong> Listar fornecedores</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-title">POST /api/suppliers</div>
+                    <p><strong>Descrição:</strong> Criar novo fornecedor</p>
+                </div>
+
+                <h3>📊 Contas a Pagar</h3>
+                
+                <div class="endpoint">
+                    <div class="endpoint-title">GET /api/accounts-payable</div>
+                    <p><strong>Descrição:</strong> Listar contas a pagar</p>
+                    <p><strong>Query Params:</strong> page, limit, status, startDate, endDate</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-title">POST /api/accounts-payable</div>
+                    <p><strong>Descrição:</strong> Criar conta a pagar</p>
+                    <p><strong>Body:</strong></p>
+                    <div class="json-code">{
+  "supplierId": "uuid",
+  "documentNumber": "NF-001",
+  "documentDate": "2024-01-15",
+  "dueDate": "2024-02-15",
+  "value": 150000,
+  "costCenterId": "uuid",
+  "paymentMethodId": "uuid",
+  "observation": "Pagamento de serviços"
+}</div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-title">POST /api/accounts-payable/:id/settle</div>
+                    <p><strong>Descrição:</strong> Liquidar conta a pagar</p>
+                    <p><strong>Body:</strong></p>
+                    <div class="json-code">{
+  "paymentDate": "2024-02-10",
+  "paidValue": 150000,
+  "discount": 0,
+  "fine": 0,
+  "interest": 0
+}</div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-title">GET /api/accounts-payable/totals</div>
+                    <p><strong>Descrição:</strong> Obter totais das contas a pagar</p>
+                    <p><strong>Resposta:</strong></p>
+                    <div class="json-code">{
+  "totalPending": "R$ 25.000,00",
+  "totalPaid": "R$ 15.000,00",
+  "totalOverdue": "R$ 5.000,00",
+  "totalCancelled": "R$ 2.000,00"
+}</div>
+                </div>
+
+                <h3>💰 Contas a Receber</h3>
+                
+                <div class="endpoint">
+                    <div class="endpoint-title">GET /api/accounts-receivable</div>
+                    <p><strong>Descrição:</strong> Listar contas a receber</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-title">POST /api/accounts-receivable</div>
+                    <p><strong>Descrição:</strong> Criar conta a receber</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-title">POST /api/accounts-receivable/:id/receive</div>
+                    <p><strong>Descrição:</strong> Liquidar conta a receber</p>
+                </div>
+
+                <h3>🏦 Contas Bancárias</h3>
+                
+                <div class="endpoint">
+                    <div class="endpoint-title">GET /api/bank-accounts</div>
+                    <p><strong>Descrição:</strong> Listar contas bancárias</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-title">POST /api/bank-accounts</div>
+                    <p><strong>Descrição:</strong> Criar conta bancária</p>
+                    <p><strong>Body:</strong></p>
+                    <div class="json-code">{
+  "bank": "Banco do Brasil",
+  "agency": "1234",
+  "account": "56789-0",
+  "type": "C"
+}</div>
+                </div>
+
+                <h3>📈 Fluxo de Caixa</h3>
+                
+                <div class="endpoint">
+                    <div class="endpoint-title">POST /api/cash-flow</div>
+                    <p><strong>Descrição:</strong> Criar lançamento no fluxo de caixa</p>
+                    <p><strong>Body:</strong></p>
+                    <div class="json-code">{
+  "date": "2024-01-15",
+  "historic": "Recebimento de cliente",
+  "value": 100000,
+  "type": "CREDIT",
+  "description": "Pagamento da fatura 001",
+  "costCenterId": "uuid",
+  "bankAccountId": "uuid"
+}</div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-title">GET /api/cash-flow/account/:bankAccountId</div>
+                    <p><strong>Descrição:</strong> Listar movimentações por conta bancária</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-title">GET /api/cash-flow/totals-per-day</div>
+                    <p><strong>Descrição:</strong> Obter totais do fluxo de caixa por dia</p>
+                </div>
+
+                <h3>📄 Faturas</h3>
+                
+                <div class="endpoint">
+                    <div class="endpoint-title">GET /api/invoices</div>
+                    <p><strong>Descrição:</strong> Listar faturas</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-title">POST /api/invoices</div>
+                    <p><strong>Descrição:</strong> Criar nova fatura</p>
+                    <p><strong>Body:</strong></p>
+                    <div class="json-code">{
+  "invoiceNumber": "NF-2024-001",
+  "customerId": "uuid",
+  "paymentConditionId": "uuid",
+  "issueDate": "2024-01-15",
+  "dueDate": "2024-02-15",
+  "serviceValue": 200000,
+  "retainsIss": true,
+  "issqnTaxRate": 5.0,
+  "bankAccountId": "uuid"
+}</div>
+                </div>
+
+                <h3>📊 Dashboard</h3>
+                
+                <div class="endpoint">
+                    <div class="endpoint-title">GET /api/dashboard/overview</div>
+                    <p><strong>Descrição:</strong> Obter visão geral do dashboard</p>
+                    <p><strong>Resposta:</strong></p>
+                    <div class="json-code">{
+  "totalRevenue": "R$ 150.000,00",
+  "totalExpenses": "R$ 80.000,00",
+  "pendingReceivables": "R$ 25.000,00",
+  "pendingPayables": "R$ 15.000,00",
+  "cashBalance": "R$ 45.000,00"
+}</div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-title">GET /api/dashboard/charts</div>
+                    <p><strong>Descrição:</strong> Obter dados para gráficos</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-title">GET /api/dashboard/top-customers</div>
+                    <p><strong>Descrição:</strong> Obter principais clientes</p>
+                </div>
+            </section>
+
+            <section id="security" class="section">
+                <h2>🔐 Segurança e Autenticação</h2>
+                
+                <h3>Sistema de Autenticação JWT</h3>
+                <div class="info">
+                    <p>A API utiliza <strong>JSON Web Tokens (JWT)</strong> para autenticação e autorização:</p>
+                    <ul class="margin-left">
+                        <li>🔑 <strong>Login:</strong> Credenciais validadas retornam token JWT</li>
+                        <li>🛡️ <strong>Middleware:</strong> Todas as rotas protegidas verificam token</li>
+                        <li>⏰ <strong>Expiração:</strong> Tokens têm tempo de vida limitado</li>
+                        <li>🔄 <strong>Refresh:</strong> Sistema de renovação de tokens</li>
+                    </ul>
+                </div>
+
+                <h3>Controle de Acesso</h3>
+                <div class="tech-grid">
+                    <div class="tech-card">
+                        <h4>👑 ADMIN</h4>
+                        <p>Acesso completo ao sistema, incluindo gestão de usuários e configurações</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>👤 USER</h4>
+                        <p>Acesso às funcionalidades operacionais do sistema financeiro</p>
+                    </div>
+                </div>
+
+                <h3>Middleware de Autenticação</h3>
+                <div class="code-block">// Exemplo de uso do middleware
+server.get('/api/users', 
+  { preHandler: authMiddleware }, 
+  UserController.list
+)
+
+// O middleware verifica:
+// 1. Presença do token no header Authorization
+// 2. Validade e integridade do token
+// 3. Existência do usuário no banco
+// 4. Status ativo do usuário</div>
+
+                <h3>Criptografia</h3>
+                <div class="warning">
+                    <strong>🔒 Segurança de Senhas:</strong>
+                    <ul class="margin-left">
+                        <li>Senhas são criptografadas com bcrypt</li>
+                        <li>Salt rounds configuráveis</li>
+                        <li>Validação de força de senha</li>
+                        <li>Sistema de recuperação seguro</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="tech" class="section">
+                <h2>💻 Tecnologias Utilizadas</h2>
+                
+                <h3>Stack Principal</h3>
+                <div class="tech-grid">
+                    <div class="tech-card">
+                        <h4>🟢 Node.js</h4>
+                        <p>Runtime JavaScript para backend</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>⚡ Fastify</h4>
+                        <p>Framework web rápido e eficiente</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>🔷 TypeScript</h4>
+                        <p>Tipagem estática para JavaScript</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>🐘 PostgreSQL</h4>
+                        <p>Banco de dados relacional</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>🔺 Prisma</h4>
+                        <p>ORM moderno para TypeScript</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>🔐 JWT</h4>
+                        <p>Autenticação baseada em tokens</p>
+                    </div>
+                </div>
+
+                <h3>Ferramentas de Desenvolvimento</h3>
+                <div class="tech-grid">
+                    <div class="tech-card">
+                        <h4>📚 Swagger/OpenAPI</h4>
+                        <p>Documentação automática da API</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>🧪 Jest</h4>
+                        <p>Framework de testes</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>🎨 ESLint + Prettier</h4>
+                        <p>Qualidade e formatação de código</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>🐳 Docker</h4>
+                        <p>Containerização da aplicação</p>
+                    </div>
+                </div>
+
+                <h3>Bibliotecas Principais</h3>
+                <div class="code-block">{
+  "dependencies": {
+    "@fastify/swagger": "^8.x",
+    "@fastify/swagger-ui": "^1.x",
+    "@prisma/client": "^5.x",
+    "bcryptjs": "^2.x",
+    "jsonwebtoken": "^9.x",
+    "zod": "^3.x",
+    "nodemailer": "^6.x"
+  },
+  "devDependencies": {
+    "@types/node": "^20.x",
+    "typescript": "^5.x",
+    "prisma": "^5.x",
+    "eslint": "^8.x",
+    "prettier": "^3.x"
+  }
+}</div>
+
+                <h3>Arquivos de Configuração</h3>
+                <div class="info">
+                    <strong>📁 Principais arquivos:</strong>
+                    <ul class="margin-left">
+                        <li><strong>package.json:</strong> Dependências e scripts</li>
+                        <li><strong>tsconfig.json:</strong> Configuração TypeScript</li>
+                        <li><strong>prisma/schema.prisma:</strong> Schema do banco de dados</li>
+                        <li><strong>.env:</strong> Variáveis de ambiente</li>
+                        <li><strong>Dockerfile:</strong> Configuração de container</li>
+                        <li><strong>docker-compose.yml:</strong> Orquestração de serviços</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>📚 Documentação API Easyfin - Sistema de Gestão Financeira</p>
+            <p>Desenvolvido com ❤️ usando Node.js, Fastify e PostgreSQL</p>
+        </footer>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#10B981',
+                primaryTextColor: '#0F172A',
+                primaryBorderColor: '#059669',
+                lineColor: '#6B7280',
+                secondaryColor: '#F3F4F6',
+                tertiaryColor: '#EFF6FF'
+            }
+        });
+    </script>
+</body>
+</html>
