@@ -29,7 +29,7 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #10B981 0%, #059669 50%, #047857 100%);
+            background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 50%, #1E40AF 100%);
             color: white;
             padding: 2rem;
             text-align: center;
@@ -505,7 +505,7 @@ graph TB
                 <h3>Diagrama de Entidades</h3>
                 <div class="mermaid">
 erDiagram
-    User {
+    usuarios {
         string id PK
         string name
         string email UK
@@ -513,130 +513,131 @@ erDiagram
         UserRole role
         DateTime birthdate
         string phone
-        string cpfCnpj
+        string cpf_cnpj
         string avatar
-        boolean firstAccess
+        boolean first_access
         boolean active
-        DateTime createdAt
-        DateTime updatedAt
+        DateTime created_at
+        DateTime updated_at
     }
     
-    Customer {
+    clientes {
         string id PK
         string cnpj UK
         string name
         string email UK
         string phone
         string address
-        boolean retIss
+        boolean ret_iss
         boolean active
-        DateTime createdAt
-        DateTime updatedAt
+        DateTime created_at
+        DateTime updated_at
     }
     
-    Supplier {
+    fornecedores {
         string id PK
         string cnpj UK
         string name
         string email UK
         string phone
         string address
-        boolean retIss
+        boolean ret_iss
         boolean active
-        DateTime createdAt
-        DateTime updatedAt
+        DateTime created_at
+        DateTime updated_at
     }
     
-    AccountsPayable {
+    contas_pagar {
         string id PK
-        string supplierId FK
-        string documentNumber
-        DateTime documentDate
-        DateTime dueDate
-        DateTime paymentDate
+        string supplier_id FK
+        string document_number
+        DateTime document_date
+        DateTime due_date
+        DateTime payment_date
         int value
-        int paidValue
+        int value_paid
         PaymentStatus status
-        DateTime createdAt
-        DateTime updatedAt
+        DateTime created_at
+        DateTime updated_at
     }
     
-    AccountsReceivable {
+    contas_receber {
         string id PK
-        string customerId FK
-        string documentNumber
-        DateTime documentDate
-        DateTime dueDate
-        DateTime receiptDate
+        string customer_id FK
+        string document_number
+        DateTime document_date
+        DateTime due_date
+        DateTime receipt_date
         int value
-        int receivedValue
+        int received_value
         PaymentStatus status
-        DateTime createdAt
-        DateTime updatedAt
+        DateTime created_at
+        DateTime updated_at
     }
     
-    Invoice {
+    faturas {
         string id PK
-        string invoiceNumber
-        string customerId FK
-        DateTime issueDate
-        DateTime dueDate
-        int serviceValue
-        boolean retainsIss
-        int netValue
-        DateTime createdAt
-        DateTime updatedAt
+        string invoice_number
+        string customer_id FK
+        DateTime issue_date
+        DateTime due_date
+        int service_value
+        boolean retains_iss
+        int net_value
+        DateTime created_at
+        DateTime updated_at
     }
     
-    CashFlow {
+    fluxo_caixa {
         string id PK
         DateTime date
         string historic
         int value
         TransactionType type
         string description
+        string document_number
         int balance
-        DateTime createdAt
-        DateTime updatedAt
+        DateTime created_at
+        DateTime updated_at
     }
     
-    BankAccounts {
+    contas_bancarias {
         string id PK
         string bank
         string agency
         string account
         string type
         boolean active
-        DateTime createdAt
-        DateTime updatedAt
+        DateTime created_at
+        DateTime updated_at
     }
     
-    CostCenter {
+    centro_custos {
         string id PK
         string name
-        DateTime createdAt
-        DateTime updatedAt
+        DateTime created_at
+        DateTime updated_at
     }
     
-    PaymentMethod {
+    formas_pagamento {
         string id PK
         string name
-        boolean requiresBank
-        DateTime createdAt
-        DateTime updatedAt
+        boolean requires_bank
+        DateTime created_at
+        DateTime updated_at
     }
     
     %% Relacionamentos
-    Customer ||--o{ AccountsReceivable : "tem"
-    Customer ||--o{ Invoice : "possui"
-    Supplier ||--o{ AccountsPayable : "tem"
-    CostCenter ||--o{ AccountsPayable : "categoriza"
-    CostCenter ||--o{ AccountsReceivable : "categoriza"
-    CostCenter ||--o{ CashFlow : "categoriza"
-    BankAccounts ||--o{ AccountsReceivable : "recebe_em"
-    BankAccounts ||--o{ CashFlow : "movimenta"
-    PaymentMethod ||--o{ AccountsPayable : "usa"
-    PaymentMethod ||--o{ AccountsReceivable : "usa"
+    clientes ||--o{ contas_receber : "tem"
+    clientes ||--o{ faturas : "possui"
+    fornecedores ||--o{ contas_pagar : "tem"
+    centro_custos ||--o{ contas_pagar : "categoriza"
+    centro_custos ||--o{ contas_receber : "categoriza"
+    centro_custos ||--o{ fluxo_caixa : "categoriza"
+    contas_bancarias ||--o{ contas_receber : "recebe_em"
+    contas_bancarias ||--o{ fluxo_caixa : "movimenta"
+    formas_pagamento ||--o{ contas_pagar : "usa"
+    formas_pagamento ||--o{ contas_receber : "usa"
                 </div>
 
                 <h3>Enums e Tipos</h3>
@@ -1032,7 +1033,7 @@ flowchart LR
                     </div>
                     <div class="tech-card">
                         <h4>👤 USER</h4>
-                        <p>Acesso às funcionalidades operacionais do sistema financeiro</p>
+                        <p>Usuário apenas para visualizar as informações do sistema</p>
                     </div>
                 </div>
 
@@ -1158,9 +1159,9 @@ server.get('/api/users',
             startOnLoad: true,
             theme: 'default',
             themeVariables: {
-                primaryColor: '#10B981',
+                primaryColor: '#DBEAFE',
                 primaryTextColor: '#0F172A',
-                primaryBorderColor: '#059669',
+                primaryBorderColor: '#3B82F6',
                 lineColor: '#6B7280',
                 secondaryColor: '#F3F4F6',
                 tertiaryColor: '#EFF6FF'
