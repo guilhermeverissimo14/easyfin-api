@@ -34,6 +34,7 @@ export const createInvoiceService = async (data: InvoiceData) => {
 		const customer = await prisma.customer.findUnique({
 			where: { id: customerId },
 		});
+
 		if (!customer) {
 			throw new AppError("Cliente não encontrado", 404);
 		}
@@ -41,6 +42,7 @@ export const createInvoiceService = async (data: InvoiceData) => {
 		const paymentTerms = await prisma.paymentTerms.findUnique({
 			where: { id: paymentConditionId },
 		});
+		
 		if (!paymentTerms) {
 			throw new AppError("Condição de pagamento não encontrada", 404);
 		}
@@ -72,7 +74,7 @@ export const createInvoiceService = async (data: InvoiceData) => {
 
 		effectiveTaxRate = taxRates?.effectiveTaxRate ?? null;
 
-		if (retainsIss) {
+		if (retainsIss || customer.retIss) {
 			if (!taxRates) {
 				throw new AppError(
 					"Alíquota não encontrada para o mês e ano informados",
@@ -85,15 +87,7 @@ export const createInvoiceService = async (data: InvoiceData) => {
 
 			issqnValue = serviceValue * (issqnTaxRate / 100);
 			netValue = serviceValue - issqnValue;
-		}
-
-		if (effectiveTaxRate !== null) {
-			effectiveTax = serviceValue * effectiveTaxRate;
-
-			if (retainsIss && issqnValue !== null) {
-				effectiveTax = effectiveTax - issqnValue;
-			}
-			effectiveTax = Math.round(effectiveTax);
+			effectiveTax = (serviceValue * effectiveTaxRate / 100) - issqnValue;
 		}
 
 		const invoice = await prisma.invoice.create({
@@ -111,8 +105,7 @@ export const createInvoiceService = async (data: InvoiceData) => {
 				effectiveTaxRate,
 				issqnValue: issqnValue !== null ? issqnValue : null,
 				netValue: netValue * 100,
-				effectiveTax: effectiveTax !== null ? effectiveTax : null,
-				bankAccountId,
+				effectiveTax: effectiveTax !== null ? effectiveTax * 100 : null,
 				notes,
 			},
 		});
