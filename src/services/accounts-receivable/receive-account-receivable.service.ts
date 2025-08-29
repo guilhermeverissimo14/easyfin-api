@@ -148,7 +148,7 @@ export const receiveAccountReceivableService = async (
 	}
 
 	const amountToReceive = account.value - (discount * 100) + (fine * 100) + (interest * 100);
-	const receiptDateUTC = receiptDate ? new Date(receiptDate.getTime() + 3 * 60 * 60 * 1000) : new Date()
+	const receiptDateUTC = receiptDate || new Date(); // Remover a adição de 3 horas
 
 	try {
 		await prisma.$transaction(async (prisma) => {
