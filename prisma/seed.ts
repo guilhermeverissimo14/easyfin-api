@@ -54,12 +54,14 @@ async function main() {
       { name: 'Despesas com Manutenção' },
       { name: 'Despesas com Limpeza' },
       { name: 'Despesas com Segurança' },
+      { name: 'Manutenção' },
       { name: 'Outras Despesas' },
       { name: 'Transações Bancárias' },
       { name: 'Transações de Caixa' },
       { name: 'Recebimentos a Vista' },
       { name: 'Recebimentos a Prazo' },
       { name: 'Outros Recebimentos' },
+      { name: 'Outros Pagamentos' },
    ]
 
    for (const costCenter of costCenters) {
@@ -200,6 +202,18 @@ async function main() {
          month: 1,
          issqnTaxRate: 4.61,
          effectiveTaxRate: 15,
+      },
+      {
+         year: 2025,
+         month: 7,
+         issqnTaxRate: 3,
+         effectiveTaxRate: 2,
+      },
+      {
+         year: 2025,
+         month: 8,
+         issqnTaxRate: 5,
+         effectiveTaxRate: 16.71,
       },
    ]
 
@@ -436,6 +450,18 @@ async function main() {
          paymentMethodId: paymentMethodBoleto!.id,
          condition: '30,60,90,120',
          description: 'Boleto 30 dias',
+         installments: 4,
+      },
+      {
+         paymentMethodId: paymentMethodBoleto!.id,
+         condition: '30,60',
+         description: 'Boleto 30,60 dias',
+         installments: 4,
+      },
+      {
+         paymentMethodId: paymentMethodBoleto!.id,
+         condition: '180',
+         description: 'Boleto 180 dias',
          installments: 4,
       },
       {
