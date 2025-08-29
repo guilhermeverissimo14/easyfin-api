@@ -37,6 +37,29 @@ function parseValueBR(value: string): number {
    return parseFloat(americanFormat) || 0
 }
 
+// Função para converter número serial do Excel para data
+function excelSerialToDate(serial: number): Date {
+   const excelEpoch = new Date(1900, 0, 1)
+   const days = serial - 2 // Correção do bug do Excel
+   const date = new Date(excelEpoch.getTime() + days * 24 * 60 * 60 * 1000)
+   return date
+}
+
+// Função para converter data (string ou número serial) para formato brasileiro
+function parseDate(dateValue: any): string {
+   if (typeof dateValue === 'number') {
+      const date = excelSerialToDate(dateValue)
+      const day = String(date.getDate()).padStart(2, '0')
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const year = date.getFullYear()
+      return `${day}/${month}/${year}`
+   } else if (typeof dateValue === 'string') {
+      return dateValue.trim()
+   } else {
+      throw new Error('Formato de data inválido')
+   }
+}
+
 export const importBankTransactionsService = async ({ sheetNumber = 0, bankAccountId, file, filename }: ImportBankTransactionsServiceParams) => {
    const workbook = XLSX.read(file, { type: 'buffer' })
    const sheetName = workbook.SheetNames[sheetNumber || 0]
@@ -66,7 +89,9 @@ export const importBankTransactionsService = async ({ sheetNumber = 0, bankAccou
       throw new AppError('Arquivo CSV vazio ou com formato inválido.', 400)
    }
 
-   const datePartsFirst = (firstRow[0] as any).split('/')
+   // Converter a data usando a nova função
+   const firstDateStr = parseDate(firstRow[0])
+   const datePartsFirst = firstDateStr.split('/')
    const isoDateStringFirst = `${datePartsFirst[2]}-${datePartsFirst[1]}-${datePartsFirst[0]}`
    const firstTransactionDate = new Date(isoDateStringFirst)
 
@@ -111,9 +136,17 @@ export const importBankTransactionsService = async ({ sheetNumber = 0, bankAccou
          continue
       }
 
-      // Aplicar trim em todas as colunas
-      const [dateRaw, historicRaw, valueRaw, typeRaw, detailingRaw] = row as [string, string, string, string, string]
-      const date = dateRaw?.toString().trim()
+      // Aplicar trim em todas as colunas e converter data
+      const [dateRaw, historicRaw, valueRaw, typeRaw, detailingRaw] = row as [any, string, string, string, string]
+      
+      let date: string
+      try {
+         date = parseDate(dateRaw)
+      } catch (error) {
+         console.warn('Linha ignorada por conter uma data inválida:', row)
+         continue
+      }
+      
       const historic = historicRaw?.toString().trim()
       const valueStr = valueRaw?.toString().trim()
       const type = typeRaw?.toString().trim()
@@ -124,7 +157,7 @@ export const importBankTransactionsService = async ({ sheetNumber = 0, bankAccou
          continue
       }
 
-      const dateParts = (date as any).split('/')
+      const dateParts = date.split('/')
       if (dateParts.length !== 3) {
          console.warn('Linha ignorada por conter uma data inválida:', row)
          continue

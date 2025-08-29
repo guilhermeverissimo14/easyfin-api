@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, TransactionType } from '@prisma/client'
 import { AppError } from '@/helpers/app-error'
 
 const prisma = new PrismaClient()
@@ -39,7 +39,6 @@ export const listCashFlowByAccountIdService = async (bankAccountId: string, filt
    const { page, limit, type, description, history, costCenterId, dateStart, dateEnd, valueMin, valueMax } = filters
    const skip = (page - 1) * limit
 
-   // Preparar filtros de data
    let startDate = dateStart
    let endDate = dateEnd
    
@@ -50,7 +49,6 @@ export const listCashFlowByAccountIdService = async (bankAccountId: string, filt
       endDate = setToEndOfDayUTC(endDate)
    }
 
-   // Construir whereClause
    const whereClause: any = {
       bankAccountId,
    }
@@ -101,7 +99,6 @@ export const listCashFlowByAccountIdService = async (bankAccountId: string, filt
          throw new AppError('Conta bancária não encontrada', 404)
       }
 
-      // Buscar dados com paginação
       const [cashFlowList, totalCount] = await Promise.all([
          prisma.cashFlow.findMany({
             where: whereClause,
@@ -119,6 +116,26 @@ export const listCashFlowByAccountIdService = async (bankAccountId: string, filt
          })
       ])
 
+      const allCashFlowForBalance = await prisma.cashFlow.findMany({
+         where: {
+            bankAccountId,
+         },
+         orderBy: [
+            { date: 'asc' },
+            { createdAt: 'asc' }
+         ],
+      })
+
+      const balanceMap = new Map<string, number>()
+      let runningBalance = 0
+      
+      for (const entry of allCashFlowForBalance) {
+         runningBalance = entry.type === TransactionType.CREDIT 
+            ? runningBalance + entry.value 
+            : runningBalance - entry.value
+         balanceMap.set(entry.id, runningBalance)
+      }
+
       const totalPages = Math.ceil(totalCount / limit)
       const hasNextPage = page < totalPages
       const hasPreviousPage = page > 1
@@ -130,7 +147,7 @@ export const listCashFlowByAccountIdService = async (bankAccountId: string, filt
             description: cashFlow.description,
             history: cashFlow.historic,
             value: formatCurrency(cashFlow.value / 100),
-            balance: formatCurrency(cashFlow.balance / 100),
+            balance: formatCurrency((balanceMap.get(cashFlow.id) || 0) / 100),
             date: cashFlow.date.toISOString(),
             costCenter: {
                id: cashFlow.costCenterId,

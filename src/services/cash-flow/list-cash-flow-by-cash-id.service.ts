@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, TransactionType } from '@prisma/client'
 import { AppError } from '@/helpers/app-error'
 import { formatCurrency, setToEndOfDayUTC, setToStartOfDayUTC } from '@/utils/format'
 
@@ -79,7 +79,6 @@ export const listCashFlowByCashBoxIdService = async (filters: CashFlowFilters) =
       }
    }
    try {
-      // Buscar dados com paginação
       const [cashFlowList, totalCount] = await Promise.all([
          prisma.cashFlow.findMany({
             where: whereClause,
@@ -97,6 +96,26 @@ export const listCashFlowByCashBoxIdService = async (filters: CashFlowFilters) =
          }),
       ])
 
+      const allCashFlowForBalance = await prisma.cashFlow.findMany({
+         where: {
+            cashBoxId,
+         },
+         orderBy: [
+            { date: 'asc' },
+            { createdAt: 'asc' }
+         ],
+      })
+
+      const balanceMap = new Map<string, number>()
+      let runningBalance = 0
+      
+      for (const entry of allCashFlowForBalance) {
+         runningBalance = entry.type === TransactionType.CREDIT 
+            ? runningBalance + entry.value 
+            : runningBalance - entry.value
+         balanceMap.set(entry.id, runningBalance)
+      }
+
       const totalPages = Math.ceil(totalCount / limit)
       const hasNextPage = page < totalPages
       const hasPreviousPage = page > 1
@@ -108,7 +127,7 @@ export const listCashFlowByCashBoxIdService = async (filters: CashFlowFilters) =
             description: cashFlow.description,
             history: cashFlow.historic,
             value: formatCurrency(cashFlow.value / 100),
-            balance: formatCurrency(cashFlow.balance / 100),
+            balance: formatCurrency((balanceMap.get(cashFlow.id) || 0) / 100),
             date: cashFlow.date.toISOString(),
             costCenter: {
                id: cashFlow.costCenterId,
