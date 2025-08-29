@@ -17,7 +17,7 @@ const createCashFlowEntry = async (
 ) => {
 	const newEntry = await prisma.cashFlow.create({
 		data: {
-			date,
+			date: new Date(date.getTime() - 3 * 60 * 60 * 1000),
 			historic,
 			type,
 			description,
@@ -121,7 +121,7 @@ export const receiveAccountReceivableService = async (
 		discount = 0,
 		observation,
 		paymentMethodId,
-		receiptDate = new Date(),
+		receiptDate,
 		costCenterId = account.costCenterId,
 	} = data;
 
@@ -148,8 +148,7 @@ export const receiveAccountReceivableService = async (
 	}
 
 	const amountToReceive = account.value - (discount * 100) + (fine * 100) + (interest * 100);
-
-	console.log('amountToReceive', amountToReceive)
+	const receiptDateUTC = receiptDate ? new Date(receiptDate.getTime() + 3 * 60 * 60 * 1000) : new Date()
 
 	try {
 		await prisma.$transaction(async (prisma) => {
@@ -163,7 +162,7 @@ export const receiveAccountReceivableService = async (
 					discount: discount * 100,
 					observation,
 					paymentMethodId: finalPaymentMethodId,
-					receiptDate,
+					receiptDate: receiptDateUTC,
 					costCenterId,
 					status: PaymentStatus.PAID,
 					receivedValue: amountToReceive,
@@ -188,7 +187,7 @@ export const receiveAccountReceivableService = async (
 						description: `Recebimento de conta a receber`,
 						detailing: observation,
 						amount: amountToReceive,
-						transactionAt: new Date(),
+						transactionAt: new Date(Date.now() - 3 * 60 * 60 * 1000),
 					},
 				});
 
@@ -211,7 +210,7 @@ export const receiveAccountReceivableService = async (
 
 				await createCashFlowEntry(
 					prisma,
-					receiptDate,
+					receiptDateUTC,
 					`Recebimento de conta a receber`,
 					TransactionType.CREDIT,
 					observation,
@@ -243,7 +242,7 @@ export const receiveAccountReceivableService = async (
 					type: TransactionType.CREDIT,
 					description: `Recebimento de conta a receber`,
 					amount: amountToReceive,
-					transactionAt: new Date(),
+					transactionAt: new Date(receiptDateUTC.getTime() - 3 * 60 * 60 * 1000),
 				},
 			});
 
@@ -260,7 +259,7 @@ export const receiveAccountReceivableService = async (
 
 			await createCashFlowEntry(
 				prisma,
-				receiptDate,
+				receiptDateUTC,
 				`Recebimento de conta a receber`,
 				TransactionType.CREDIT,
 				observation,

@@ -18,7 +18,7 @@ const createCashFlowEntry = async (
    // Cria o lançamento primeiro com saldo temporário
    const newEntry = await prisma.cashFlow.create({
       data: {
-         date,
+         date: new Date(date.getTime() - 3 * 60 * 60 * 1000), // Ajuste de 3 horas
          historic,
          type,
          description,
@@ -112,6 +112,9 @@ export const settleAccountPayableService = async (
 
    const { fine = 0, interest = 0, discount = 0, observation, paymentMethodId, paymentDate = new Date(), costCenterId = account.costCenterId } = data
 
+   // Calcular paymentDateUTC com ajuste de 3 horas
+   const paymentDateUTC = paymentDate ? new Date(paymentDate.getTime() + 3 * 60 * 60 * 1000) : new Date()
+
    let finalPaymentMethodId = paymentMethodId || account.paymentMethodId || account.plannedPaymentMethod || null
 
    if (finalPaymentMethodId) {
@@ -144,7 +147,7 @@ export const settleAccountPayableService = async (
                discount: discount * 100,
                observation,
                paymentMethodId: finalPaymentMethodId,
-               paymentDate,
+               paymentDate: paymentDateUTC, // Usar a data ajustada
                costCenterId,
                status: PaymentStatus.PAID,
                paidValue: amountToSettle,
@@ -169,7 +172,7 @@ export const settleAccountPayableService = async (
                   description: `Liquidação de conta a pagar`,
                   detailing: observation,
                   amount: amountToSettle,
-                  transactionAt: new Date(),
+                  transactionAt: new Date(Date.now() - 3 * 60 * 60 * 1000), // Ajuste de 3 horas
                },
             })
 
@@ -192,7 +195,7 @@ export const settleAccountPayableService = async (
 
             await createCashFlowEntry(
                prisma,
-               paymentDate,
+               paymentDateUTC, // Usar a data ajustada
                `Liquidação de conta a pagar`,
                TransactionType.DEBIT,
                observation,
@@ -200,7 +203,7 @@ export const settleAccountPayableService = async (
                costCenterId,
                bankAccount.id,
                undefined,
-               account.documentNumber // NOVO PARÂMETRO
+               account.documentNumber
             )
 
             return {
@@ -222,7 +225,7 @@ export const settleAccountPayableService = async (
                type: TransactionType.DEBIT,
                description: `Liquidação de conta a pagar`,
                amount: amountToSettle,
-               transactionAt: new Date(),
+               transactionAt: new Date(paymentDateUTC.getTime() - 3 * 60 * 60 * 1000), // Ajuste de 3 horas
             },
          })
 
@@ -239,7 +242,7 @@ export const settleAccountPayableService = async (
 
          await createCashFlowEntry(
             prisma,
-            paymentDate,
+            paymentDateUTC, // Usar a data ajustada
             `Liquidação de conta a pagar`,
             TransactionType.DEBIT,
             observation,
