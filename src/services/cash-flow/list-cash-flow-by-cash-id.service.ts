@@ -123,6 +123,7 @@ export const listCashFlowByCashBoxIdService = async (filters: CashFlowFilters) =
       return {
          data: cashFlowList.map((cashFlow) => ({
             id: cashFlow.id,
+            cashBoxId: cashFlow.cashBoxId,
             type: cashFlow.type,
             description: cashFlow.description,
             history: cashFlow.historic,

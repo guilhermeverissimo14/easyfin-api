@@ -204,6 +204,7 @@ export const listByAccountCashFlowSchema = {
                   type: 'object',
                   properties: {
                      id: { type: 'string', example: '1234567890abcdef12345678' },
+                     cashBoxId: { type: 'string', example: '1234567890abcdef12345678' },
                      date: { type: 'string', format: 'date-time', example: '2023-10-01T12:00:00Z' },
                      type: { type: 'string', enum: ['CREDIT', 'DEBIT'], example: 'CREDIT' },
                      value: { type: 'string', example: 'R$ 1.000,00' },
@@ -287,6 +288,7 @@ export const listByCashCashFlowSchema = {
                   type: 'object',
                   properties: {
                      id: { type: 'string', example: '1234567890abcdef12345678' },
+                     cashBoxId: { type: 'string', example: '1234567890abcdef12345678' },
                      date: { type: 'string', format: 'date-time', example: '2023-10-01T12:00:00Z' },
                      type: { type: 'string', enum: ['CREDIT', 'DEBIT'], example: 'CREDIT' },
                      value: { type: 'string', example: 'R$ 1.000,00' },
