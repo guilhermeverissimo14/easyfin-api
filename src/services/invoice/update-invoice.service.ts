@@ -237,7 +237,7 @@ export const updateInvoiceService = async (data: UpdateInvoiceData) => {
 							documentDate: issueDateObj,
 							launchDate: new Date(),
 							dueDate,
-							value: Math.round(netValue / finalConditions.length) * 100,
+							value: (netValue / finalConditions.length) * 100,
 							receivedValue: 0,
 							discount: 0,
 							interest: 0,
