@@ -34,7 +34,6 @@ interface DashboardCharts {
 
 function getDateRange(filters: ChartFilters) {
    const today = getTodayInBrazilTimezone()
-   console.log('filters', filters)
    
    if (filters.startDate && filters.endDate) {
       return { start: filters.startDate, end: filters.endDate }
@@ -44,8 +43,6 @@ function getDateRange(filters: ChartFilters) {
       const [monthStr, yearStr] = filters.month.split('/')
       const monthNum = parseInt(monthStr) - 1
       const year = parseInt(yearStr)
-
-      console.log({ monthNum, year })
       
       const startOfMonth = new Date(year, monthNum, 1)
       const endOfMonth = new Date(year, monthNum + 1, 0, 23, 59, 59)
@@ -135,8 +132,6 @@ export async function getDashboardChartsService(filters: ChartFilters): Promise<
       },
    })
 
-   console.log({ start, end})
-
    const cashFlowData = await prisma.cashFlow.findMany({
       where: {
          date: {
@@ -151,39 +146,92 @@ export async function getDashboardChartsService(filters: ChartFilters): Promise<
       },
    })
 
+   // Aplicando filtros de data aos contadores
    const [paidCount, pendingCount, overdueCount] = await Promise.all([
       prisma.accountsPayable.count({
-         where: { status: 'PAID' },
+         where: { 
+            status: 'PAID',
+            paymentDate: {
+               gte: start,
+               lte: end,
+            }
+         },
       }),
       prisma.accountsPayable.count({
-         where: { status: 'PENDING', dueDate: { gte: today } },
+         where: { 
+            status: 'PENDING', 
+            dueDate: { 
+               gte: start,
+               lte: end
+            }
+         },
       }),
       prisma.accountsPayable.count({
-         where: { status: 'PENDING', dueDate: { lt: today } },
+         where: { 
+            status: 'PENDING', 
+            dueDate: { 
+               gte: start,
+               lt: end
+            }
+         },
       }),
    ])
 
-   const topCostCentersData = await prisma.accountsPayable.groupBy({
-      by: ['costCenterId'],
-      where: {
-         costCenterId: { not: null },
-         createdAt: {
-            gte: start,
-            lte: end,
+   // Implementação melhorada do topCostCenters
+   const [topCostCentersPayable, topCostCentersReceivable] = await Promise.all([
+      prisma.accountsPayable.groupBy({
+         by: ['costCenterId'],
+         where: {
+            costCenterId: { not: null },
+            dueDate: {
+               gte: start,
+               lte: end,
+            },
+            status: { in: ['PENDING', 'PAID'] }, // Excluir canceladas
          },
-      },
-      _sum: {
-         value: true,
-      },
-      orderBy: {
          _sum: {
-            value: 'desc',
+            value: true,
          },
-      },
-      take: 5,
+      }),
+      prisma.accountsReceivable.groupBy({
+         by: ['costCenterId'],
+         where: {
+            costCenterId: { not: null },
+            dueDate: {
+               gte: start,
+               lte: end,
+            },
+            status: { in: ['PENDING', 'PAID'] },
+         },
+         _sum: {
+            value: true,
+         },
+      })
+   ])
+
+   // Combinar resultados de payable e receivable
+   const combinedCostCenters = new Map<string, number>()
+
+   topCostCentersPayable.forEach(item => {
+      if (item.costCenterId) {
+         combinedCostCenters.set(item.costCenterId, (item._sum.value || 0))
+      }
    })
 
-   const costCenterIds = topCostCentersData.map((item) => item.costCenterId).filter(Boolean) as string[]
+   topCostCentersReceivable.forEach(item => {
+      if (item.costCenterId) {
+         const current = combinedCostCenters.get(item.costCenterId) || 0
+         combinedCostCenters.set(item.costCenterId, current + (item._sum.value || 0))
+      }
+   })
+
+   // Ordenar e pegar top 5
+   const sortedCostCenters = Array.from(combinedCostCenters.entries())
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 5)
+
+   // Buscar nomes dos centros de custo
+   const costCenterIds = sortedCostCenters.map(([id]) => id)
    const costCenters = await prisma.costCenter.findMany({
       where: {
          id: { in: costCenterIds },
@@ -250,8 +298,6 @@ export async function getDashboardChartsService(filters: ChartFilters): Promise<
       }
    }).sort((a, b) => new Date(a.date!).getTime() - new Date(b.date!).getTime())
 
-   console.log('cashFlowData', cashFlowData)
-
    const cashFlowEntries = cashFlowData
       .filter(item => item.type === 'CREDIT')
       .reduce((sum, item) => sum + item.value, 0) / 100
@@ -260,13 +306,12 @@ export async function getDashboardChartsService(filters: ChartFilters): Promise<
       .filter(item => item.type === 'DEBIT')
       .reduce((sum, item) => sum + item.value, 0) / 100
 
-   console.log({ cashFlowEntries, cashFlowExits })
-
-   const topCostCenters: ChartData[] = topCostCentersData.map((item) => {
-      const costCenter = costCenters.find((cc) => cc.id === item.costCenterId)
+   // Montar o resultado final do topCostCenters
+   const topCostCenters: ChartData[] = sortedCostCenters.map(([costCenterId, value]) => {
+      const costCenter = costCenters.find((cc) => cc.id === costCenterId)
       return {
          label: costCenter?.name || 'Centro de Custo Desconhecido',
-         value: (item._sum.value || 0) / 100,
+         value: value / 100,
       }
    })
 

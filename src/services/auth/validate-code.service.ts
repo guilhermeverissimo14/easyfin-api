@@ -1,9 +1,6 @@
-import { hash } from '@/gateways/criptography/bcrypt'
 import { AppError } from '@/helpers/app-error'
-import { PrismaClient } from '@prisma/client'
 import { compare } from 'bcrypt'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const validateCodeService = async (email: string, code: string) => {
    const user = await prisma.user.findUnique({ where: { email } })

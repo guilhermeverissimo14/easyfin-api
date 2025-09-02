@@ -1,8 +1,7 @@
-import { PaymentStatus, PrismaClient } from '@prisma/client'
+import { PaymentStatus } from '@prisma/client'
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, startOfDay, endOfDay } from 'date-fns'
 import { getTodayInBrazilTimezone } from '@/utils/format'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const getTotalsAccountReceivableService = async () => {
    const today = getTodayInBrazilTimezone()

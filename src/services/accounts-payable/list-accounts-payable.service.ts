@@ -1,7 +1,6 @@
 import { setToEndOfDayUTC, setToStartOfDayUTC } from '@/utils/format'
-import { PaymentStatus, PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { PaymentStatus } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 
 export const listAccountsPayableService = async (filters: {
    supplierId?: string

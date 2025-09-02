@@ -1,17 +1,15 @@
-import { PrismaClient, PaymentStatus, TransactionType } from "@prisma/client";
+import { PaymentStatus, TransactionType } from "@prisma/client";
 import { AppError } from "@/helpers/app-error";
 import {
 	recalculateCashFlowBalances,
 	recalculateCashBoxFlowBalances,
 } from "@/utils/recalculate-cash-flow-balances";
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma'
 
 export const reverseAccountPayableService = async (
 	id: string,
 	reason: string,
 ) => {
-	// Buscar a conta a pagar
 	const account = await prisma.accountsPayable.findUnique({
 		where: { id },
 	});

@@ -1,9 +1,7 @@
-import { PrismaClient } from '@prisma/client'
 import { UserRole } from '@/models/user.model'
 import { AppError } from '@/helpers/app-error'
 import { Users } from '@/controllers/user.controller'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const listUsersService = async (userId: string, userRole: UserRole): Promise<Users[]> => {
    if (userRole === UserRole.ADMIN) {

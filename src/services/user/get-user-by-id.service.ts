@@ -1,8 +1,6 @@
-import { PrismaClient} from '@prisma/client'
 import { AppError } from '@/helpers/app-error'
 import { UserRole } from '@/models/user.model'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const getUserByIdService = async (id: string, userRole: string, userId: string) => {
    const user = await prisma.user.findUnique({ where: { id } })

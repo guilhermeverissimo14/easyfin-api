@@ -28,57 +28,71 @@ export async function getDashboardOverviewService(params?: GetDashboardOverviewP
    let endOfMonth: Date
    
    if (params?.month) {
-      // Parse do formato MM/YYYY
       const [monthStr, yearStr] = params.month.split('/')
-      const month = parseInt(monthStr) - 1 // JavaScript months are 0-indexed
+      const month = parseInt(monthStr) - 1 
       const year = parseInt(yearStr)
       
       startOfMonth = new Date(year, month, 1)
       endOfMonth = new Date(year, month + 1, 0, 23, 59, 59)
    } else {
-      // Usar mês atual como padrão
       startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
       endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59)
    }
 
-   // Contadores básicos
    const [totalCustomers, totalSuppliers, totalInvoices] = await Promise.all([
       prisma.customer.count(),
       prisma.supplier.count(),
       prisma.invoice.count(),
    ])
 
-   // Contas a pagar
    const [totalAccountsPayable, totalOverduePayable] = await Promise.all([
       prisma.accountsPayable.aggregate({
-         where: { status: 'PENDING' },
+         where: { 
+            status: 'PENDING',
+            dueDate: {
+               gte: startOfMonth,
+               lte: endOfMonth,
+            },
+         },
          _sum: { value: true },
       }),
       prisma.accountsPayable.aggregate({
          where: {
             status: 'PENDING',
-            dueDate: { lt: today },
+            dueDate: { 
+               lt: today,
+               gte: startOfMonth,
+               lte: endOfMonth,
+            },
          },
          _sum: { value: true },
       }),
    ])
 
-   // Contas a receber
    const [totalAccountsReceivable, totalOverdueReceivable] = await Promise.all([
       prisma.accountsReceivable.aggregate({
-         where: { status: 'PENDING' },
+         where: { 
+            status: 'PENDING',
+            dueDate: {
+               gte: startOfMonth,
+               lte: endOfMonth,
+            },
+         },
          _sum: { value: true },
       }),
       prisma.accountsReceivable.aggregate({
          where: {
             status: 'PENDING',
-            dueDate: { lt: today },
+            dueDate: { 
+               lt: today,
+               gte: startOfMonth,
+               lte: endOfMonth,
+            },
          },
          _sum: { value: true },
       }),
    ])
 
-   // Fluxo de caixa
    const [cashFlowEntries, cashFlowExits] = await Promise.all([
       prisma.cashFlow.aggregate({
          where: { type: 'CREDIT' },
@@ -90,10 +104,8 @@ export async function getDashboardOverviewService(params?: GetDashboardOverviewP
       }),
    ])
 
-   // Notas fiscais (todas as faturas)
    const pendingInvoices = await prisma.invoice.count()
 
-   // Receitas e despesas do mês
    const [monthlyRevenue, monthlyExpenses, totalPaidThisMonth, totalReceivedThisMonth] = await Promise.all([
       prisma.cashFlow.aggregate({
          where: {
@@ -105,6 +117,7 @@ export async function getDashboardOverviewService(params?: GetDashboardOverviewP
          },
          _sum: { value: true },
       }),
+
       prisma.cashFlow.aggregate({
          where: {
             type: 'DEBIT',
@@ -115,7 +128,7 @@ export async function getDashboardOverviewService(params?: GetDashboardOverviewP
          },
          _sum: { value: true },
       }),
-      // totalPaidThisMonth agora vem do cashFlow tipo DEBIT
+
       prisma.cashFlow.aggregate({
          where: {
             type: 'DEBIT',
@@ -126,7 +139,7 @@ export async function getDashboardOverviewService(params?: GetDashboardOverviewP
          },
          _sum: { value: true },
       }),
-      // totalReceivedThisMonth agora vem do cashFlow tipo CREDIT
+
       prisma.cashFlow.aggregate({
          where: {
             type: 'CREDIT',

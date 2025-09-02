@@ -1,9 +1,7 @@
-import { PrismaClient } from '@prisma/client'
 import { AppError } from '@/helpers/app-error'
 import { formatCpfCnpj, formatPhone } from '@/utils/format'
 import { UserRole } from '@/models/user.model'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const updateUserService = async (id: string, userData: any, userRole: string, userId: string) => {
    const user = await prisma.user.findUnique({ where: { id } })

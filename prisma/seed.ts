@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { UserRole } from '@prisma/client/wasm'
 import * as bcrypt from 'bcrypt'
-
-const prisma = new PrismaClient()
 
 async function main() {
    const userExists = await prisma.user.findUnique({

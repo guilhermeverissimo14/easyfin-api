@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client'
 import { AppError } from '@/helpers/app-error'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const getAccountsReceivableByIdService = async (id: string) => {
    const account = await prisma.accountsReceivable.findUnique({

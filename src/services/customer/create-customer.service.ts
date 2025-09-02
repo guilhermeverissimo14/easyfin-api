@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client'
 import { AppError } from '@/helpers/app-error'
 import { formatCpfCnpj, formatPhone } from '@/utils/format'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const createCustomerService = async (customerData: {
    cnpj: string

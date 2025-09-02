@@ -1,8 +1,6 @@
-import { PrismaClient, UserRole } from '@prisma/client'
 import { AppError } from '@/helpers/app-error'
 import { compare, hash } from '@/gateways/criptography/bcrypt'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const updateUserPasswordService = async (id: string, userData: { password: string; newPassword: string }, userRole: string, userId: string) => {
    const { password, newPassword } = userData

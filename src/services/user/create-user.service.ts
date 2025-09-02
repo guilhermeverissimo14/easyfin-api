@@ -1,10 +1,9 @@
-import { PrismaClient, UserRole } from '@prisma/client'
+import { UserRole } from '@prisma/client'
 import { AppError } from '@/helpers/app-error'
 import { formatCpfCnpj, formatPhone } from '@/utils/format'
 import { hash } from '@/gateways/criptography/bcrypt'
 import { sendWelcomeEmail } from '@/gateways/email/nodemailer.service'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const createUserService = async (userData: {
    name: string

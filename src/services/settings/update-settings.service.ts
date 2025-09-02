@@ -1,7 +1,6 @@
-import { CashType, PrismaClient } from '@prisma/client'
+import { CashType } from '@prisma/client'
 import { AppError } from '@/helpers/app-error'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const updateSettingsService = async (updateData: { cashFlowDefault: CashType; bankAccountDefault?: string }) => {
    if (!updateData.cashFlowDefault) {

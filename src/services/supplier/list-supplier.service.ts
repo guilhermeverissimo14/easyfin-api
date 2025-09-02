@@ -1,8 +1,5 @@
 import { AppError } from "@/helpers/app-error"
-import { PrismaClient, UserRole } from "@prisma/client"
-
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const listSuppliersService = async (userId: string, userRole: string) => {
     try{

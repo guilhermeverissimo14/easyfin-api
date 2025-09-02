@@ -1,7 +1,6 @@
 import { AppError } from '@/helpers/app-error'
-import { PrismaClient, UserRole } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { UserRole } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 
 export const deleteCostCenterService = async (id: string, userRole: string) => {
    if (userRole !== UserRole.ADMIN) {

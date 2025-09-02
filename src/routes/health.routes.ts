@@ -1,8 +1,6 @@
 import { FastifyPluginAsync } from 'fastify'
-import { PrismaClient } from '@prisma/client'
 import { healthCheckSchema } from '@/documentation/health.schemas'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 const healthRoutes: FastifyPluginAsync = async (server) => {
    // Rota para checagem de estado da aplicação

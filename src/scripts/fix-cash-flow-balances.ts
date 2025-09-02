@@ -1,6 +1,5 @@
-import { PrismaClient, TransactionType } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { TransactionType } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 
 /**
  * Script para corrigir os saldos do fluxo de caixa existentes

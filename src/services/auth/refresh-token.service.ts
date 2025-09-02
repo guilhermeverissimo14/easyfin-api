@@ -1,8 +1,6 @@
 import { decrypt, encrypt } from '@/gateways/jwt/jwtAdapter'
 import { AppError } from '@/helpers/app-error'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const refreshTokenService = async (token: string) => {
    const verifyToken = await prisma.user.findFirst({ where: { token } })

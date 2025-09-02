@@ -1,7 +1,6 @@
-import { PrismaClient, TransactionType } from '@prisma/client'
+import { TransactionType } from '@prisma/client'
 import { AppError } from '@/helpers/app-error'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const getCashFlowTotalsPerDayService = async ({ bankAccountId, cashId, date }: { bankAccountId?: string; cashId?: string; date: Date }) => {
    if (!bankAccountId && !cashId) {

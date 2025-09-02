@@ -1,9 +1,7 @@
 import { compare } from '@/gateways/criptography/bcrypt'
 import { encrypt } from '@/gateways/jwt/jwtAdapter'
 import { AppError } from '@/helpers/app-error'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const loginService = async (email: string, password: string) => {
    const user = await prisma.user.findUnique({ where: { email } })

@@ -1,9 +1,7 @@
 import { hash } from '@/gateways/criptography/bcrypt'
 import { sendRecoveryEmail } from '@/gateways/email/nodemailer.service'
 import { AppError } from '@/helpers/app-error'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const forgotPasswordService = async (email: string) => {
    const user = await prisma.user.findUnique({ where: { email } })

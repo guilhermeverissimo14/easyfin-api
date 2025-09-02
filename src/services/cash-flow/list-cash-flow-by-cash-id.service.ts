@@ -1,8 +1,7 @@
-import { PrismaClient, TransactionType } from '@prisma/client'
+import { TransactionType } from '@prisma/client'
 import { AppError } from '@/helpers/app-error'
 import { formatCurrency, setToEndOfDayUTC, setToStartOfDayUTC } from '@/utils/format'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 interface CashFlowFilters {
    page: number

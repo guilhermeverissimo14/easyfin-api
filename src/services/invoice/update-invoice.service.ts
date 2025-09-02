@@ -1,7 +1,6 @@
-import { PrismaClient, PaymentStatus, Customer } from "@prisma/client";
+import { PaymentStatus, Customer } from "@prisma/client";
 import { AppError } from "@/helpers/app-error";
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma'
 
 interface UpdateInvoiceData {
 	id: string;

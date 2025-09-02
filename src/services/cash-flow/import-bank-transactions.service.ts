@@ -1,8 +1,7 @@
-import { PrismaClient, TransactionType } from '@prisma/client'
+import { TransactionType } from '@prisma/client'
 import * as XLSX from 'xlsx'
 import { AppError } from '@/helpers/app-error'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 interface ImportBankTransactionsServiceParams {
    sheetNumber?: number
@@ -89,7 +88,6 @@ export const importBankTransactionsService = async ({ sheetNumber = 0, bankAccou
       throw new AppError('Arquivo CSV vazio ou com formato inválido.', 400)
    }
 
-   // Converter a data usando a nova função
    const firstDateStr = parseDate(firstRow[0])
    const datePartsFirst = firstDateStr.split('/')
    const isoDateStringFirst = `${datePartsFirst[2]}-${datePartsFirst[1]}-${datePartsFirst[0]}`

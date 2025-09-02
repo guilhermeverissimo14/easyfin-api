@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const getInvoiceByIdService = async (id: string) => {
    const invoice = await prisma.invoice.findUnique({

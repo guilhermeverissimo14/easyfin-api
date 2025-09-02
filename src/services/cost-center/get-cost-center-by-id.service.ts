@@ -1,7 +1,5 @@
 import { AppError } from '@/helpers/app-error'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const getCostCenterByIdService = async (id: string) => {
    const costCenter = await prisma.costCenter.findUnique({

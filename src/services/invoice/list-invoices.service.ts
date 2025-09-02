@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 import { setToEndOfDayUTC, setToStartOfDayUTC } from '@/utils/format'
-
-const prisma = new PrismaClient()
 
 export const listInvoicesService = async (filters: { customerId?: string; bankAccountId?: string; issueDateStart?: Date; issueDateEnd?: Date }) => {
    let { customerId, bankAccountId, issueDateStart, issueDateEnd } = filters

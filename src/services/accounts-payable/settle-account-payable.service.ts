@@ -1,7 +1,6 @@
-import { PrismaClient, PaymentStatus, TransactionType } from '@prisma/client'
+import { PaymentStatus, TransactionType } from '@prisma/client'
 import { AppError } from '@/helpers/app-error'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 const createCashFlowEntry = async (
    prisma: any,

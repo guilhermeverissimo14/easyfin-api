@@ -1,11 +1,10 @@
-import { PrismaClient, PaymentStatus, TransactionType } from "@prisma/client";
+import { PaymentStatus, TransactionType } from "@prisma/client";
 import { AppError } from "@/helpers/app-error";
 import {
 	recalculateCashFlowBalances,
 	recalculateCashBoxFlowBalances,
 } from "@/utils/recalculate-cash-flow-balances";
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma'
 
 export const reverseAccountReceivableService = async (
 	id: string,

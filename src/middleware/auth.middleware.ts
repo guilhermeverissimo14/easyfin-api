@@ -1,13 +1,11 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import jwt from 'jsonwebtoken'
 import { UserRole } from '@/models/user.model'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 
 interface AuthenticatedRequest extends FastifyRequest {
    user?: { id: string; role: UserRole }
 }
-
-const prisma = new PrismaClient()
 
 export const authMiddleware: any = async (request: AuthenticatedRequest, reply: FastifyReply) => {
    const token = request.headers['authorization']?.split(' ')[1]

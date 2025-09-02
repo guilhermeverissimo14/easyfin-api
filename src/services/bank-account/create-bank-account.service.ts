@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const createBankAccountService = async (bankAccountData: { bank: string; agency: string; account: string; type: string }) => {
    const { bank, agency, account, type } = bankAccountData
