@@ -2,6 +2,16 @@ export const getDashboardOverviewSchema = {
    description: 'Obtém a visão geral do dashboard com totais úteis',
    tags: ['Dashboard'],
    summary: 'Obter visão geral do dashboard',
+   querystring: {
+      type: 'object',
+      properties: {
+         month: {
+            type: 'string',
+            pattern: '^(0[1-9]|1[0-2])\/[0-9]{4}$',
+            description: 'Mês e ano no formato MM/YYYY (ex: 08/2025). Se não informado, usa o mês atual.',
+         }
+      }
+   },
    response: {
       200: {
          description: 'Visão geral do dashboard',
@@ -114,6 +124,10 @@ export const getDashboardChartsSchema = {
             description: 'Período para os gráficos',
             default: 'month',
          },
+         month: {
+            type: 'string',
+            description: 'Mês e ano no formato MM/YYYY (ex: 08/2025). Se não informado, usa o mês atual.',
+         },
          startDate: {
             type: 'string',
             format: 'date',
@@ -154,6 +168,30 @@ export const getDashboardChartsSchema = {
                },
             },
             cashFlowChart: {
+               type: 'object',
+               properties: {
+                  entries: {
+                     type: 'number',
+                     description: 'Total de entradas no período',
+                  },
+                  exits: {
+                     type: 'number', 
+                     description: 'Total de saídas no período',
+                  },
+               },
+            },
+            entries: {
+               type: 'array',
+               items: {
+                  type: 'object',
+                  properties: {
+                     label: { type: 'string' },
+                     value: { type: 'number' },
+                     date: { type: 'string' },
+                  },
+               },
+            },
+            exits: {
                type: 'array',
                items: {
                   type: 'object',

@@ -9,9 +9,17 @@ import { FastifyReply, FastifyRequest } from 'fastify'
 class DashboardController {
    constructor() {}
 
-   public async getOverview(request: FastifyRequest, reply: FastifyReply) {
+   public async getOverview(
+      request: FastifyRequest<{
+         Querystring: {
+            month?: string
+         }
+      }>, 
+      reply: FastifyReply
+   ) {
       try {
-         const overview = await getDashboardOverviewService()
+         const { month } = request.query
+         const overview = await getDashboardOverviewService({ month })
          return reply.status(200).send(overview)
       } catch (error) {
          if (error instanceof AppError) {
@@ -36,7 +44,6 @@ class DashboardController {
          const { period = 'month', startDate, endDate } = request.query
 
          const charts = await getDashboardChartsService({
-            period,
             startDate: startDate ? new Date(startDate) : undefined,
             endDate: endDate ? new Date(endDate) : undefined,
          })

@@ -17,10 +17,29 @@ interface DashboardOverview {
    monthlyExpenses: number
 }
 
-export async function getDashboardOverviewService(): Promise<DashboardOverview> {
+interface GetDashboardOverviewParams {
+   month?: string // formato MM/YYYY
+}
+
+export async function getDashboardOverviewService(params?: GetDashboardOverviewParams): Promise<DashboardOverview> {
    const today = getTodayInBrazilTimezone()
-   const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
-   const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59)
+   
+   let startOfMonth: Date
+   let endOfMonth: Date
+   
+   if (params?.month) {
+      // Parse do formato MM/YYYY
+      const [monthStr, yearStr] = params.month.split('/')
+      const month = parseInt(monthStr) - 1 // JavaScript months are 0-indexed
+      const year = parseInt(yearStr)
+      
+      startOfMonth = new Date(year, month, 1)
+      endOfMonth = new Date(year, month + 1, 0, 23, 59, 59)
+   } else {
+      // Usar mês atual como padrão
+      startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+      endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59)
+   }
 
    // Contadores básicos
    const [totalCustomers, totalSuppliers, totalInvoices] = await Promise.all([
@@ -30,7 +49,7 @@ export async function getDashboardOverviewService(): Promise<DashboardOverview> 
    ])
 
    // Contas a pagar
-   const [totalAccountsPayable, totalOverduePayable, totalPaidThisMonth] = await Promise.all([
+   const [totalAccountsPayable, totalOverduePayable] = await Promise.all([
       prisma.accountsPayable.aggregate({
          where: { status: 'PENDING' },
          _sum: { value: true },
@@ -41,21 +60,11 @@ export async function getDashboardOverviewService(): Promise<DashboardOverview> 
             dueDate: { lt: today },
          },
          _sum: { value: true },
-      }),
-      prisma.accountsPayable.aggregate({
-         where: {
-            status: 'PAID',
-            paymentDate: {
-               gte: startOfMonth,
-               lte: endOfMonth,
-            },
-         },
-         _sum: { paidValue: true },
       }),
    ])
 
    // Contas a receber
-   const [totalAccountsReceivable, totalOverdueReceivable, totalReceivedThisMonth] = await Promise.all([
+   const [totalAccountsReceivable, totalOverdueReceivable] = await Promise.all([
       prisma.accountsReceivable.aggregate({
          where: { status: 'PENDING' },
          _sum: { value: true },
@@ -66,16 +75,6 @@ export async function getDashboardOverviewService(): Promise<DashboardOverview> 
             dueDate: { lt: today },
          },
          _sum: { value: true },
-      }),
-      prisma.accountsReceivable.aggregate({
-         where: {
-            status: 'PAID',
-            receiptDate: {
-               gte: startOfMonth,
-               lte: endOfMonth,
-            },
-         },
-         _sum: { receivedValue: true },
       }),
    ])
 
@@ -95,7 +94,7 @@ export async function getDashboardOverviewService(): Promise<DashboardOverview> 
    const pendingInvoices = await prisma.invoice.count()
 
    // Receitas e despesas do mês
-   const [monthlyRevenue, monthlyExpenses] = await Promise.all([
+   const [monthlyRevenue, monthlyExpenses, totalPaidThisMonth, totalReceivedThisMonth] = await Promise.all([
       prisma.cashFlow.aggregate({
          where: {
             type: 'CREDIT',
@@ -116,6 +115,28 @@ export async function getDashboardOverviewService(): Promise<DashboardOverview> 
          },
          _sum: { value: true },
       }),
+      // totalPaidThisMonth agora vem do cashFlow tipo DEBIT
+      prisma.cashFlow.aggregate({
+         where: {
+            type: 'DEBIT',
+            date: {
+               gte: startOfMonth,
+               lte: endOfMonth,
+            },
+         },
+         _sum: { value: true },
+      }),
+      // totalReceivedThisMonth agora vem do cashFlow tipo CREDIT
+      prisma.cashFlow.aggregate({
+         where: {
+            type: 'CREDIT',
+            date: {
+               gte: startOfMonth,
+               lte: endOfMonth,
+            },
+         },
+         _sum: { value: true },
+      }),
    ])
 
    const cashFlowBalance = (cashFlowEntries._sum?.value || 0) - (cashFlowExits._sum?.value || 0)
@@ -128,8 +149,8 @@ export async function getDashboardOverviewService(): Promise<DashboardOverview> 
       totalAccountsReceivable: totalAccountsReceivable._sum.value ? totalAccountsReceivable._sum.value / 100 : 0,
       totalOverduePayable: totalOverduePayable._sum.value ? totalOverduePayable._sum.value / 100 : 0,
       totalOverdueReceivable: totalOverdueReceivable._sum.value ? totalOverdueReceivable._sum.value / 100 : 0,
-      totalPaidThisMonth: totalPaidThisMonth._sum.paidValue ? totalPaidThisMonth._sum.paidValue / 100 : 0,
-      totalReceivedThisMonth: totalReceivedThisMonth._sum.receivedValue ? totalReceivedThisMonth._sum.receivedValue / 100 : 0,
+      totalPaidThisMonth: totalPaidThisMonth._sum?.value ? totalPaidThisMonth._sum.value / 100 : 0,
+      totalReceivedThisMonth: totalReceivedThisMonth._sum?.value ? totalReceivedThisMonth._sum.value / 100 : 0,
       cashFlowBalance: cashFlowBalance / 100,
       pendingInvoices,
       monthlyRevenue: monthlyRevenue._sum?.value ? monthlyRevenue._sum.value / 100 : 0,
