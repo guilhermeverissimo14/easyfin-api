@@ -342,20 +342,47 @@ export const listByCashCashFlowSchema = {
    },
 }
 
-export const importBankTransactionsCashFlowSchema = {
-   description: 'Importa transações bancárias de um arquivo XLSX',
+export const parseBankTransactionsCashFlowSchema = {
+   description: 'Analisa um arquivo XLSX de extrato bancário e retorna as transações estruturadas',
    tags: ['Cash Flow'],
-   summary: 'Importar transações bancárias',
+   summary: 'Analisar arquivo de extrato bancário',
    consumes: ['multipart/form-data'],
    response: {
       200: {
-         description: 'Importação realizada com sucesso',
+         description: 'Análise realizada com sucesso',
          content: {
             'application/json': {
                schema: {
                   type: 'object',
                   properties: {
-                     message: { type: 'string', example: 'Importação realizada com sucesso!' },
+                     filename: { type: 'string' },
+                     sheetNumber: { type: 'number' },
+                     totalRows: { type: 'number' },
+                     validTransactions: {
+                        type: 'array',
+                        items: {
+                           type: 'object',
+                           properties: {
+                              date: { type: 'string' },
+                              historic: { type: 'string' },
+                              value: { type: 'number' },
+                              type: { type: 'string', enum: ['CREDIT', 'DEBIT'] },
+                              detailing: { type: 'string' },
+                              originalRow: { type: 'number' }
+                           }
+                        }
+                     },
+                     invalidRows: {
+                        type: 'array',
+                        items: {
+                           type: 'object',
+                           properties: {
+                              row: { type: 'number' },
+                              data: { type: 'array', items: { type: 'string' } },
+                              reason: { type: 'string' }
+                           }
+                        }
+                     }
                   },
                },
             },
@@ -368,7 +395,100 @@ export const importBankTransactionsCashFlowSchema = {
                schema: {
                   type: 'object',
                   properties: {
-                     message: { type: 'string', example: 'Arquivo XLSX vazio ou com formato inválido.' },
+                     message: { type: 'string' },
+                  },
+               },
+            },
+         },
+      },
+      401: {
+         description: 'Usuário não autenticado',
+         content: {
+            'application/json': {
+               schema: {
+                  type: 'object',
+                  properties: {
+                     message: { type: 'string' },
+                  },
+               },
+            },
+         },
+      },
+      500: {
+         description: 'Erro interno do servidor',
+         content: {
+            'application/json': {
+               schema: {
+                  type: 'object',
+                  properties: {
+                     message: { type: 'string' },
+                  },
+               },
+            },
+         },
+      },
+   },
+}
+
+export const processBankTransactionsCashFlowSchema = {
+   description: 'Processa as transações bancárias validadas e as importa para o sistema',
+   tags: ['Cash Flow'],
+   summary: 'Processar transações bancárias',
+   body: {
+      type: 'object',
+      properties: {
+         bankAccountId: {
+            type: 'string',
+            description: 'ID da conta bancária',
+         },
+         filename: {
+            type: 'string',
+            description: 'Nome do arquivo original',
+         },
+         transactions: {
+            type: 'array',
+            description: 'Lista de transações validadas para importar',
+            items: {
+               type: 'object',
+               properties: {
+                  date: { type: 'string' },
+                  historic: { type: 'string' },
+                  value: { type: 'number' },
+                  type: { type: 'string', enum: ['CREDIT', 'DEBIT'] },
+                  costCenterId: { type: 'string' },
+                  detailing: { type: 'string' },
+                  originalRow: { type: 'number' },
+               },
+               required: ['date', 'historic', 'value', 'type', 'detailing', 'originalRow'],
+            },
+         },
+      },
+      required: ['bankAccountId', 'filename', 'transactions'],
+   },
+   response: {
+      200: {
+         description: 'Processamento realizado com sucesso',
+         content: {
+            'application/json': {
+               schema: {
+                  type: 'object',
+                  properties: {
+                     message: { type: 'string', example: 'Importação realizada com sucesso!' },
+                     importedTransactions: { type: 'number', example: 145 },
+                     finalBalance: { type: 'number', example: 2500000 },
+                  },
+               },
+            },
+         },
+      },
+      400: {
+         description: 'Erro de validação ou dados inválidos',
+         content: {
+            'application/json': {
+               schema: {
+                  type: 'object',
+                  properties: {
+                     message: { type: 'string', example: 'Conta bancária não encontrada.' },
                   },
                },
             },

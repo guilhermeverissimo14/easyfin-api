@@ -8,7 +8,8 @@ import { createCashFlowService } from '@/services/cash-flow/create-cash-flow.ser
 import { getCashFlowTotalsPerDayService } from '@/services/cash-flow/get-cash-flow-totals-per-day.service'
 import { listCashFlowByAccountIdService } from '@/services/cash-flow/list-cash-flow-by-account-id.service'
 import { listCashFlowByCashBoxIdService } from '@/services/cash-flow/list-cash-flow-by-cash-id.service'
-import { importBankTransactionsService } from '@/services/cash-flow/import-bank-transactions.service'
+import { parseBankTransactionsService } from '@/services/cash-flow/parse-bank-transactions.service'
+import { processBankTransactionsService } from '@/services/cash-flow/process-bank-transactions.service'
 
 class CashFlowController {
    constructor() {}
@@ -99,7 +100,7 @@ class CashFlowController {
          const cashFlowList = await listCashFlowByAccountIdService(bankAccountId, {
             page: parseInt(page),
             limit: parseInt(limit),
-            type,
+            type: type as TransactionType,
             description,
             history,
             costCenterId,
@@ -108,6 +109,7 @@ class CashFlowController {
             valueMin: valueMin ? parseFloat(valueMin) : undefined,
             valueMax: valueMax ? parseFloat(valueMax) : undefined,
          })
+
          return reply.status(200).send(cashFlowList)
       } catch (error) {
          if (error instanceof AppError) {
@@ -136,13 +138,14 @@ class CashFlowController {
       }>,
       reply: FastifyReply,
    ) {
+      const { cashId } = request.params
       const { page = '1', limit = '10', type, description, history, costCenterId, dateStart, dateEnd, valueMin, valueMax } = request.query
 
       try {
          const cashFlowList = await listCashFlowByCashBoxIdService({
             page: parseInt(page),
             limit: parseInt(limit),
-            type,
+            type: type as TransactionType,
             description,
             history,
             costCenterId,
@@ -151,6 +154,7 @@ class CashFlowController {
             valueMin: valueMin ? parseFloat(valueMin) : undefined,
             valueMax: valueMax ? parseFloat(valueMax) : undefined,
          })
+
          return reply.status(200).send(cashFlowList)
       } catch (error) {
          if (error instanceof AppError) {
@@ -161,20 +165,17 @@ class CashFlowController {
       }
    }
 
-   public async importXlsx(request: FastifyRequest, reply: FastifyReply) {
+   public async parseXlsx(request: FastifyRequest, reply: FastifyReply) {
       const parts = request.parts()
 
       let sheetNumber: number | undefined = undefined
-      let bankAccountId: string | null = null
       let file: MultipartFile | null = null
 
       for await (const part of parts) {
          if (part.type === 'file') {
             file = part
          } else {
-            if (part.fieldname === 'bankAccountId') {
-               bankAccountId = part.value as string
-            } else if (part.fieldname === 'sheetNumber') {
+            if (part.fieldname === 'sheetNumber') {
                sheetNumber = Number(part.value)
             }
          }
@@ -182,10 +183,6 @@ class CashFlowController {
 
       if (!file) {
          return reply.status(400).send({ message: 'Nenhum arquivo foi enviado.' })
-      }
-
-      if (!bankAccountId) {
-         return reply.status(400).send({ message: 'ID da conta bancária não fornecido.' })
       }
 
       if (sheetNumber !== undefined && (isNaN(sheetNumber) || sheetNumber < 0)) {
@@ -200,15 +197,63 @@ class CashFlowController {
             return reply.status(400).send({ message: 'Apenas arquivos .xlsx são permitidos.' })
          }
 
-         await importBankTransactionsService({ sheetNumber, bankAccountId, file: fileBuffer, filename })
+         const result = await parseBankTransactionsService({ sheetNumber, file: fileBuffer, filename })
 
-         return reply.status(200).send({ message: 'Importação realizada com sucesso!' })
+         return reply.status(200).send(result)
       } catch (error) {
          if (error instanceof AppError) {
             return reply.status(400).send({ message: error.message })
          }
          console.error(error)
-         return reply.status(500).send({ message: 'Erro interno do servidor ao importar transações bancárias.' })
+         return reply.status(500).send({ message: 'Erro interno do servidor ao analisar arquivo.' })
+      }
+   }
+
+   public async processTransactions(
+      request: FastifyRequest<{
+         Body: {
+            bankAccountId: string
+            filename: string
+            transactions: Array<{
+               date: string
+               historic: string
+               value: number
+               type: TransactionType
+               detailing: string
+               originalRow: number
+               costCenterId?: string
+            }>
+         }
+      }>,
+      reply: FastifyReply,
+   ) {
+      const { bankAccountId, filename, transactions } = request.body
+
+      if (!bankAccountId) {
+         return reply.status(400).send({ message: 'ID da conta bancária não fornecido.' })
+      }
+
+      if (!filename) {
+         return reply.status(400).send({ message: 'Nome do arquivo não fornecido.' })
+      }
+
+      if (!transactions || !Array.isArray(transactions)) {
+         return reply.status(400).send({ message: 'Lista de transações não fornecida ou inválida.' })
+      }
+
+      try {
+         const result = await processBankTransactionsService({ bankAccountId, filename, transactions })
+
+         return reply.status(200).send({
+            message: 'Importação realizada com sucesso!',
+            ...result
+         })
+      } catch (error) {
+         if (error instanceof AppError) {
+            return reply.status(400).send({ message: error.message })
+         }
+         console.error(error)
+         return reply.status(500).send({ message: 'Erro interno do servidor ao processar transações.' })
       }
    }
 }
