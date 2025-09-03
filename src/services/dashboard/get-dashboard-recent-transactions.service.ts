@@ -1,8 +1,11 @@
 import { prisma } from '@/lib/prisma'
+import { getTodayInBrazilTimezone } from '@/utils/format'
 
 interface RecentTransactionsFilters {
    limit: number
    type: 'all' | 'payable' | 'receivable' | 'cash-flow'
+   startDate?: Date
+   endDate?: Date
 }
 
 interface RecentTransaction {
@@ -17,14 +20,35 @@ interface RecentTransaction {
    documentNumber?: string
 }
 
+function getDateRange(filters: RecentTransactionsFilters) {
+   const today = getTodayInBrazilTimezone()
+   
+   if (filters.startDate && filters.endDate) {
+      return { start: filters.startDate, end: filters.endDate }
+   }
+   
+   // Se não há filtros de data, retorna um range amplo para pegar transações recentes
+   const thirtyDaysAgo = new Date(today)
+   thirtyDaysAgo.setDate(today.getDate() - 30)
+   
+   return { start: thirtyDaysAgo, end: today }
+}
+
 export async function getDashboardRecentTransactionsService(
    filters: RecentTransactionsFilters,
 ): Promise<RecentTransaction[]> {
+   const { start, end } = getDateRange(filters)
    const transactions: RecentTransaction[] = []
 
    // Buscar contas a pagar recentes
    if (filters.type === 'all' || filters.type === 'payable') {
       const recentPayables = await prisma.accountsPayable.findMany({
+         where: {
+            createdAt: {
+               gte: start,
+               lte: end,
+            },
+         },
          select: {
             id: true,
             value: true,
@@ -62,6 +86,12 @@ export async function getDashboardRecentTransactionsService(
    // Buscar contas a receber recentes
    if (filters.type === 'all' || filters.type === 'receivable') {
       const recentReceivables = await prisma.accountsReceivable.findMany({
+         where: {
+            createdAt: {
+               gte: start,
+               lte: end,
+            },
+         },
          select: {
             id: true,
             value: true,
@@ -99,6 +129,12 @@ export async function getDashboardRecentTransactionsService(
    // Buscar movimentações de fluxo de caixa recentes
    if (filters.type === 'all' || filters.type === 'cash-flow') {
       const recentCashFlow = await prisma.cashFlow.findMany({
+         where: {
+            date: {
+               gte: start,
+               lte: end,
+            },
+         },
          select: {
             id: true,
             historic: true,

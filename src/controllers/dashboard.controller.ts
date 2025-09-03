@@ -62,17 +62,19 @@ class DashboardController {
       request: FastifyRequest<{
          Querystring: {
             limit?: string
-            period?: 'month' | 'quarter' | 'year'
+            startDate?: string
+            endDate?: string
          }
       }>,
       reply: FastifyReply,
    ) {
       try {
-         const { limit = '10', period = 'year' } = request.query
+         const { limit = '10', startDate, endDate } = request.query
 
          const topCustomers = await getDashboardTopCustomersService({
             limit: parseInt(limit),
-            period,
+            startDate: startDate ? new Date(startDate) : undefined,
+            endDate: endDate ? new Date(endDate) : undefined,
          })
 
          return reply.status(200).send(topCustomers)
@@ -89,17 +91,19 @@ class DashboardController {
       request: FastifyRequest<{
          Querystring: {
             limit?: string
-            period?: 'month' | 'quarter' | 'year'
+            startDate?: string
+            endDate?: string
          }
       }>,
       reply: FastifyReply,
    ) {
       try {
-         const { limit = '10', period = 'year' } = request.query
+         const { limit = '10', startDate, endDate } = request.query
 
          const topSuppliers = await getDashboardTopSuppliersService({
             limit: parseInt(limit),
-            period,
+            startDate: startDate ? new Date(startDate) : undefined,
+            endDate: endDate ? new Date(endDate) : undefined,
          })
 
          return reply.status(200).send(topSuppliers)
@@ -117,16 +121,20 @@ class DashboardController {
          Querystring: {
             limit?: string
             type?: 'all' | 'payable' | 'receivable' | 'cash-flow'
+            startDate?: string
+            endDate?: string
          }
       }>,
       reply: FastifyReply,
    ) {
       try {
-         const { limit = '20', type = 'all' } = request.query
+         const { limit = '20', type = 'all', startDate, endDate } = request.query
 
          const recentTransactions = await getDashboardRecentTransactionsService({
             limit: parseInt(limit),
             type,
+            startDate: startDate ? new Date(startDate) : undefined,
+            endDate: endDate ? new Date(endDate) : undefined,
          })
 
          return reply.status(200).send(recentTransactions)

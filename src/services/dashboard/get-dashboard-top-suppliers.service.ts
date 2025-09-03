@@ -3,7 +3,8 @@ import { getTodayInBrazilTimezone } from '@/utils/format'
 
 interface TopSuppliersFilters {
    limit: number
-   period: 'month' | 'quarter' | 'year'
+   startDate?: Date
+   endDate?: Date
 }
 
 interface TopSupplier {
@@ -17,30 +18,20 @@ interface TopSupplier {
    pendingValue: number
 }
 
-function getDateRange(period: string) {
+function getDateRange(filters: TopSuppliersFilters) {
    const today = getTodayInBrazilTimezone()
    
-   switch (period) {
-      case 'month':
-         const monthStart = new Date(today.getFullYear(), today.getMonth(), 1)
-         return { start: monthStart, end: today }
-      
-      case 'quarter':
-         const quarterStart = new Date(today.getFullYear(), Math.floor(today.getMonth() / 3) * 3, 1)
-         return { start: quarterStart, end: today }
-      
-      case 'year':
-         const yearStart = new Date(today.getFullYear(), 0, 1)
-         return { start: yearStart, end: today }
-      
-      default:
-         const defaultStart = new Date(today.getFullYear(), 0, 1)
-         return { start: defaultStart, end: today }
+   if (filters.startDate && filters.endDate) {
+      return { start: filters.startDate, end: filters.endDate }
    }
+   
+   // Se não há filtros de data, usa o ano atual como padrão
+   const yearStart = new Date(today.getFullYear(), 0, 1)
+   return { start: yearStart, end: today }
 }
 
 export async function getDashboardTopSuppliersService(filters: TopSuppliersFilters): Promise<TopSupplier[]> {
-   const { start, end } = getDateRange(filters.period)
+   const { start, end } = getDateRange(filters)
 
    // Buscar fornecedores com maior volume de contas a pagar no período
    const topSuppliersData = await prisma.supplier.findMany({

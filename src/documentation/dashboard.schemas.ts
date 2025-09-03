@@ -286,11 +286,15 @@ export const getDashboardTopCustomersSchema = {
             description: 'Limite de clientes a retornar',
             default: '10',
          },
-         period: {
+         startDate: {
             type: 'string',
-            enum: ['month', 'quarter', 'year'],
-            description: 'Período para análise',
-            default: 'year',
+            format: 'date',
+            description: 'Data de início (opcional)',
+         },
+         endDate: {
+            type: 'string',
+            format: 'date',
+            description: 'Data de fim (opcional)',
          },
       },
    },
@@ -349,11 +353,15 @@ export const getDashboardTopSuppliersSchema = {
             description: 'Limite de fornecedores a retornar',
             default: '10',
          },
-         period: {
+         startDate: {
             type: 'string',
-            enum: ['month', 'quarter', 'year'],
-            description: 'Período para análise',
-            default: 'year',
+            format: 'date',
+            description: 'Data de início (opcional)',
+         },
+         endDate: {
+            type: 'string',
+            format: 'date',
+            description: 'Data de fim (opcional)',
          },
       },
    },
@@ -417,6 +425,16 @@ export const getDashboardRecentTransactionsSchema = {
             enum: ['all', 'payable', 'receivable', 'cash-flow'],
             description: 'Tipo de transações a retornar',
             default: 'all',
+         },
+         startDate: {
+            type: 'string',
+            format: 'date',
+            description: 'Data de início (opcional)',
+         },
+         endDate: {
+            type: 'string',
+            format: 'date',
+            description: 'Data de fim (opcional)',
          },
       },
    },
