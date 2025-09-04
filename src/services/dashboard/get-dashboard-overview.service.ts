@@ -18,7 +18,7 @@ interface DashboardOverview {
 }
 
 interface GetDashboardOverviewParams {
-   month?: string // formato MM/YYYY
+   month?: string
 }
 
 export async function getDashboardOverviewService(params?: GetDashboardOverviewParams): Promise<DashboardOverview> {
@@ -106,7 +106,7 @@ export async function getDashboardOverviewService(params?: GetDashboardOverviewP
 
    const pendingInvoices = await prisma.invoice.count()
 
-   const [monthlyRevenue, monthlyExpenses, totalPaidThisMonth, totalReceivedThisMonth] = await Promise.all([
+   const [monthlyRevenue, monthlyExpenses] = await Promise.all([
       prisma.cashFlow.aggregate({
          where: {
             type: 'CREDIT',
@@ -117,32 +117,9 @@ export async function getDashboardOverviewService(params?: GetDashboardOverviewP
          },
          _sum: { value: true },
       }),
-
       prisma.cashFlow.aggregate({
          where: {
             type: 'DEBIT',
-            date: {
-               gte: startOfMonth,
-               lte: endOfMonth,
-            },
-         },
-         _sum: { value: true },
-      }),
-
-      prisma.cashFlow.aggregate({
-         where: {
-            type: 'DEBIT',
-            date: {
-               gte: startOfMonth,
-               lte: endOfMonth,
-            },
-         },
-         _sum: { value: true },
-      }),
-
-      prisma.cashFlow.aggregate({
-         where: {
-            type: 'CREDIT',
             date: {
                gte: startOfMonth,
                lte: endOfMonth,
@@ -162,8 +139,8 @@ export async function getDashboardOverviewService(params?: GetDashboardOverviewP
       totalAccountsReceivable: totalAccountsReceivable._sum.value ? totalAccountsReceivable._sum.value / 100 : 0,
       totalOverduePayable: totalOverduePayable._sum.value ? totalOverduePayable._sum.value / 100 : 0,
       totalOverdueReceivable: totalOverdueReceivable._sum.value ? totalOverdueReceivable._sum.value / 100 : 0,
-      totalPaidThisMonth: totalPaidThisMonth._sum?.value ? totalPaidThisMonth._sum.value / 100 : 0,
-      totalReceivedThisMonth: totalReceivedThisMonth._sum?.value ? totalReceivedThisMonth._sum.value / 100 : 0,
+      totalPaidThisMonth: monthlyExpenses._sum?.value ? monthlyExpenses._sum.value / 100 : 0,
+      totalReceivedThisMonth: monthlyRevenue._sum?.value ? monthlyRevenue._sum.value / 100 : 0,
       cashFlowBalance: cashFlowBalance / 100,
       pendingInvoices,
       monthlyRevenue: monthlyRevenue._sum?.value ? monthlyRevenue._sum.value / 100 : 0,
