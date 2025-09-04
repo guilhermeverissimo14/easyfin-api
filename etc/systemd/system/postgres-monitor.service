@@ -1,0 +1,13 @@
+[Unit]
+Description=PostgreSQL Monitor Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/path/to/monitor_postgres.sh
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
