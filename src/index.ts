@@ -24,6 +24,7 @@ import { settingsRoutes } from "./routes/settings.routes";
 import { accountReceivableRoutes } from "./routes/account-receivable.routes";
 import { invoicesRoutes } from "./routes/invoices.routes";
 import { dashboardRoutes } from "./routes/dashboard.routes";
+import { reportsRoutes } from "./routes/reports.routes";
 
 const server = Fastify();
 
@@ -91,6 +92,7 @@ server.register(fastifySwagger, {
 			{ name: "Cash Flow", description: "Fluxo de caixa" },
 			{ name: "Invoice", description: "Faturas" },
 			{ name: "Dashboard", description: "Dashboard e relatórios" },
+			{ name: "Reports", description: "Relatórios e análises" },
 		],
 	},
 });
@@ -139,6 +141,7 @@ server.register(cashFlowRoutes, { prefix: "/api/cash-flow" });
 server.register(settingsRoutes, { prefix: "/api/settings" });
 server.register(invoicesRoutes, { prefix: "/api/invoices" });
 server.register(dashboardRoutes, { prefix: "/api/dashboard" });
+server.register(reportsRoutes, { prefix: "/api/reports" });
 
 server.get("/logo.png", async (request, reply) => {
 	const logoPath = path.join(__dirname, "../public/logo.png");
