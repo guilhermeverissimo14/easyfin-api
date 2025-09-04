@@ -10,9 +10,9 @@ const prisma = new PrismaClient({
   log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
 })
 
-const connectionLimit = parseInt(process.env.DATABASE_CONNECTION_LIMIT || '15')
-const connectionTimeout = parseInt(process.env.DATABASE_CONNECTION_TIMEOUT || '20')
-const poolTimeout = parseInt(process.env.DATABASE_POOL_TIMEOUT || '20')
+const connectionLimit = parseInt(process.env.DATABASE_CONNECTION_LIMIT || '100')
+const connectionTimeout = parseInt(process.env.DATABASE_CONNECTION_TIMEOUT || '20000')
+const poolTimeout = parseInt(process.env.DATABASE_POOL_TIMEOUT || '20000')
 
 process.on('beforeExit', async () => {
   await prisma.$disconnect()
