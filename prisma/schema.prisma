@@ -49,6 +49,8 @@ model User {
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @updatedAt @map("updated_at")
 
+  Settings Settings?
+
   @@map("usuarios")
 }
 
@@ -325,20 +327,20 @@ model Invoice {
 }
 
 model CashFlow {
-  id            String          @id @default(uuid()) @map("id")
-  date          DateTime        @map("date")
-  historic      String
-  value         Int
-  type          TransactionType
-  description   String?
-  documentNumber String?        @map("document_number")
-  costCenterId  String?         @map("cost_center_id")
-  bankAccountId String?         @map("bank_account_id")
-  cashBoxId     String?         @map("cash_box_id")
-  balance       Int
-  csvFileName   String?         @map("csv_file_name")
-  createdAt     DateTime        @default(now()) @map("created_at")
-  updatedAt     DateTime        @updatedAt @map("updated_at")
+  id             String          @id @default(uuid()) @map("id")
+  date           DateTime        @map("date")
+  historic       String
+  value          Int
+  type           TransactionType
+  description    String?
+  documentNumber String?         @map("document_number")
+  costCenterId   String?         @map("cost_center_id")
+  bankAccountId  String?         @map("bank_account_id")
+  cashBoxId      String?         @map("cash_box_id")
+  balance        Int
+  csvFileName    String?         @map("csv_file_name")
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
 
   CostCenter  CostCenter?   @relation(fields: [costCenterId], references: [id])
   BankAccount BankAccounts? @relation(fields: [bankAccountId], references: [id])
@@ -349,10 +351,15 @@ model CashFlow {
 
 model Settings {
   id                 String   @id @default(uuid()) @map("id")
+  userId             String   @map("user_id")
   cashFlowDefault    CashType @default(CASH) @map("cash_flow_default")
   bankAccountDefault String?  @map("bank_account_default")
+  showClock          Boolean  @default(true) @map("show_clock")
   createdAt          DateTime @default(now()) @map("created_at")
   updatedAt          DateTime @updatedAt @map("updated_at")
 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId])
   @@map("configuracoes")
 }

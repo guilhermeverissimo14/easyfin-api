@@ -3,6 +3,7 @@ import { AppError } from '@/helpers/app-error'
 import { formatCpfCnpj, formatPhone } from '@/utils/format'
 import { hash } from '@/gateways/criptography/bcrypt'
 import { sendWelcomeEmail } from '@/gateways/email/nodemailer.service'
+import { createDefaultSettingsService } from '@/services/settings/create-default-settings.service'
 import { prisma } from '@/lib/prisma'
 
 export const createUserService = async (userData: {
@@ -61,6 +62,9 @@ export const createUserService = async (userData: {
             birthdate: birthdateFormatted,
          },
       })
+
+      await createDefaultSettingsService(user.id)
+      
    } catch (error) {
       console.log(error)
       throw new AppError('Erro ao criar o usuário', 500)

@@ -14,14 +14,13 @@ class SettingsController {
 
    public async list(request: FastifyRequest, reply: FastifyReply) {
       const userId = request.user?.id
-      const userRole = request.user?.role
 
       if (!userId) {
          return reply.status(401).send({ message: 'Usuário não autenticado' })
       }
 
       try {
-         const settings = await listSettingsService()
+         const settings = await listSettingsService(userId)
          return reply.status(200).send(settings)
       } catch (error) {
          if (error instanceof AppError) {
@@ -31,16 +30,14 @@ class SettingsController {
       }
    }
 
-   public async update(
-      request: FastifyRequest<{
-         Body: {
-            cashFlowDefault: CashType
-            bankAccountDefault?: string
-         }
-      }>,
-      reply: FastifyReply,
-   ) {
-      const { cashFlowDefault, bankAccountDefault } = request.body
+   public async update(request: FastifyRequest<{
+      Body: {
+         cashFlowDefault?: CashType
+         bankAccountDefault?: string
+         showClock?: boolean
+      }
+   }>, reply: FastifyReply) {
+      const { cashFlowDefault, bankAccountDefault, showClock } = request.body
       const userId = request.user?.id
 
       if (!userId) {
@@ -52,9 +49,10 @@ class SettingsController {
       if (validationError) return
 
       try {
-         const updatedSettings = await updateSettingsService({
+         const updatedSettings = await updateSettingsService(userId, {
             cashFlowDefault,
             bankAccountDefault,
+            showClock
          })
          return reply.status(200).send(updatedSettings)
       } catch (error) {

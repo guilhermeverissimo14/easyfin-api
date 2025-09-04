@@ -1,12 +1,21 @@
 import { AppError } from '@/helpers/app-error'
 import { prisma } from '@/lib/prisma'
 
-export const listSettingsService = async () => {
+export const listSettingsService = async (userId: string) => {
    try {
-      const settings = await prisma.settings.findFirst()
+      const settings = await prisma.settings.findUnique({
+         where: { userId }
+      })
 
       if (!settings) {
-         throw new AppError('Configurações não encontradas', 404)
+         const newSettings = await prisma.settings.create({
+            data: {
+               userId,
+               cashFlowDefault: 'CASH',
+               showClock: true
+            }
+         })
+         return newSettings
       }
 
       return settings
