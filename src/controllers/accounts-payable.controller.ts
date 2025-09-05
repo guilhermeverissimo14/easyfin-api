@@ -14,6 +14,7 @@ import { PaymentStatus } from "@prisma/client";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { settleAccountPayableService } from "@/services/accounts-payable/settle-account-payable.service";
 import { makeReverseAccountPayableUseCase } from "@/services/accounts-payable/make-reverse-account-payable-use-case";
+import { listPendingAccountsPayableService } from "@/services/accounts-payable/list-pending-accounts-payable.service";
 
 class AccountsPayableController {
 	constructor() {}
@@ -290,6 +291,19 @@ class AccountsPayableController {
 				return reply.status(error.statusCode).send({ message: error.message });
 			}
 			return reply.status(500).send({ message: "Erro interno do servidor" });
+		}
+	}
+
+	public async listPending(request: FastifyRequest, reply: FastifyReply) {
+		try {
+			const accounts = await listPendingAccountsPayableService();
+			return reply.status(200).send(accounts);
+		} catch (error) {
+			if (error instanceof AppError) {
+				return reply.status(400).send({ message: error.message });
+			} else {
+				return reply.status(500).send({ message: "Erro interno do servidor" });
+			}
 		}
 	}
 }

@@ -68,6 +68,13 @@ const accountReceivableRoutes: FastifyPluginAsync = async (server) => {
 		{ preHandler: authMiddleware, schema: reverseAccountsReceivableSchema },
 		AccountsReceivableController.reverseReceive,
 	);
+
+	// Rota para listar contas a receber pendentes
+	server.get(
+		"/pending",
+		{ preHandler: authMiddleware },
+		AccountsReceivableController.listPending,
+	);
 };
 
 export { accountReceivableRoutes };

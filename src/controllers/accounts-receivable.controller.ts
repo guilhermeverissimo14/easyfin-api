@@ -14,6 +14,7 @@ import { PaymentStatus } from "@prisma/client";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { receiveAccountReceivableService } from "@/services/accounts-receivable/receive-account-receivable.service";
 import { reverseAccountReceivableService } from "@/services/accounts-receivable/reverse-account-receivable.service";
+import { listPendingAccountsReceivableService } from "@/services/accounts-receivable/list-pending-accounts-receivable.service";
 
 class AccountsReceivableController {
 	constructor() {}
@@ -300,6 +301,19 @@ class AccountsReceivableController {
 				message: "Conta a receber estornada com sucesso",
 				account: reversedAccount,
 			});
+		} catch (error) {
+			if (error instanceof AppError) {
+				return reply.status(400).send({ message: error.message });
+			} else {
+				return reply.status(500).send({ message: "Erro interno do servidor" });
+			}
+		}
+	}
+
+	public async listPending(request: FastifyRequest, reply: FastifyReply) {
+		try {
+			const accounts = await listPendingAccountsReceivableService();
+			return reply.status(200).send(accounts);
 		} catch (error) {
 			if (error instanceof AppError) {
 				return reply.status(400).send({ message: error.message });

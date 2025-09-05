@@ -10,6 +10,8 @@ import { listCashFlowByAccountIdService } from '@/services/cash-flow/list-cash-f
 import { listCashFlowByCashBoxIdService } from '@/services/cash-flow/list-cash-flow-by-cash-id.service'
 import { parseBankTransactionsService } from '@/services/cash-flow/parse-bank-transactions.service'
 import { processBankTransactionsService } from '@/services/cash-flow/process-bank-transactions.service'
+import { linkReceivableToCashFlowService } from "@/services/cash-flow/link-receivable-to-cash-flow.service";
+import { linkPayableToCashFlowService } from "@/services/cash-flow/link-payable-to-cash-flow.service";
 
 class CashFlowController {
    constructor() {}
@@ -254,6 +256,76 @@ class CashFlowController {
          }
          console.error(error)
          return reply.status(500).send({ message: 'Erro interno do servidor ao processar transações.' })
+      }
+   }
+
+   public async linkReceivable(
+      request: FastifyRequest<{
+         Params: { id: string };
+         Body: {
+            documentNumber: string;
+         };
+      }>,
+      reply: FastifyReply,
+   ) {
+      const { id } = request.params;
+      const { documentNumber } = request.body;
+   
+      if (!documentNumber) {
+         return reply.status(400).send({ message: "Número do documento é obrigatório" });
+      }
+   
+      try {
+         const result = await linkReceivableToCashFlowService({
+            cashFlowId: id,
+            documentNumber,
+         });
+   
+         return reply.status(200).send({
+            message: "Lançamento vinculado com sucesso à conta a receber",
+            data: result,
+         });
+      } catch (error) {
+         if (error instanceof AppError) {
+            return reply.status(400).send({ message: error.message });
+         } else {
+            return reply.status(500).send({ message: "Erro interno do servidor" });
+         }
+      }
+   }
+
+   public async linkPayable(
+      request: FastifyRequest<{
+         Params: { id: string };
+         Body: {
+            documentNumber: string;
+         };
+      }>,
+      reply: FastifyReply,
+   ) {
+      const { id } = request.params;
+      const { documentNumber } = request.body;
+   
+      if (!documentNumber) {
+         return reply.status(400).send({ message: "Número do documento é obrigatório" });
+      }
+   
+      try {
+         const result = await linkPayableToCashFlowService({
+            cashFlowId: id,
+            documentNumber,
+         });
+   
+         return reply.status(200).send({
+            message: "Lançamento vinculado com sucesso à conta a pagar",
+            data: result,
+         });
+      } catch (error) {
+         if (error instanceof AppError) {
+            return reply.status(400).send({ message: error.message });
+         } else {
+            return reply.status(500).send({ message: "Erro interno do servidor" });
+         }
       }
    }
 }

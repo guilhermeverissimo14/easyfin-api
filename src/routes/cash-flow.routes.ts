@@ -27,7 +27,17 @@ const cashFlowRoutes: FastifyPluginAsync = async (server) => {
    server.post('/parse-bank-extract', { preHandler: authMiddleware, schema: parseBankTransactionsCashFlowSchema }, CashFlowController.parseXlsx)
 
    //Rota para processar as transações bancárias e lançar no fluxo de caixa
-   server.post('/process-bank-transactions', { preHandler: authMiddleware, schema: processBankTransactionsCashFlowSchema }, CashFlowController.processTransactions)
+   server.post(
+      '/process-bank-transactions',
+      { preHandler: authMiddleware, schema: processBankTransactionsCashFlowSchema },
+      CashFlowController.processTransactions,
+   )
+
+   // Rota para vincular lançamento de crédito com conta a receber
+   server.patch('/:id/link-receivable', { preHandler: authMiddleware }, CashFlowController.linkReceivable)
+
+   // Rota para vincular lançamento de débito com conta a pagar
+   server.patch('/:id/link-payable', { preHandler: authMiddleware }, CashFlowController.linkPayable)
 }
 
 export { cashFlowRoutes }

@@ -68,6 +68,13 @@ const accountPayableRoutes: FastifyPluginAsync = async (server) => {
 		{ preHandler: authMiddleware, schema: reverseAccountsPayableSchema },
 		AccountsPayableController.reversePayment,
 	);
+
+	// Rota para listar contas a pagar pendentes
+	server.get(
+		"/pending",
+		{ preHandler: authMiddleware },
+		AccountsPayableController.listPending,
+	);
 };
 
 export { accountPayableRoutes };
