@@ -1907,7 +1907,7 @@ collection:
         meta:
           id: req_82186b65a1e74af1802c1c26f6f55060
           created: 1749249413093
-          modified: 1749296228247
+          modified: 1757043650110
           isPrivate: false
           description: ""
           sortKey: -1732180904676.9043
@@ -1917,7 +1917,8 @@ collection:
           text: |-
             {
             	"paymentDate": "2025-06-07T18:00:00.000Z",
-            	"bankAccountId": "3f2d341e-7ddb-4f4e-a8d1-418f0f919cf5"
+            	"bankAccountId": "3f2d341e-7ddb-4f4e-a8d1-418f0f919cf5",
+            	"generateCashFlow": true
             }
         headers:
           - name: Content-Type
@@ -1981,11 +1982,22 @@ collection:
         meta:
           id: req_33629d7ac48740b9a6d7935c3b61f977
           created: 1749249469479
-          modified: 1756852175572
+          modified: 1756945156009
           isPrivate: false
           description: ""
           sortKey: -1732181369692.7102
         method: GET
+        parameters:
+          - id: pair_6e2fbbfa84104666a40f21f528983d0d
+            name: page
+            value: "1"
+            description: ""
+            disabled: false
+          - id: pair_a3469abc2a3d4a44855471fbfa943d2a
+            name: limit
+            value: "100"
+            description: ""
+            disabled: false
         headers:
           - name: User-Agent
             value: insomnia/10.3.0
@@ -2180,7 +2192,7 @@ collection:
         meta:
           id: req_eb1b7f010ae247e9a8565957ec17c0f3
           created: 1749293667655
-          modified: 1749475117032
+          modified: 1757043630020
           isPrivate: false
           description: ""
           sortKey: -1732180997680.0654
@@ -2189,7 +2201,8 @@ collection:
           mimeType: application/json
           text: |-
             {
-            	"cashFlowDefault": "BANK"
+            	"cashFlowDefault": "CASH",
+            	"showClock": true
             }
         headers:
           - name: Content-Type
@@ -2364,11 +2377,11 @@ collection:
             send: true
             store: true
           rebuildPath: true
-  - name: 15. Dashboard (Relatórios)
+  - name: 15. Dashboard (Dashboard)
     meta:
       id: fld_8a509a2706384a988afe9e6c3c250dd2
       created: 1754446614504
-      modified: 1756851416524
+      modified: 1756947210562
       sortKey: -1731419439428.994
       description: ""
     children:
@@ -2520,6 +2533,49 @@ collection:
             send: true
             store: true
           rebuildPath: true
+  - name: 16. Reports (Relatórios)
+    meta:
+      id: fld_45bd374e526f4d21ac5dca3ab66439ce
+      created: 1756947221398
+      modified: 1756947221398
+      sortKey: -1731419392917.247
+      description: ""
+    children:
+      - url: "{{ _.baseURL }}reports/cost-center-analysis"
+        name: getCostCenterAnalysis
+        meta:
+          id: req_00b059e15359475aab612c0196d9152f
+          created: 1756947221399
+          modified: 1756947326349
+          isPrivate: false
+          description: ""
+          sortKey: -1732181369792.7102
+        method: GET
+        parameters:
+          - id: pair_f2204c0f6497429c8f52012c466c59af
+            name: year
+            value: "2025"
+            description: ""
+            disabled: false
+          - id: pair_554fa8a82c184f5ca8ca605404288af2
+            name: type
+            value: ALL
+            description: ""
+            disabled: true
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
 cookieJar:
   name: Default Jar
   meta:
@@ -2538,12 +2594,12 @@ environments:
       meta:
         id: env_339e55f028994e779813ac8cb6de44e9
         created: 1746536736141
-        modified: 1756906409190
+        modified: 1757004965854
         isPrivate: false
         sortKey: 1735229491596
       data:
         baseURL: http://localhost:3333/api/
-        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhNWI5MWFlNC04M2QzLTRkMTctODllNC00NThiZDQ2Mzg5NWUiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTY5MDM5ODIsImV4cCI6MTc1NzUwODc4Mn0.IfOm--LVjJkzc06e5wyZTz9PCKfS15ggc5fWDgCOWP4
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJhNWI5MWFlNC04M2QzLTRkMTctODllNC00NThiZDQ2Mzg5NWUiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTcwMDAxMzgsImV4cCI6MTc1NzYwNDkzOH0.aySynstvSh6E1CqGZSXN8DhDakKm9HLKD43fGE6bqd8
       color: "#e76de9"
     - name: Ambiente Dev
       meta:

@@ -98,6 +98,7 @@ export const receiveAccountReceivableService = async (
 		receiptDate?: Date;
 		costCenterId?: string;
 		bankAccountId?: string;
+		generateCashFlow?: boolean;
 	},
 ) => {
 	const account = await prisma.accountsReceivable.findUnique({
@@ -122,6 +123,7 @@ export const receiveAccountReceivableService = async (
 		paymentMethodId,
 		receiptDate,
 		costCenterId = account.costCenterId,
+		generateCashFlow = true,
 	} = data;
 
 	let finalPaymentMethodId =
@@ -207,18 +209,20 @@ export const receiveAccountReceivableService = async (
 					});
 				}
 
-				await createCashFlowEntry(
-					prisma,
-					receiptDateUTC,
-					`Recebimento de conta a receber`,
-					TransactionType.CREDIT,
-					observation,
-					amountToReceive,
-					costCenterId,
-					bankAccount.id,
-					undefined,
-					account.documentNumber || null,
-				);
+				if (generateCashFlow) {
+					await createCashFlowEntry(
+						prisma,
+						receiptDateUTC,
+						`Recebimento de conta a receber`,
+						TransactionType.CREDIT,
+						observation,
+						amountToReceive,
+						costCenterId,
+						bankAccount.id,
+						undefined,
+						account.documentNumber || null,
+					);
+				}
 
 				return {
 					...updatedAccount,
@@ -256,18 +260,20 @@ export const receiveAccountReceivableService = async (
 				},
 			});
 
-			await createCashFlowEntry(
-				prisma,
-				receiptDateUTC,
-				`Recebimento de conta a receber`,
-				TransactionType.CREDIT,
-				observation,
-				amountToReceive,
-				costCenterId,
-				undefined,
-				cash.id,
-				account.documentNumber || null,
-			);
+			if (generateCashFlow) {
+				await createCashFlowEntry(
+					prisma,
+					receiptDateUTC,
+					`Recebimento de conta a receber`,
+					TransactionType.CREDIT,
+					observation,
+					amountToReceive,
+					costCenterId,
+					undefined,
+					cash.id,
+					account.documentNumber || null,
+				);
+			}
 
 			return {
 				...updatedAccount,

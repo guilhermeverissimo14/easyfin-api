@@ -240,6 +240,7 @@ class AccountsReceivableController {
 				receiptDate?: string;
 				costCenterId?: string;
 				bankAccountId?: string;
+				generateCashFlow?: boolean;
 			};
 		}>,
 		reply: FastifyReply,
@@ -255,6 +256,7 @@ class AccountsReceivableController {
 				receiptDate,
 				costCenterId,
 				bankAccountId,
+				generateCashFlow = true, // Padrão true para manter compatibilidade
 			} = request.body;
 
 			const receivedAccount = await receiveAccountReceivableService(id, {
@@ -266,6 +268,7 @@ class AccountsReceivableController {
 				receiptDate: receiptDate ? new Date(receiptDate) : undefined,
 				costCenterId,
 				bankAccountId,
+				generateCashFlow,
 			});
 
 			return reply.status(200).send(receivedAccount);

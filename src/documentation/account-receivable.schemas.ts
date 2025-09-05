@@ -1153,6 +1153,11 @@ export const receiveAccountsReceivableSchema = {
 				type: "string",
 				description: "ID do centro de custo (opcional)",
 			},
+			generateCashFlow: {
+				type: "boolean",
+				description: "Indica se deve gerar movimentação no livro caixa (padrão: true)",
+				default: true,
+			},
 		},
 	},
 	response: {
