@@ -14,7 +14,7 @@ const createCashFlowEntry = async (
    cashBoxId: string | null | undefined,
    documentNumber: string | null | undefined,
 ) => {
-   // Cria o lançamento primeiro com saldo temporário
+
    const newEntry = await prisma.cashFlow.create({
       data: {
          date: new Date(date.getTime() - 3 * 60 * 60 * 1000), // Ajuste de 3 horas
@@ -30,7 +30,6 @@ const createCashFlowEntry = async (
       },
    })
 
-   // Recalcula todos os saldos da conta/caixa ordenando por data
    if (bankAccountId) {
       await recalculateBalancesForAccount(prisma, bankAccountId)
    }
@@ -42,7 +41,6 @@ const createCashFlowEntry = async (
    return newEntry
 }
 
-// Função auxiliar para recalcular saldos de conta bancária
 const recalculateBalancesForAccount = async (prisma: any, bankAccountId: string) => {
    const entries = await prisma.cashFlow.findMany({
       where: { bankAccountId },
@@ -62,7 +60,6 @@ const recalculateBalancesForAccount = async (prisma: any, bankAccountId: string)
    }
 }
 
-// Função auxiliar para recalcular saldos de caixa
 const recalculateBalancesForCashBox = async (prisma: any, cashBoxId: string) => {
    const entries = await prisma.cashFlow.findMany({
       where: { cashBoxId },

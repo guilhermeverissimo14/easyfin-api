@@ -192,23 +192,6 @@ export const receiveAccountReceivableService = async (
 					},
 				});
 
-				const bankBalance = await prisma.bankBalance.findFirst({
-					where: {
-						bankAccountId: bankAccount.id,
-					},
-				});
-
-				if (bankBalance) {
-					await prisma.bankBalance.update({
-						where: {
-							id: bankBalance.id,
-						},
-						data: {
-							balance: bankBalance.balance + amountToReceive,
-						},
-					});
-				}
-
 				if (generateCashFlow) {
 					await createCashFlowEntry(
 						prisma,
@@ -222,6 +205,23 @@ export const receiveAccountReceivableService = async (
 						undefined,
 						account.documentNumber || null,
 					);
+
+					const bankBalance = await prisma.bankBalance.findFirst({
+						where: {
+							bankAccountId: bankAccount.id,
+						},
+					});
+
+					if (bankBalance) {
+						await prisma.bankBalance.update({
+							where: {
+								id: bankBalance.id,
+							},
+							data: {
+								balance: bankBalance.balance + amountToReceive,
+							},
+						});
+					}
 				}
 
 				return {

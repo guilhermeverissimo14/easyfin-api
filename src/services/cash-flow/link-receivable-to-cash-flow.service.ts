@@ -1,6 +1,6 @@
 import { AppError } from "@/helpers/app-error";
 import { prisma } from "@/lib/prisma";
-import { TransactionType } from "@prisma/client";
+import { TransactionType, PaymentStatus } from "@prisma/client";
 
 export const linkReceivableToCashFlowService = async (data: {
 	cashFlowId: string;
@@ -33,10 +33,22 @@ export const linkReceivableToCashFlowService = async (data: {
 				throw new AppError("Conta a receber pendente não encontrada com este número de documento", 404);
 			}
 
+			// Atualizar o fluxo de caixa com o número do documento
 			const updatedCashFlow = await prisma.cashFlow.update({
 				where: { id: cashFlowId },
 				data: {
 					documentNumber: documentNumber,
+				},
+			});
+
+			// Atualizar o status da conta a receber para PAID
+			await prisma.accountsReceivable.update({
+				where: { id: accountReceivable.id },
+				data: {
+					status: PaymentStatus.PAID,
+					receiptDate: cashFlow.date,
+					receivedValue: cashFlow.value,
+					observation: "Vinculado ao fluxo de caixa"
 				},
 			});
 
