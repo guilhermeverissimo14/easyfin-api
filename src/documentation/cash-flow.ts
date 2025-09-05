@@ -211,6 +211,7 @@ export const listByAccountCashFlowSchema = {
                      history: { type: 'string', example: 'Pagamento de fornecedor' },
                      description: { type: 'string', example: 'Pagamento referente à compra de materiais' },
                      balance: { type: 'string', example: 'R$ 1.000,00' },
+                     documentNumber: { type: 'string', example: '1234567890' },
                      costCenter: {
                         type: 'object',
                         properties: {
@@ -295,6 +296,7 @@ export const listByCashCashFlowSchema = {
                      history: { type: 'string', example: 'Pagamento de fornecedor' },
                      description: { type: 'string', example: 'Pagamento referente à compra de materiais' },
                      balance: { type: 'string', example: 'R$ 1.000,00' },
+                     documentNumber: { type: 'string', example: '1234567890' },
                      costCenter: {
                         type: 'object',
                         properties: {

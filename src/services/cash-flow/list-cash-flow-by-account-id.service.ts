@@ -148,6 +148,7 @@ export const listCashFlowByAccountIdService = async (bankAccountId: string, filt
             history: cashFlow.historic,
             value: formatCurrency(cashFlow.value / 100),
             balance: formatCurrency((balanceMap.get(cashFlow.id) || 0) / 100),
+            documentNumber: cashFlow.documentNumber,
             date: cashFlow.date.toISOString(),
             costCenter: {
                id: cashFlow.costCenterId,
