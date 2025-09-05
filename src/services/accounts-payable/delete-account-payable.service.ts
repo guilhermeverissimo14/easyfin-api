@@ -1,4 +1,4 @@
-import { PaymentStatus } from '@prisma/client'
+import { PaymentStatus, TransactionType } from '@prisma/client'
 import { AppError } from '@/helpers/app-error'
 import { prisma } from '@/lib/prisma'
 
@@ -35,6 +35,27 @@ export const deleteAccountPayableService = async (id: string) => {
    }
 
    try {
+      if (account.status === PaymentStatus.PAID) {
+         throw new AppError('Não é possível excluir uma conta a pagar paga.', 400)
+      }
+
+      const accountValue = account!.value || 0
+      
+      const cashFlowEntry = await prisma.cashFlow.findFirst({
+         where: {
+            documentNumber: account.documentNumber,
+            type: TransactionType.DEBIT,
+            value: accountValue
+         },
+         orderBy: { createdAt: 'desc' },
+      })
+
+      if (cashFlowEntry) {
+         await prisma.cashFlow.delete({
+            where: { id: cashFlowEntry.id },
+         });
+      }
+
       await prisma.accountsPayable.delete({
          where: {
             id,
