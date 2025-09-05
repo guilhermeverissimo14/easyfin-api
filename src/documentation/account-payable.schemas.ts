@@ -421,6 +421,10 @@ export const listAccountsPayableSchema = {
                   type: 'string',
                   enum: ['PENDING', 'PAID', 'CANCELLED', 'OVERDUE'],
                },
+               hasCashFlow: {
+                  type: 'boolean',
+                  description: 'Indica se a conta a pagar possui vínculo com o fluxo de caixa',
+               },
                createdAt: {
                   type: 'string',
                   format: 'date-time',

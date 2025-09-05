@@ -68,6 +68,24 @@ export const listAccountsPayableService = async (filters: {
       throw new Error('Erro ao listar contas a pagar')
    }
 
+   // Buscar todos os documentNumbers que existem no cashFlow
+   const cashFlowDocuments = await prisma.cashFlow.findMany({
+      select: {
+         documentNumber: true,
+      },
+      where: {
+         documentNumber: {
+            not: null,
+         },
+      },
+   })
+
+   const cashFlowDocumentsSet = new Set(
+      cashFlowDocuments
+         .map((cashFlow) => cashFlow.documentNumber)
+         .filter((docNumber): docNumber is string => docNumber !== null),
+   )
+
    accounts.forEach((account) => {
       account.value = account.value != null ? account.value / 100 : 0
       account.paidValue = account.paidValue ? account.paidValue / 100 : 0
@@ -91,8 +109,11 @@ export const listAccountsPayableService = async (filters: {
       installmentNumber: account.installmentNumber || 1,
       totalInstallments: account.totalInstallments || 1,
       observation: account.observation || null,
-      status: account.status || PaymentStatus.PENDING,
+      status: account.status,
       userId: account.userId || null,
+      hasCashFlow: account.documentNumber
+         ? cashFlowDocumentsSet.has(account.documentNumber)
+         : false,
       supplier: {
          id: account.supplierId,
          name: account.Supplier.name,

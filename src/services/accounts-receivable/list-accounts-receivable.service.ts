@@ -88,6 +88,24 @@ export const listAccountsReceivableService = async (filters: {
 		invoiceNumbers.map((invoice) => invoice.invoiceNumber),
 	);
 
+	// Buscar todos os documentNumbers que existem no cashFlow
+	const cashFlowDocuments = await prisma.cashFlow.findMany({
+		select: {
+			documentNumber: true,
+		},
+		where: {
+			documentNumber: {
+				not: null,
+			},
+		},
+	});
+
+	const cashFlowDocumentsSet = new Set(
+		cashFlowDocuments
+			.map((cashFlow) => cashFlow.documentNumber)
+			.filter((docNumber): docNumber is string => docNumber !== null),
+	);
+
 	accounts.forEach((account) => {
 		account.value = account.value != null ? account.value / 100 : 0;
 		account.receivedValue = account.receivedValue
@@ -119,6 +137,9 @@ export const listAccountsReceivableService = async (filters: {
 		userId: account.userId || null,
 		hasInvoiceLink: account.documentNumber
 			? invoiceNumbersSet.has(account.documentNumber)
+			: false,
+		hasCashFlow: account.documentNumber
+			? cashFlowDocumentsSet.has(account.documentNumber)
 			: false,
 		customer: {
 			id: account.customerId,

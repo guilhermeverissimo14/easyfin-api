@@ -524,3 +524,283 @@ export const processBankTransactionsCashFlowSchema = {
       },
    },
 }
+
+export const linkReceivableCashFlowSchema = {
+   description: 'Vincula um lançamento de crédito com uma conta a receber',
+   tags: ['Cash Flow'],
+   summary: 'Vincular lançamento à conta a receber',
+   params: {
+      type: 'object',
+      properties: {
+         id: {
+            type: 'string',
+            description: 'ID do lançamento do fluxo de caixa',
+         },
+      },
+      required: ['id'],
+   },
+   requestBody: {
+      required: true,
+      content: {
+         'application/json': {
+            schema: {
+               type: 'object',
+               properties: {
+                  documentNumber: { type: 'string', description: 'Número do documento da conta a receber' },
+               },
+               required: ['documentNumber'],
+            },
+         },
+      },
+   },
+   response: {
+      200: {
+         description: 'Lançamento vinculado com sucesso',
+         type: 'object',
+         properties: {
+            message: {
+               type: 'string',
+               example: 'Lançamento vinculado com sucesso à conta a receber',
+            },
+            data: {
+               type: 'object',
+               properties: {
+                  id: { type: 'string', example: '1234567890abcdef12345678' },
+                  documentNumber: { type: 'string', example: '123456' },
+               },
+            },
+         },
+      },
+      400: {
+         description: 'Erro de validação',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'Número do documento da conta a receber é obrigatório' },
+         },
+      },
+      401: {
+         description: 'Usuário não autenticado',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'Usuário não autenticado' },
+         },
+      },
+      404: {
+         description: 'Lançamento não encontrado',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'Lançamento do fluxo de caixa não encontrado' },
+         },
+      },
+      500: {
+         description: 'Erro interno do servidor',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'Erro interno do servidor' },
+         },
+      },
+   },
+}
+
+export const linkPayableCashFlowSchema = {
+   description: 'Vincula um lançamento de débito com uma conta a pagar',
+   tags: ['Cash Flow'],
+   summary: 'Vincular lançamento à conta a pagar',
+   params: {
+      type: 'object',
+      properties: {
+         id: {
+            type: 'string',
+            description: 'ID do lançamento do fluxo de caixa',
+         },
+      },
+      required: ['id'],
+   },
+   requestBody: {
+      required: true,
+      content: {
+         'application/json': {
+            schema: {
+               type: 'object',
+               properties: {
+                  documentNumber: { type: 'string', description: 'Número do documento da conta a pagar' },
+               },
+               required: ['documentNumber'],
+            },
+         },
+      },
+   },
+   response: {
+      200: {
+         description: 'Lançamento vinculado com sucesso',
+         type: 'object',
+         properties: {
+            message: {
+               type: 'string',
+               example: 'Lançamento vinculado com sucesso à conta a pagar',
+            },
+            data: {
+               type: 'object',
+               properties: {
+                  id: { type: 'string', example: '1234567890abcdef12345678' },
+                  documentNumber: { type: 'string', example: '123456' },
+               },
+            },
+         },
+      },
+      400: {
+         description: 'Erro de validação',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'Número do documento da conta a pagar é obrigatório' },
+         },
+      },
+      401: {
+         description: 'Usuário não autenticado',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'Usuário não autenticado' },
+         },
+      },
+      404: {
+         description: 'Lançamento não encontrado',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'Lançamento do fluxo de caixa não encontrado' },
+         },
+      },
+      500: {
+         description: 'Erro interno do servidor',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'Erro interno do servidor' },
+         },
+      },
+   },
+}
+
+export const unlinkReceivableCashFlowSchema = {
+   description: 'Desvincula um lançamento de crédito de uma conta a receber',
+   tags: ['Cash Flow'],
+   summary: 'Desvincular lançamento da conta a receber',
+   params: {
+      type: 'object',
+      properties: {
+         id: {
+            type: 'string',
+            description: 'ID do lançamento do fluxo de caixa',
+         },
+      },
+      required: ['id'],
+   },
+   response: {
+      200: {
+         description: 'Lançamento desvinculado com sucesso',
+         type: 'object',
+         properties: {
+            message: {
+               type: 'string',
+               example: 'Lançamento desvinculado com sucesso da conta a receber',
+            },
+            data: {
+               type: 'object',
+               properties: {
+                  id: { type: 'string', example: '1234567890abcdef12345678' },
+                  documentNumber: { type: 'null' },
+               },
+            },
+         },
+      },
+      400: {
+         description: 'Erro de validação',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'Este lançamento não possui vínculo com conta a receber' },
+         },
+      },
+      401: {
+         description: 'Usuário não autenticado',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'Usuário não autenticado' },
+         },
+      },
+      404: {
+         description: 'Lançamento não encontrado',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'Lançamento do fluxo de caixa não encontrado' },
+         },
+      },
+      500: {
+         description: 'Erro interno do servidor',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'Erro interno do servidor' },
+         },
+      },
+   },
+}
+
+export const unlinkPayableCashFlowSchema = {
+   description: 'Desvincula um lançamento de débito de uma conta a pagar',
+   tags: ['Cash Flow'],
+   summary: 'Desvincular lançamento da conta a pagar',
+   params: {
+      type: 'object',
+      properties: {
+         id: {
+            type: 'string',
+            description: 'ID do lançamento do fluxo de caixa',
+         },
+      },
+      required: ['id'],
+   },
+   response: {
+      200: {
+         description: 'Lançamento desvinculado com sucesso',
+         type: 'object',
+         properties: {
+            message: {
+               type: 'string',
+               example: 'Lançamento desvinculado com sucesso da conta a pagar',
+            },
+            data: {
+               type: 'object',
+               properties: {
+                  id: { type: 'string', example: '1234567890abcdef12345678' },
+                  documentNumber: { type: 'null' },
+               },
+            },
+         },
+      },
+      400: {
+         description: 'Erro de validação',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'Este lançamento não possui vínculo com conta a pagar' },
+         },
+      },
+      401: {
+         description: 'Usuário não autenticado',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'Usuário não autenticado' },
+         },
+      },
+      404: {
+         description: 'Lançamento não encontrado',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'Lançamento do fluxo de caixa não encontrado' },
+         },
+      },
+      500: {
+         description: 'Erro interno do servidor',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'Erro interno do servidor' },
+         },
+      },
+   },
+}

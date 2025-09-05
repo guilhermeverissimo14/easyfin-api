@@ -6,6 +6,10 @@ import {
    listByCashCashFlowSchema,
    parseBankTransactionsCashFlowSchema,
    processBankTransactionsCashFlowSchema,
+   linkReceivableCashFlowSchema,
+   linkPayableCashFlowSchema,
+   unlinkReceivableCashFlowSchema,
+   unlinkPayableCashFlowSchema,
 } from '@/documentation/cash-flow'
 import { authMiddleware } from '@/middleware/auth.middleware'
 import { FastifyPluginAsync } from 'fastify'
@@ -34,10 +38,16 @@ const cashFlowRoutes: FastifyPluginAsync = async (server) => {
    )
 
    // Rota para vincular lançamento de crédito com conta a receber
-   server.patch('/:id/link-receivable', { preHandler: authMiddleware }, CashFlowController.linkReceivable)
+   server.patch('/:id/link-receivable', { preHandler: authMiddleware, schema: linkReceivableCashFlowSchema }, CashFlowController.linkReceivable)
 
    // Rota para vincular lançamento de débito com conta a pagar
-   server.patch('/:id/link-payable', { preHandler: authMiddleware }, CashFlowController.linkPayable)
+   server.patch('/:id/link-payable', { preHandler: authMiddleware, schema: linkPayableCashFlowSchema }, CashFlowController.linkPayable)
+
+   // Rota para desvincular lançamento de crédito da conta a receber
+   server.patch('/:id/unlink-receivable', { preHandler: authMiddleware, schema: unlinkReceivableCashFlowSchema }, CashFlowController.unlinkReceivable)
+
+   // Rota para desvincular lançamento de débito da conta a pagar
+   server.patch('/:id/unlink-payable', { preHandler: authMiddleware, schema: unlinkPayableCashFlowSchema }, CashFlowController.unlinkPayable)
 }
 
 export { cashFlowRoutes }

@@ -456,6 +456,10 @@ export const listAccountsReceivableSchema = {
 						description:
 							"Indica se a conta está vinculada a um documento (opcional, padrão: false)",
 					},
+					hasCashFlow: {
+						type: "boolean",
+						description: "Indica se a conta a receber possui vínculo com o fluxo de caixa",
+					},
 					status: {
 						type: "string",
 						enum: ["PENDING", "PAID", "CANCELLED", "OVERDUE"],

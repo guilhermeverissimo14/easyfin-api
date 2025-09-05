@@ -12,6 +12,8 @@ import { parseBankTransactionsService } from '@/services/cash-flow/parse-bank-tr
 import { processBankTransactionsService } from '@/services/cash-flow/process-bank-transactions.service'
 import { linkReceivableToCashFlowService } from "@/services/cash-flow/link-receivable-to-cash-flow.service";
 import { linkPayableToCashFlowService } from "@/services/cash-flow/link-payable-to-cash-flow.service";
+import { unlinkReceivableFromCashFlowService } from "@/services/cash-flow/unlink-receivable-from-cash-flow.service";
+import { unlinkPayableFromCashFlowService } from "@/services/cash-flow/unlink-payable-from-cash-flow.service";
 
 class CashFlowController {
    constructor() {}
@@ -318,6 +320,58 @@ class CashFlowController {
    
          return reply.status(200).send({
             message: "Lançamento vinculado com sucesso à conta a pagar",
+            data: result,
+         });
+      } catch (error) {
+         if (error instanceof AppError) {
+            return reply.status(400).send({ message: error.message });
+         } else {
+            return reply.status(500).send({ message: "Erro interno do servidor" });
+         }
+      }
+   }
+
+   public async unlinkReceivable(
+      request: FastifyRequest<{
+         Params: { id: string };
+      }>,
+      reply: FastifyReply,
+   ) {
+      const { id } = request.params;
+   
+      try {
+         const result = await unlinkReceivableFromCashFlowService({
+            cashFlowId: id,
+         });
+   
+         return reply.status(200).send({
+            message: "Lançamento desvinculado com sucesso da conta a receber",
+            data: result,
+         });
+      } catch (error) {
+         if (error instanceof AppError) {
+            return reply.status(400).send({ message: error.message });
+         } else {
+            return reply.status(500).send({ message: "Erro interno do servidor" });
+         }
+      }
+   }
+
+   public async unlinkPayable(
+      request: FastifyRequest<{
+         Params: { id: string };
+      }>,
+      reply: FastifyReply,
+   ) {
+      const { id } = request.params;
+   
+      try {
+         const result = await unlinkPayableFromCashFlowService({
+            cashFlowId: id,
+         });
+   
+         return reply.status(200).send({
+            message: "Lançamento desvinculado com sucesso da conta a pagar",
             data: result,
          });
       } catch (error) {
