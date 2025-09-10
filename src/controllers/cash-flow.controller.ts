@@ -3,7 +3,7 @@ import { TransactionType } from '@prisma/client'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { MultipartFile } from '@fastify/multipart'
 import { validateSchema } from '@/helpers/validate-schema'
-import { createCashFlowSchema } from '@/schemas/cash-flow'
+import { createCashFlowSchema, updateCostCenterCashFlowSchema } from '@/schemas/cash-flow'
 import { createCashFlowService } from '@/services/cash-flow/create-cash-flow.service'
 import { getCashFlowTotalsPerDayService } from '@/services/cash-flow/get-cash-flow-totals-per-day.service'
 import { listCashFlowByAccountIdService } from '@/services/cash-flow/list-cash-flow-by-account-id.service'
@@ -14,6 +14,7 @@ import { linkReceivableToCashFlowService } from "@/services/cash-flow/link-recei
 import { linkPayableToCashFlowService } from "@/services/cash-flow/link-payable-to-cash-flow.service";
 import { unlinkReceivableFromCashFlowService } from "@/services/cash-flow/unlink-receivable-from-cash-flow.service";
 import { unlinkPayableFromCashFlowService } from "@/services/cash-flow/unlink-payable-from-cash-flow.service";
+import { updateCostCenterCashFlowService } from "@/services/cash-flow/update-cost-center-cash-flow.service";
 
 class CashFlowController {
    constructor() {}
@@ -379,6 +380,37 @@ class CashFlowController {
             return reply.status(400).send({ message: error.message });
          } else {
             return reply.status(500).send({ message: "Erro interno do servidor" });
+         }
+      }
+   }
+
+   public async updateCostCenter(
+      request: FastifyRequest<{
+         Params: { id: string };
+         Body: {
+            costCenterId?: string;
+         };
+      }>,
+      reply: FastifyReply,
+   ) {
+      const { id } = request.params;
+      const data = request.body;
+
+      const validationError = await validateSchema(updateCostCenterCashFlowSchema, data, reply);
+      if (validationError) return;
+
+      try {
+         const updatedCashFlow = await updateCostCenterCashFlowService({
+            cashFlowId: id,
+            costCenterId: data.costCenterId,
+         });
+
+         return reply.status(200).send(updatedCashFlow);
+      } catch (error) {
+         if (error instanceof AppError) {
+            return reply.status(error.statusCode).send({ message: error.message });
+         } else {
+            return reply.status(500).send({ message: 'Erro interno do servidor' });
          }
       }
    }

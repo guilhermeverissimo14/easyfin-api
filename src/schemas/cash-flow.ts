@@ -12,3 +12,7 @@ export const createCashFlowSchema = z.object({
    bankAccountId: z.string().uuid('ID de conta bancária inválido').optional(),
    cashBoxId: z.string().uuid('ID de caixa inválido').optional(),
 })
+
+export const updateCostCenterCashFlowSchema = z.object({
+   costCenterId: z.string().uuid('ID de centro de custo inválido').optional(),
+})

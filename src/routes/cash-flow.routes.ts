@@ -10,6 +10,7 @@ import {
    linkPayableCashFlowSchema,
    unlinkReceivableCashFlowSchema,
    unlinkPayableCashFlowSchema,
+   updateCostCenterCashFlowSchema,
 } from '@/documentation/cash-flow'
 import { authMiddleware } from '@/middleware/auth.middleware'
 import { FastifyPluginAsync } from 'fastify'
@@ -48,6 +49,9 @@ const cashFlowRoutes: FastifyPluginAsync = async (server) => {
 
    // Rota para desvincular lançamento de débito da conta a pagar
    server.patch('/:id/unlink-payable', { preHandler: authMiddleware, schema: unlinkPayableCashFlowSchema }, CashFlowController.unlinkPayable)
+
+   // Rota para atualizar centro de custo de um lançamento
+   server.patch('/:id/update-cost-center', { preHandler: authMiddleware, schema: updateCostCenterCashFlowSchema }, CashFlowController.updateCostCenter)
 }
 
 export { cashFlowRoutes }

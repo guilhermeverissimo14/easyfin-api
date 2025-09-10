@@ -370,9 +370,9 @@ export const parseBankTransactionsCashFlowSchema = {
                               value: { type: 'number' },
                               type: { type: 'string', enum: ['CREDIT', 'DEBIT'] },
                               detailing: { type: 'string' },
-                              originalRow: { type: 'number' }
-                           }
-                        }
+                              originalRow: { type: 'number' },
+                           },
+                        },
                      },
                      invalidRows: {
                         type: 'array',
@@ -381,10 +381,10 @@ export const parseBankTransactionsCashFlowSchema = {
                            properties: {
                               row: { type: 'number' },
                               data: { type: 'array', items: { type: 'string' } },
-                              reason: { type: 'string' }
-                           }
-                        }
-                     }
+                              reason: { type: 'string' },
+                           },
+                        },
+                     },
                   },
                },
             },
@@ -790,6 +790,81 @@ export const unlinkPayableCashFlowSchema = {
       },
       404: {
          description: 'Lançamento não encontrado',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'Lançamento do fluxo de caixa não encontrado' },
+         },
+      },
+      500: {
+         description: 'Erro interno do servidor',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'Erro interno do servidor' },
+         },
+      },
+   },
+}
+
+export const updateCostCenterCashFlowSchema = {
+   description: 'Atualiza o centro de custo de um lançamento do fluxo de caixa',
+   tags: ['Cash Flow'],
+   summary: 'Atualizar centro de custo do lançamento',
+   params: {
+      type: 'object',
+      properties: {
+         id: {
+            type: 'string',
+            description: 'ID do lançamento do fluxo de caixa',
+         },
+      },
+      required: ['id'],
+   },
+   body: {
+      type: 'object',
+      properties: {
+         costCenterId: {
+            type: 'string',
+            description: 'ID do centro de custo (opcional - null para remover)',
+         },
+      },
+   },
+   response: {
+      200: {
+         description: 'Centro de custo atualizado com sucesso',
+         type: 'object',
+         properties: {
+            id: { type: 'string', example: '1234567890abcdef12345678' },
+            date: { type: 'string', format: 'date-time', example: '2023-10-01T12:00:00Z' },
+            type: { type: 'string', enum: ['CREDIT', 'DEBIT'], example: 'CREDIT' },
+            value: { type: 'number', example: 100000 },
+            historic: { type: 'string', example: 'Pagamento de fornecedor' },
+            description: { type: 'string', example: 'Pagamento referente à compra de materiais' },
+            costCenterId: { type: 'string', example: '1234567890abcdef12345678' },
+            costCenter: {
+               type: 'object',
+               properties: {
+                  id: { type: 'string', example: '1234567890abcdef12345678' },
+                  name: { type: 'string', example: 'Marketing' },
+               },
+            },
+         },
+      },
+      400: {
+         description: 'Erro de validação',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'ID de centro de custo inválido' },
+         },
+      },
+      401: {
+         description: 'Usuário não autenticado',
+         type: 'object',
+         properties: {
+            message: { type: 'string', example: 'Usuário não autenticado' },
+         },
+      },
+      404: {
+         description: 'Lançamento ou centro de custo não encontrado',
          type: 'object',
          properties: {
             message: { type: 'string', example: 'Lançamento do fluxo de caixa não encontrado' },
