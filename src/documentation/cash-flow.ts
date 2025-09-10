@@ -879,3 +879,61 @@ export const updateCostCenterCashFlowSchema = {
       },
    },
 }
+
+export const deleteCashFlowSchema = {
+   description: 'Remove um lançamento do fluxo de caixa e recalcula os saldos',
+   tags: ['Cash Flow'],
+   summary: 'Deletar lançamento do fluxo de caixa',
+   params: {
+      type: 'object',
+      properties: {
+         id: {
+            type: 'string',
+            description: 'ID do lançamento do fluxo de caixa',
+         },
+      },
+      required: ['id'],
+   },
+   response: {
+      200: {
+         description: 'Lançamento deletado com sucesso',
+         type: 'object',
+         properties: {
+            message: {
+               type: 'string',
+               example: 'Lançamento deletado com sucesso',
+            },
+         },
+      },
+      401: {
+         description: 'Usuário não autenticado',
+         type: 'object',
+         properties: {
+            message: {
+               type: 'string',
+               example: 'Usuário não autenticado',
+            },
+         },
+      },
+      404: {
+         description: 'Lançamento não encontrado',
+         type: 'object',
+         properties: {
+            message: {
+               type: 'string',
+               example: 'Lançamento do fluxo de caixa não encontrado',
+            },
+         },
+      },
+      500: {
+         description: 'Erro interno do servidor',
+         type: 'object',
+         properties: {
+            message: {
+               type: 'string',
+               example: 'Erro interno do servidor',
+            },
+         },
+      },
+   },
+}

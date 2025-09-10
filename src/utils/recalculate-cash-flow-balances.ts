@@ -42,6 +42,59 @@ export const recalculateCashFlowBalances = async (bankAccountId: string) => {
 }
 
 /**
+ * Recalcula os saldos do fluxo de caixa a partir de uma data específica
+ * Otimizado para recálculos parciais após remoções
+ */
+export const recalculateCashFlowBalancesFromDate = async (bankAccountId: string, fromDate: Date) => {
+   // Busca o último saldo antes da data de início
+   const lastEntryBeforeDate = await prisma.cashFlow.findFirst({
+      where: {
+         bankAccountId,
+         date: {
+            lt: fromDate
+         }
+      },
+      orderBy: [
+         { date: 'desc' },
+         { createdAt: 'desc' }
+      ]
+   })
+
+   // Saldo inicial é o último saldo antes da data ou 0
+   let currentBalance = lastEntryBeforeDate?.balance || 0
+
+   // Busca apenas os lançamentos a partir da data especificada
+   const cashFlowEntries = await prisma.cashFlow.findMany({
+      where: {
+         bankAccountId,
+         date: {
+            gte: fromDate
+         }
+      },
+      orderBy: [
+         { date: 'asc' },
+         { createdAt: 'asc' }
+      ],
+   })
+
+   // Recalcula apenas os saldos necessários
+   for (const entry of cashFlowEntries) {
+      if (entry.type === TransactionType.CREDIT) {
+         currentBalance += entry.value
+      } else {
+         currentBalance -= entry.value
+      }
+
+      await prisma.cashFlow.update({
+         where: { id: entry.id },
+         data: { balance: currentBalance },
+      })
+   }
+
+   return currentBalance
+}
+
+/**
  * Recalcula os saldos do fluxo de caixa para um caixa específico
  */
 export const recalculateCashBoxFlowBalances = async (cashBoxId: string) => {
@@ -56,6 +109,56 @@ export const recalculateCashBoxFlowBalances = async (cashBoxId: string) => {
    })
 
    let currentBalance = 0
+
+   for (const entry of cashFlowEntries) {
+      if (entry.type === TransactionType.CREDIT) {
+         currentBalance += entry.value
+      } else {
+         currentBalance -= entry.value
+      }
+
+      await prisma.cashFlow.update({
+         where: { id: entry.id },
+         data: { balance: currentBalance },
+      })
+   }
+
+   return currentBalance
+}
+
+/**
+ * Recalcula os saldos do fluxo de caixa para um caixa a partir de uma data específica
+ */
+export const recalculateCashBoxFlowBalancesFromDate = async (cashBoxId: string, fromDate: Date) => {
+   // Busca o último saldo antes da data de início
+   const lastEntryBeforeDate = await prisma.cashFlow.findFirst({
+      where: {
+         cashBoxId,
+         date: {
+            lt: fromDate
+         }
+      },
+      orderBy: [
+         { date: 'desc' },
+         { createdAt: 'desc' }
+      ]
+   })
+
+   let currentBalance = lastEntryBeforeDate?.balance || 0
+
+   // Busca apenas os lançamentos a partir da data especificada
+   const cashFlowEntries = await prisma.cashFlow.findMany({
+      where: {
+         cashBoxId,
+         date: {
+            gte: fromDate
+         }
+      },
+      orderBy: [
+         { date: 'asc' },
+         { createdAt: 'asc' }
+      ],
+   })
 
    for (const entry of cashFlowEntries) {
       if (entry.type === TransactionType.CREDIT) {

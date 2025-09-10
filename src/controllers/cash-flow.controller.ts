@@ -15,6 +15,7 @@ import { linkPayableToCashFlowService } from "@/services/cash-flow/link-payable-
 import { unlinkReceivableFromCashFlowService } from "@/services/cash-flow/unlink-receivable-from-cash-flow.service";
 import { unlinkPayableFromCashFlowService } from "@/services/cash-flow/unlink-payable-from-cash-flow.service";
 import { updateCostCenterCashFlowService } from "@/services/cash-flow/update-cost-center-cash-flow.service";
+import { deleteCashFlowService } from "@/services/cash-flow/delete-cash-flow.service";
 
 class CashFlowController {
    constructor() {}
@@ -406,6 +407,26 @@ class CashFlowController {
          });
 
          return reply.status(200).send(updatedCashFlow);
+      } catch (error) {
+         if (error instanceof AppError) {
+            return reply.status(error.statusCode).send({ message: error.message });
+         } else {
+            return reply.status(500).send({ message: 'Erro interno do servidor' });
+         }
+      }
+   }
+
+   public async delete(
+      request: FastifyRequest<{
+         Params: { id: string };
+      }>,
+      reply: FastifyReply,
+   ) {
+      const { id } = request.params;
+
+      try {
+         const result = await deleteCashFlowService(id);
+         return reply.status(200).send(result);
       } catch (error) {
          if (error instanceof AppError) {
             return reply.status(error.statusCode).send({ message: error.message });
