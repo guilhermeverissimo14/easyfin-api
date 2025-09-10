@@ -19,6 +19,7 @@ export const createAccountsPayableSchema = z.object({
    paymentMethodId: z.string().optional(),
    observation: z.string().optional(),
    status: z.enum(['PENDING', 'PAID', 'CANCELLED', 'OVERDUE']).optional(),
+   hasCashFlow: z.boolean().default(true),
 })
 
 export const updateAccountsPayableSchema = z.object({

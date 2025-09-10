@@ -64,16 +64,19 @@ export const reverseAccountPayableService = async (
 				take: 1,
 			});
 
-			// 3. Buscar entradas do fluxo de caixa relacionadas
-			const cashFlowEntries = await prisma.cashFlow.findMany({
-			   where: {
-			      documentNumber: account.documentNumber,
-			      type: TransactionType.DEBIT,
-			      value: account!.paidValue!,
-			   },
-			   orderBy: { createdAt: "desc" },
-			   take: 1,
-			});
+			// 3. Buscar entradas do fluxo de caixa relacionadas (só se hasCashFlow for true)
+			let cashFlowEntries: any[] = [];
+			if (account.hasCashFlow) {
+				cashFlowEntries = await prisma.cashFlow.findMany({
+					where: {
+						documentNumber: account.documentNumber,
+						type: TransactionType.DEBIT,
+						value: account!.paidValue!,
+					},
+					orderBy: { createdAt: "desc" },
+					take: 1,
+				});
+			}
 
 			// 4. Estornar transações bancárias
 			if (bankTransactions.length > 0) {
@@ -134,8 +137,8 @@ export const reverseAccountPayableService = async (
 				}
 			}
 
-			// 6. Remover entradas do fluxo de caixa
-			if (cashFlowEntries.length > 0) {
+			// 6. Remover entradas do fluxo de caixa (só se hasCashFlow for true)
+			if (account.hasCashFlow && cashFlowEntries.length > 0) {
 				const cashFlowEntry = cashFlowEntries[0];
 
 				// Armazenar IDs para recálculo posterior
@@ -169,12 +172,14 @@ export const reverseAccountPayableService = async (
 			});
 		});
 
-		// Recalcular saldos APÓS a transação
-		if (bankAccountToRecalculate) {
-			await recalculateCashFlowBalances(bankAccountToRecalculate);
-		}
-		if (cashBoxToRecalculate) {
-			await recalculateCashBoxFlowBalances(cashBoxToRecalculate);
+		// Recalcular saldos APÓS a transação (só se hasCashFlow for true)
+		if (account.hasCashFlow) {
+			if (bankAccountToRecalculate) {
+				await recalculateCashFlowBalances(bankAccountToRecalculate);
+			}
+			if (cashBoxToRecalculate) {
+				await recalculateCashBoxFlowBalances(cashBoxToRecalculate);
+			}
 		}
 
 		return { message: "Conta a pagar estornada com sucesso" };

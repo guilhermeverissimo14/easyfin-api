@@ -19,6 +19,7 @@ export const createAccountsReceivableSchema = z.object({
    paymentMethodId: z.string().optional(),
    observation: z.string().optional(),
    status: z.enum(['PENDING', 'PAID', 'CANCELLED', 'OVERDUE']).optional(),
+   hasCashFlow: z.boolean().default(true),
 })
 
 export const updateAccountsReceivableSchema = z.object({

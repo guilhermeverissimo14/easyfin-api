@@ -57,10 +57,6 @@ export const reverseAccountReceivableService = async (
 			// 2. Se foi liquidado em conta bancária, estornar transações bancárias
 			if (account.bankAccountId) {
 				// Buscar a transação bancária relacionada ao recebimento
-				console.log('Buscando transação bancária relacionada ao recebimento')
-				console.log('account.bankAccountId', account.bankAccountId)
-				console.log('receivedAmount', receivedAmount)
-				
 				const bankTransaction = await prisma.bankTransactions.findFirst({
 					where: {
 						bankAccountId: account.bankAccountId,
@@ -70,16 +66,14 @@ export const reverseAccountReceivableService = async (
 						transactionAt: {
 							gte: new Date(
 								account.receiptDate!.getTime() - 24 * 60 * 60 * 1000,
-							), // 1 dia antes
+							),
 							lte: new Date(
 								account.receiptDate!.getTime() + 24 * 60 * 60 * 1000,
-							), // 1 dia depois
+							),
 						},
 					},
 					orderBy: { createdAt: "desc" },
 				});
-
-				console.log("Transação bancária: ", bankTransaction);
 
 				if (bankTransaction) {
 					// Criar transação de estorno (débito)
@@ -109,21 +103,23 @@ export const reverseAccountReceivableService = async (
 					}
 				}
 
-				// Buscar entrada do fluxo de caixa bancário (só remove se existir)
-				const cashFlowEntry = await prisma.cashFlow.findFirst({
-					where: {
-						documentNumber: account.documentNumber,
-						bankAccountId: account.bankAccountId,
-						type: TransactionType.CREDIT,
-						value: receivedAmount,
-					},
-					orderBy: { createdAt: 'desc' },
-				});
-
-				if (cashFlowEntry) {
-					await prisma.cashFlow.delete({
-						where: { id: cashFlowEntry.id },
+				// Só remove entrada do fluxo de caixa se hasCashFlow for true
+				if (account.hasCashFlow) {
+					const cashFlowEntry = await prisma.cashFlow.findFirst({
+						where: {
+							documentNumber: account.documentNumber,
+							bankAccountId: account.bankAccountId,
+							type: TransactionType.CREDIT,
+							value: receivedAmount,
+						},
+						orderBy: { createdAt: 'desc' },
 					});
+
+					if (cashFlowEntry) {
+						await prisma.cashFlow.delete({
+							where: { id: cashFlowEntry.id },
+						});
+					}
 				}
 			} else {
 				// 3. Se foi liquidado em caixa, estornar transações de caixa
@@ -172,21 +168,23 @@ export const reverseAccountReceivableService = async (
 						});
 					}
 
-					// Buscar entrada do fluxo de caixa (só remove se existir)
-					const cashFlowEntry = await prisma.cashFlow.findFirst({
-						where: {
-							documentNumber: account.documentNumber,
-							cashBoxId: cash.id,
-							type: TransactionType.CREDIT,
-							value: receivedAmount,
-						},
-						orderBy: { createdAt: 'desc' },
-					});
-
-					if (cashFlowEntry) {
-						await prisma.cashFlow.delete({
-							where: { id: cashFlowEntry.id },
+					// Só remove entrada do fluxo de caixa se hasCashFlow for true
+					if (account.hasCashFlow) {
+						const cashFlowEntry = await prisma.cashFlow.findFirst({
+							where: {
+								documentNumber: account.documentNumber,
+								cashBoxId: cash.id,
+								type: TransactionType.CREDIT,
+								value: receivedAmount,
+							},
+							orderBy: { createdAt: 'desc' },
 						});
+
+						if (cashFlowEntry) {
+							await prisma.cashFlow.delete({
+								where: { id: cashFlowEntry.id },
+							});
+						}
 					}
 				}
 			}
@@ -199,13 +197,15 @@ export const reverseAccountReceivableService = async (
 			timeout: 30000,
 		});
 
-		// Recalcular saldos APÓS a transação
-		if (account.bankAccountId) {
-			await recalculateCashFlowBalances(account.bankAccountId);
-		} else {
-			const cash = await prisma.cashBox.findFirst();
-			if (cash) {
-				await recalculateCashBoxFlowBalances(cash.id);
+		// Recalcular saldos APÓS a transação (só se hasCashFlow for true)
+		if (account.hasCashFlow) {
+			if (account.bankAccountId) {
+				await recalculateCashFlowBalances(account.bankAccountId);
+			} else {
+				const cash = await prisma.cashBox.findFirst();
+				if (cash) {
+					await recalculateCashBoxFlowBalances(cash.id);
+				}
 			}
 		}
 

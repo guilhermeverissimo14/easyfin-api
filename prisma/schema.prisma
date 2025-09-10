@@ -252,6 +252,7 @@ model AccountsPayable {
   paymentMethodId      String?       @map("payment_method_id")
   userId               String?       @map("user_id")
   observation          String?
+  hasCashFlow          Boolean       @default(true) @map("has_cash_flow")
   status               PaymentStatus @default(PENDING)
   createdAt            DateTime      @default(now()) @map("created_at")
   updatedAt            DateTime      @updatedAt @map("updated_at")
@@ -285,6 +286,7 @@ model AccountsReceivable {
   paymentMethodId      String?       @map("payment_method_id")
   userId               String?       @map("user_id")
   observation          String?
+  hasCashFlow          Boolean       @default(true) @map("has_cash_flow")
   status               PaymentStatus @default(PENDING)
   createdAt            DateTime      @default(now()) @map("created_at")
   updatedAt            DateTime      @updatedAt @map("updated_at")

@@ -22,6 +22,7 @@ export const createAccountPayableService = async (data: {
    userId?: string
    observation?: string
    status?: string
+   hasCashFlow?: boolean
 }) => {
    const supplierExists = await prisma.supplier.findUnique({ where: { id: data.supplierId } })
    if (!supplierExists) {
@@ -71,6 +72,7 @@ export const createAccountPayableService = async (data: {
             userId: data.userId,
             observation: data.observation || null,
             status: (data.status as PaymentStatus) || PaymentStatus.PENDING,
+            hasCashFlow: data.hasCashFlow ?? true,
          },
       })
 

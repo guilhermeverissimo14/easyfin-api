@@ -23,6 +23,7 @@ export const createAccountReceivableService = async (data: {
    userId?: string
    observation?: string
    status?: string
+   hasCashFlow?: boolean
 }) => {
    const customerExists = await prisma.customer.findUnique({ where: { id: data.customerId } })
    if (!customerExists) {
@@ -73,6 +74,7 @@ export const createAccountReceivableService = async (data: {
             userId: data.userId,
             observation: data.observation || null,
             status: (data.status as PaymentStatus) || PaymentStatus.PENDING,
+            hasCashFlow: data.hasCashFlow ?? true,
          },
       })
 
