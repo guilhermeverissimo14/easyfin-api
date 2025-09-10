@@ -118,14 +118,14 @@ export async function getCostCenterAnalysisService(
                }
 
                if (!type || type === 'D') {
-                  balance += (cashFlowDebits._sum?.value || 0)
-                  balance += (accountsPayable._sum?.paidValue || 0)
+                  balance -= (cashFlowDebits._sum?.value || 0)
+                  balance -= (accountsPayable._sum?.paidValue || 0)
                }
 
                if (type === 'C') {
                   balance = (cashFlowEntries._sum?.value || 0) + (accountsReceivable._sum?.receivedValue || 0)
                } else if (type === 'D') {
-                  balance = (cashFlowDebits._sum?.value || 0) + (accountsPayable._sum?.paidValue || 0)
+                  balance = -((cashFlowDebits._sum?.value || 0) + (accountsPayable._sum?.paidValue || 0))
                }
 
                return {
