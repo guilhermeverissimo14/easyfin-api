@@ -13,7 +13,7 @@ export const recalculateCashFlowBalances = async (bankAccountId: string) => {
       },
       orderBy: [
          { date: 'asc' },
-         { createdAt: 'asc' } // Em caso de mesma data, ordena por criação
+         { createdAt: 'asc' }, // Em caso de mesma data, ordena por criação
       ],
    })
 
@@ -51,14 +51,13 @@ export const recalculateCashFlowBalancesFromDate = async (bankAccountId: string,
       where: {
          bankAccountId,
          date: {
-            lt: fromDate
-         }
+            lt: fromDate,
+         },
       },
-      orderBy: [
-         { date: 'desc' },
-         { createdAt: 'desc' }
-      ]
+      orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
    })
+
+   console.log('Saldo inicial antes do recálculo: ', lastEntryBeforeDate?.balance)
 
    // Saldo inicial é o último saldo antes da data ou 0
    let currentBalance = lastEntryBeforeDate?.balance || 0
@@ -68,28 +67,36 @@ export const recalculateCashFlowBalancesFromDate = async (bankAccountId: string,
       where: {
          bankAccountId,
          date: {
-            gte: fromDate
-         }
+            gte: fromDate,
+         },
       },
-      orderBy: [
-         { date: 'asc' },
-         { createdAt: 'asc' }
-      ],
+      orderBy: [{ date: 'asc' }, { createdAt: 'asc' }],
    })
+
+   console.log('Lançamentos a serem recalculados: ', cashFlowEntries.length)
 
    // Recalcula apenas os saldos necessários
    for (const entry of cashFlowEntries) {
       if (entry.type === TransactionType.CREDIT) {
          currentBalance += entry.value
+         console.log('Crédito: ', entry.value)
       } else {
          currentBalance -= entry.value
+         console.log('Débito: ', entry.value)
       }
 
+      console.log('Saldo atual: ', currentBalance)
+      console.log('--------------------------')
+      console.log('Atualizando o saldo no banco de dados para o lançamento: ', entry.id)
+      console.log('--------------------------')
       await prisma.cashFlow.update({
          where: { id: entry.id },
          data: { balance: currentBalance },
       })
    }
+
+   console.log('Saldo final após recálculo: ', currentBalance)
+   console.log('--------------------------')
 
    return currentBalance
 }
@@ -102,10 +109,7 @@ export const recalculateCashBoxFlowBalances = async (cashBoxId: string) => {
       where: {
          cashBoxId,
       },
-      orderBy: [
-         { date: 'asc' },
-         { createdAt: 'asc' }
-      ],
+      orderBy: [{ date: 'asc' }, { createdAt: 'asc' }],
    })
 
    let currentBalance = 0
@@ -135,13 +139,10 @@ export const recalculateCashBoxFlowBalancesFromDate = async (cashBoxId: string, 
       where: {
          cashBoxId,
          date: {
-            lt: fromDate
-         }
+            lt: fromDate,
+         },
       },
-      orderBy: [
-         { date: 'desc' },
-         { createdAt: 'desc' }
-      ]
+      orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
    })
 
    let currentBalance = lastEntryBeforeDate?.balance || 0
@@ -151,13 +152,10 @@ export const recalculateCashBoxFlowBalancesFromDate = async (cashBoxId: string, 
       where: {
          cashBoxId,
          date: {
-            gte: fromDate
-         }
+            gte: fromDate,
+         },
       },
-      orderBy: [
-         { date: 'asc' },
-         { createdAt: 'asc' }
-      ],
+      orderBy: [{ date: 'asc' }, { createdAt: 'asc' }],
    })
 
    for (const entry of cashFlowEntries) {
