@@ -7,7 +7,7 @@ interface AuthenticatedRequest extends FastifyRequest {
    user?: { id: string; role: UserRole }
 }
 
-const userCache = new Map<string, { user: any, timestamp: number }>()
+const userCache = new Map<string, { user: any; timestamp: number }>()
 const CACHE_TTL = 30 * 60 * 1000 // 30 minutos
 
 export const authMiddleware: any = async (request: AuthenticatedRequest, reply: FastifyReply) => {
@@ -22,11 +22,12 @@ export const authMiddleware: any = async (request: AuthenticatedRequest, reply: 
       request.user = { id: decoded.userId, role: decoded.role }
 
       const cached = userCache.get(decoded.userId)
-      if (cached && (Date.now() - cached.timestamp) < CACHE_TTL) {
+      if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
          if (cached.user.token !== token) {
-            return reply.status(401).send({ message: 'Usuário não autenticado' })
+            userCache.delete(decoded.userId)
+         } else {
+            return
          }
-         return
       }
 
       const user = await prisma.user.findFirst({ where: { id: decoded.userId } })
