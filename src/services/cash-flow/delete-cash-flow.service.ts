@@ -1,6 +1,7 @@
 import { AppError } from '@/helpers/app-error'
 import { prisma } from '@/lib/prisma'
 import { recalculateCashFlowBalancesFromDate, recalculateCashBoxFlowBalancesFromDate } from '@/utils/recalculate-cash-flow-balances'
+import { PaymentStatus } from '@prisma/client'
 
 export const deleteCashFlowService = async (cashFlowId: string) => {
    try {
@@ -48,10 +49,9 @@ export const deleteCashFlowService = async (cashFlowId: string) => {
                      bankAccountId,
                      amount: value,
                      type,
-                     description: 'Lançamento manual de fluxo de caixa',
                      transactionAt: {
-                        gte: new Date(cashFlow.createdAt.getTime() - 60000),
-                        lte: new Date(cashFlow.createdAt.getTime() + 60000),
+                        gte: new Date(cashFlow.date.getTime() - 720 * 60 * 60 * 1000), // 30 dias antes
+                        lte: new Date(cashFlow.date.getTime() + 720 * 60 * 60 * 1000), // 30 dias depois
                      },
                   },
                   orderBy: { createdAt: 'desc' },
@@ -124,13 +124,65 @@ export const deleteCashFlowService = async (cashFlowId: string) => {
          }
 
          console.log('Removendo lançamento do fluxo de caixa')
-         // Deletar o lançamento do fluxo de caixa
+
+         // Verifica e reverte contas vinculadas
+         if (cashFlow.documentNumber) {
+            console.log('Lançamento possui documentNumber, verificando contas vinculadas...')
+
+            if (cashFlow.type === 'CREDIT') {
+               const accountReceivable = await prisma.accountsReceivable.findFirst({
+                  where: {
+                     documentNumber: cashFlow.documentNumber,
+                     status: PaymentStatus.PAID,
+                  },
+               })
+
+               if (accountReceivable) {
+                  console.log('Revertendo status da conta a receber para PENDING')
+                  await prisma.accountsReceivable.update({
+                     where: { id: accountReceivable.id },
+                     data: {
+                        status: PaymentStatus.PENDING,
+                        receiptDate: null,
+                        receivedValue: 0,
+                        observation: `${accountReceivable.observation || ''} [ESTORNADO: Lançamento removido do fluxo de caixa]`.trim(),
+                     },
+                  })
+               }
+            } else if (cashFlow.type === 'DEBIT') {
+               const accountPayable = await prisma.accountsPayable.findFirst({
+                  where: {
+                     documentNumber: cashFlow.documentNumber,
+                     status: PaymentStatus.PAID,
+                  },
+               })
+
+               if (accountPayable) {
+                  console.log('Revertendo status da conta a pagar para PENDING')
+                  await prisma.accountsPayable.update({
+                     where: { id: accountPayable.id },
+                     data: {
+                        status: PaymentStatus.PENDING,
+                        paymentDate: null,
+                        paidValue: 0,
+                        fine: 0,
+                        interest: 0,
+                        discount: 0,
+                        paymentMethodId: null,
+                        observation: `${accountPayable.observation || ''} [ESTORNADO: Lançamento removido do fluxo de caixa]`.trim(),
+                     },
+                  })
+               }
+            }
+         }
+
+         // Deleta o lançamento do fluxo de caixa
          await prisma.cashFlow.delete({
             where: { id: cashFlowId },
          })
          console.log('Lançamento do fluxo de caixa removido com sucesso')
 
-         // OTIMIZAÇÃO: Recalcular saldos apenas a partir da data do lançamento removido
+         // OTIMIZAÇÃO: Recalcula saldos apenas a partir da data do lançamento removido
          if (bankAccountId) {
             console.log('Recalculando saldos bancários a partir da data do lançamento removido...')
             console.log({ bankAccountId, date })
