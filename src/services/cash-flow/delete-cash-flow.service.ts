@@ -16,7 +16,7 @@ export const deleteCashFlowService = async (cashFlowId: string) => {
 
          console.log('Iniciando remoção do lançamento do fluxo de caixa. Linha encontrada: ', cashFlow)
 
-         const { bankAccountId, cashBoxId, value, type, csvFileName, date } = cashFlow
+         const { bankAccountId, cashBoxId, value, type, csvFileName, date, documentNumber } = cashFlow
 
          // Se for lançamento de conta bancária
          if (bankAccountId) {
@@ -43,7 +43,8 @@ export const deleteCashFlowService = async (cashFlowId: string) => {
                   })
                }
             } else {
-               console.log('Removendo lançamento manual de conta bancária')
+               console.log('Removendo lançamento manual de conta bancária:')
+               console.log({ bankAccountId, value, type, documentNumber })
                const bankTransactions = await prisma.bankTransactions.findMany({
                   where: {
                      bankAccountId,
@@ -94,10 +95,9 @@ export const deleteCashFlowService = async (cashFlowId: string) => {
                   cashBoxId,
                   amount: value,
                   type,
-                  description: 'Lançamento manual de fluxo de caixa',
                   transactionAt: {
-                     gte: new Date(cashFlow.createdAt.getTime() - 60000), // 1 minuto antes
-                     lte: new Date(cashFlow.createdAt.getTime() + 60000), // 1 minuto depois
+                     gte: new Date(cashFlow.date.getTime() - 720 * 60 * 60 * 1000), // 30 dias antes
+                     lte: new Date(cashFlow.date.getTime() + 720 * 60 * 60 * 1000), // 30 dias depois
                   },
                },
                orderBy: { createdAt: 'desc' },
@@ -123,16 +123,16 @@ export const deleteCashFlowService = async (cashFlowId: string) => {
             })
          }
 
-         console.log('Removendo lançamento do fluxo de caixa')
+         console.log('Revertendo status de conta com documentNumber: ', documentNumber)
 
          // Verifica e reverte contas vinculadas
-         if (cashFlow.documentNumber) {
+         if (documentNumber) {
             console.log('Lançamento possui documentNumber, verificando contas vinculadas...')
 
             if (cashFlow.type === 'CREDIT') {
                const accountReceivable = await prisma.accountsReceivable.findFirst({
                   where: {
-                     documentNumber: cashFlow.documentNumber,
+                     documentNumber: documentNumber,
                      status: PaymentStatus.PAID,
                   },
                })
@@ -175,6 +175,8 @@ export const deleteCashFlowService = async (cashFlowId: string) => {
                }
             }
          }
+
+         console.log('Removendo lançamento do fluxo de caixa com documentNumber: ', documentNumber)
 
          // Deleta o lançamento do fluxo de caixa
          await prisma.cashFlow.delete({
