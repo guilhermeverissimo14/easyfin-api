@@ -4,6 +4,7 @@ import * as XLSX from 'xlsx';
 import path from 'path';
 import { createInvoiceService } from '@/services/invoice/create-invoice.service';
 import { updateInvoiceService } from '@/services/invoice/update-invoice.service';
+import { receiveAccountReceivableService } from '@/services/accounts-receivable/receive-account-receivable.service';
 
 console.log('🚀 Iniciando script de importação de faturas...');
 
@@ -23,6 +24,7 @@ interface InvoiceData {
   valorIss: number;
   valorLiquido: number;
   impostoEfetivo: number;
+  statusContasReceber: string;
 }
 
 // Função para converter valor monetário string para centavos
@@ -164,6 +166,72 @@ async function findCustomerByName(customerName: string): Promise<string | null> 
   }
 }
 
+// Função para processar recebimento de contas a receber quando status for "Recebido"
+async function processAccountReceivablePayment(invoiceNumber: string, customerId: string, dueDate: Date): Promise<void> {
+  try {
+    // Busca a fatura para obter a condição de pagamento
+    const invoice = await prisma.invoice.findFirst({
+      where: {
+        invoiceNumber: invoiceNumber,
+        customerId: customerId
+      },
+      include: {
+        PaymentCondition: {
+          include: {
+            paymentMethod: true
+          }
+        }
+      }
+    });
+
+    if (!invoice) {
+      console.log(`⚠️  Fatura ${invoiceNumber} não encontrada`);
+      return;
+    }
+
+    // Busca as contas a receber criadas para esta fatura
+    const accountsReceivable = await prisma.accountsReceivable.findMany({
+      where: {
+        documentNumber: invoiceNumber,
+        customerId: customerId,
+        status: 'PENDING' // Só processa se ainda estiver pendente
+      }
+    });
+
+    if (accountsReceivable.length === 0) {
+      console.log(`⚠️  Nenhuma conta a receber pendente encontrada para a fatura ${invoiceNumber}`);
+      return;
+    }
+
+    // Obtém o paymentMethodId da condição de pagamento da fatura
+    const paymentMethodId = invoice.PaymentCondition.paymentMethodId;
+    console.log(`📋 Usando método de pagamento da condição: ${invoice.PaymentCondition.paymentMethod.name} (${paymentMethodId})`);
+
+    // Processa cada conta a receber (pode ter múltiplas parcelas)
+    for (const account of accountsReceivable) {
+      // Usa a data de vencimento da conta a receber como receiptDate
+      const receiptDate = account.dueDate || dueDate;
+      
+      await receiveAccountReceivableService(account.id, {
+        fine: 0,
+        interest: 0,
+        discount: 0,
+        observation: 'Recebimento automático via importação',
+        paymentMethodId: paymentMethodId,
+        receiptDate: receiptDate, // Usa a data de vencimento da conta a receber
+        costCenterId: undefined,
+        bankAccountId: '8225b613-5930-4593-adb5-c638abf1ac57',
+        generateCashFlow: false
+      });
+
+      console.log(`✅ Conta a receber ${account.id} marcada como recebida automaticamente (vencimento: ${receiptDate.toLocaleDateString()})`);
+    }
+  } catch (error: any) {
+    console.error(`❌ Erro ao processar recebimento da fatura ${invoiceNumber}:`, error.message);
+    throw error;
+  }
+}
+
 // Função para buscar condição de pagamento por nome
 async function findPaymentTermByName(paymentTermName: string): Promise<string | null> {
   try {
@@ -272,7 +340,8 @@ async function importInvoices() {
           aliquotaEfetiva: parsePercentage(row['Alíquota Efetiva']),
           valorIss: parseMonetaryValue(row['Valor do ISS']),
           valorLiquido: parseMonetaryValue(row['Valor líquido']),
-          impostoEfetivo: parseMonetaryValue(row['Imp. Efetivo'])
+          impostoEfetivo: parseMonetaryValue(row['Imp. Efetivo']),
+          statusContasReceber: row['Status Contas a Receber']?.toString() || ''
         };
 
         // Debug para faturas de 2024
@@ -315,7 +384,7 @@ async function importInvoices() {
           issueDate: invoiceData.emissao.toISOString(),
           serviceValue: invoiceData.valorServico, // parseMonetaryValue já retorna em centavos
           retainsIss: invoiceData.clienteRetem.toLowerCase().trim() === 'sim',
-          notes: `Status: ${invoiceData.statusCliente}`
+          notes: invoiceData.statusContasReceber
         };
 
         // Verifica se a fatura já existe
@@ -339,12 +408,18 @@ async function importInvoices() {
               id: existingInvoice.id,
               serviceValue: invoiceData.valorServico, // parseMonetaryValue já retorna em centavos
               retainsIss: invoiceData.clienteRetem.toLowerCase().trim() === 'sim',
-              notes: `Status: ${invoiceData.statusCliente}`
+              notes: invoiceData.statusContasReceber
             };
 
             invoice = await updateInvoiceService(updateData);
             console.log(`🔄 Linha ${i + 2}: Fatura ${invoiceData.notaFiscal} atualizada com valores corretos (ID: ${invoice.id})`);
             imported++;
+
+            // Verifica se o status é "Recebido" e processa o recebimento automaticamente
+            if (invoiceData.statusContasReceber.toLowerCase().trim() === 'recebido') {
+              console.log(`💰 Processando recebimento automático para fatura atualizada ${invoiceData.notaFiscal}...`);
+              await processAccountReceivablePayment(invoiceData.notaFiscal, customerId, invoiceData.vencimento);
+            }
           } else {
             console.log(`⚠️  Linha ${i + 2}: Fatura ${invoiceData.notaFiscal} já existe com valores corretos - IGNORANDO`);
             skipped++;
@@ -354,6 +429,12 @@ async function importInvoices() {
           invoice = await createInvoiceService(invoiceServiceData);
           console.log(`✅ Linha ${i + 2}: Fatura ${invoiceData.notaFiscal} importada com sucesso (ID: ${invoice.id})`);
           imported++;
+        }
+
+        // Verifica se o status é "Recebido" e processa o recebimento automaticamente
+        if (invoiceData.statusContasReceber.toLowerCase().trim() === 'recebido') {
+          console.log(`💰 Processando recebimento automático para fatura ${invoiceData.notaFiscal}...`);
+          await processAccountReceivablePayment(invoiceData.notaFiscal, customerId, invoiceData.vencimento);
         }
 
       } catch (error: any) {

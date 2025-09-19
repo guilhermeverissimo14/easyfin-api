@@ -29,6 +29,66 @@ function normalizeColumnName(name: string): string {
     .trim()
 }
 
+// DE-PARA para converter nomes de estados para siglas
+const stateMapping: Record<string, string> = {
+  // Estados por extenso
+  'acre': 'AC',
+  'alagoas': 'AL',
+  'amapa': 'AP',
+  'amazonas': 'AM',
+  'bahia': 'BA',
+  'ceara': 'CE',
+  'distritofederal': 'DF',
+  'espiritosanto': 'ES',
+  'goias': 'GO',
+  'maranhao': 'MA',
+  'matogrosso': 'MT',
+  'matogrossodosul': 'MS',
+  'minasgerais': 'MG',
+  'para': 'PA',
+  'paraiba': 'PB',
+  'parana': 'PR',
+  'pernambuco': 'PE',
+  'piaui': 'PI',
+  'riodejaneiro': 'RJ',
+  'riograndedonorte': 'RN',
+  'riograndedosul': 'RS',
+  'rondonia': 'RO',
+  'roraima': 'RR',
+  'santacatarina': 'SC',
+  'saopaulo': 'SP',
+  'sergipe': 'SE',
+  'tocantins': 'TO',
+  // Siglas (caso já venham corretas)
+  'ac': 'AC',
+  'al': 'AL',
+  'ap': 'AP',
+  'am': 'AM',
+  'ba': 'BA',
+  'ce': 'CE',
+  'df': 'DF',
+  'es': 'ES',
+  'go': 'GO',
+  'ma': 'MA',
+  'mt': 'MT',
+  'ms': 'MS',
+  'mg': 'MG',
+  'pa': 'PA',
+  'pb': 'PB',
+  'pr': 'PR',
+  'pe': 'PE',
+  'pi': 'PI',
+  'rj': 'RJ',
+  'rn': 'RN',
+  'rs': 'RS',
+  'ro': 'RO',
+  'rr': 'RR',
+  'sc': 'SC',
+  'sp': 'SP',
+  'se': 'SE',
+  'to': 'TO'
+}
+
 // Mapeamento de possíveis nomes de colunas para os campos do modelo
 const columnMapping: Record<string, keyof CustomerData> = {
   // CNPJ
@@ -88,7 +148,10 @@ const columnMapping: Record<string, keyof CustomerData> = {
   // Retenção ISS
   'retiss': 'retIss',
   'retencaoiss': 'retIss',
-  'iss': 'retIss'
+  'iss': 'retIss',
+  'retencao': 'retIss',
+  'retemiss': 'retIss',
+  'retainiss': 'retIss'
 }
 
 function parseExcelData(filePath: string): CustomerData[] {
@@ -149,7 +212,9 @@ function parseExcelData(filePath: string): CustomerData[] {
 
         // Tratamentos específicos por campo
         if (field === 'retIss') {
-          customer[field] = ['true', '1', 'sim', 's', 'yes', 'y'].includes(value.toLowerCase())
+          // Converte para boolean - aceita várias variações de "sim" e "não"
+          const normalizedValue = value.toLowerCase().trim()
+          customer[field] = ['true', '1', 'sim', 's', 'yes', 'y', 'verdadeiro'].includes(normalizedValue)
         } else if (field === 'cnpj') {
           // Remove formatação do CNPJ
           value = value.replace(/\D/g, '')
@@ -162,6 +227,16 @@ function parseExcelData(filePath: string): CustomerData[] {
           // Remove formatação do CEP
           value = value.replace(/\D/g, '')
           customer[field] = value
+        } else if (field === 'state') {
+          // Converte estado para sigla usando o DE-PARA
+          // Remove acentos e espaços para normalização
+          const normalizedState = value.toLowerCase()
+            .trim()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '') // Remove acentos
+            .replace(/\s+/g, '') // Remove espaços
+          const stateCode = stateMapping[normalizedState]
+          customer[field] = stateCode || value // Se não encontrar no mapeamento, mantém o valor original
         } else {
           customer[field] = value
         }
