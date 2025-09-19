@@ -116,7 +116,7 @@ export const updateInvoiceService = async (data: UpdateInvoiceData) => {
 				: null;
 			let netValue: number = existingInvoice.netValue
 				? existingInvoice.netValue / 100
-				: existingInvoice.serviceValue / 100;
+				: existingInvoice.serviceValue;
 			let effectiveTax: number | null = existingInvoice.effectiveTax
 				? existingInvoice.effectiveTax / 100
 				: null;
@@ -136,7 +136,7 @@ export const updateInvoiceService = async (data: UpdateInvoiceData) => {
 					const serviceValueInRS = serviceValue / 100;
 
 					issqnValue = serviceValueInRS * issqnTaxRate;
-					netValue = serviceValue - issqnValue;
+					netValue = serviceValue - (issqnValue * 100); // Converte issqnValue para centavos
 				} else {
 					issqnTaxRate = null;
 					issqnValue = null;
