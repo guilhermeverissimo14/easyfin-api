@@ -451,6 +451,7 @@ async function importInvoices() {
 
   } catch (error) {
     console.error('❌ Erro geral na importação:', error);
+    throw error;
   } finally {
     await prisma.$disconnect();
   }
@@ -460,7 +461,7 @@ async function importInvoices() {
 if (require.main === module) {
   importInvoices()
     .then(() => {
-      console.log('\n🎉 Importação de faturas concluída!');
+      console.log('\n✨ Importação finalizada!');
       process.exit(0);
     })
     .catch((error) => {

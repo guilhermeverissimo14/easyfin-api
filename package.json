@@ -16,6 +16,7 @@
       "seed": "ts-node prisma/seed.ts",
       "import-customers": "tsx --env-file-if-exists=.env src/scripts/import-customers.ts",
       "import-invoices": "tsx --env-file-if-exists=.env src/scripts/import-invoices.ts",
+      "import-cash-book": "tsx --env-file-if-exists=.env src/scripts/import-cash-book.ts",
       "check-values": "tsx --env-file-if-exists=.env src/scripts/check-values.ts"
    },
    "prisma": {
