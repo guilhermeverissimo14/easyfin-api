@@ -71,7 +71,24 @@ export const listCashFlowByAccountIdService = async (bankAccountId: string, filt
    }
 
    if (costCenterId) {
-      whereClause.costCenterId = costCenterId
+      if (costCenterId === 'empty') {
+         // Filtrar registros com centro de custo vazio
+         whereClause.OR = [
+            { costCenterId: null },
+            { costCenterId: '' },
+            {
+               CostCenter: {
+                  OR: [
+                     { id: '' },
+                     { name: '' },
+                     { AND: [{ id: '' }, { name: '' }] }
+                  ]
+               }
+            }
+         ]
+      } else {
+         whereClause.costCenterId = costCenterId
+      }
    }
 
    if (startDate || endDate) {
