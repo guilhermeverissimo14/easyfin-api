@@ -41,6 +41,15 @@ export async function getCostCenterAnalysisService(
       }
    })
 
+   // Adicionar uma entrada especial para registros sem centro de custo
+   const costCentersWithEmpty = [
+      ...costCenters,
+      {
+         id: 'empty',
+         name: 'Sem Centro de Custo'
+      }
+   ]
+
    // Processar meses em lotes menores para reduzir conexões simultâneas
    const months: MonthlyData[] = []
    const batchSize = 3 // Processar 3 meses por vez
@@ -53,19 +62,17 @@ export async function getCostCenterAnalysisService(
          const endOfMonth = new Date(year, month, 0, 23, 59, 59)
 
          const costCenterBalances = await Promise.all(
-            costCenters.map(async (costCenter) => {
+            costCentersWithEmpty.map(async (costCenter) => {
                let balance = 0
 
-               const cashFlowConditions: any = {
-                  costCenterId: costCenter.id,
+               let cashFlowConditions: any = {
                   date: {
                      gte: startOfMonth,
                      lte: endOfMonth
                   }
                }
 
-               const accountsPayableConditions: any = {
-                  costCenterId: costCenter.id,
+               let accountsPayableConditions: any = {
                   status: 'PAID',
                   paymentDate: {
                      gte: startOfMonth,
@@ -73,13 +80,34 @@ export async function getCostCenterAnalysisService(
                   }
                }
 
-               const accountsReceivableConditions: any = {
-                  costCenterId: costCenter.id,
+               let accountsReceivableConditions: any = {
                   status: 'PAID',
                   receiptDate: {
                      gte: startOfMonth,
                      lte: endOfMonth
                   }
+               }
+
+               // Configurar filtros baseado no tipo de centro de custo
+               if (costCenter.id === 'empty') {
+                  // Filtrar registros sem centro de custo
+                  cashFlowConditions.OR = [
+                     { costCenterId: null },
+                     { costCenterId: '' }
+                  ]
+                  accountsPayableConditions.OR = [
+                     { costCenterId: null },
+                     { costCenterId: '' }
+                  ]
+                  accountsReceivableConditions.OR = [
+                     { costCenterId: null },
+                     { costCenterId: '' }
+                  ]
+               } else {
+                  // Filtrar registros com centro de custo específico
+                  cashFlowConditions.costCenterId = costCenter.id
+                  accountsPayableConditions.costCenterId = costCenter.id
+                  accountsReceivableConditions.costCenterId = costCenter.id
                }
 
                if (type) {
